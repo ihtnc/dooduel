@@ -1,11 +1,14 @@
-CREATE OR REPLACE FUNCTION app.purge_completed_games() RETURNS void AS $$
+CREATE OR REPLACE FUNCTION app.purge_old_games() RETURNS void AS $$
 DECLARE
   game_record record;
   deleted_count integer := 0;
 BEGIN
-  FOR game_record IN SELECT * FROM public.game_state
-  WHERE public.game_state.status = 'completed'
-    AND public.game_state.updated_at <= now() - interval '1 hour'
+  FOR game_record IN
+  SELECT s.*
+  FROM public.game_state s
+  JOIN public.game g ON s.game_id = g.id
+  WHERE (s.status = 'completed' AND s.updated_at <= now() - interval '1 hour')
+    OR (s.status <> 'completed' AND g.created_at <= now() - interval '6 hours')
 
   LOOP
     DELETE FROM public.game_logs WHERE public.game_logs.game_rounds_id IN (SELECT id FROM public.game_rounds WHERE game_id = game_record.game_id);
@@ -17,6 +20,6 @@ BEGIN
     deleted_count := deleted_count + 1;
   END LOOP;
 
-  RAISE NOTICE 'Purged % completed games', deleted_count;
+  RAISE NOTICE 'Purged % games', deleted_count;
 END;
 $$ LANGUAGE plpgsql;
