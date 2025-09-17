@@ -30,7 +30,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
   }, [router, params, user]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-8">
+    <div className="flex flex-col items-center justify-center">
       {pending && <div>Loading...</div>}
       {game && !pending && <>
         <h1 className="text-2xl font-bold mb-4">Current game</h1>
