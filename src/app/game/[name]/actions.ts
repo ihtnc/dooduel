@@ -1,9 +1,9 @@
 "use server";
 
 import { createClient } from "@utilities/supabase";
-import { type GameDetails } from "@types";
+import { type CurrentGameDetails } from "@types";
 
-export async function getCurrentGame(name: string, player_name: string, player_code: string): Promise<GameDetails | null> {
+export async function getCurrentGame(name: string, player_name: string, player_code: string): Promise<CurrentGameDetails | null> {
   const client = await createClient();
 
   const args = {
@@ -14,10 +14,14 @@ export async function getCurrentGame(name: string, player_name: string, player_c
   const { data, error } = await client.rpc("get_current_game", args);
   if (error) { return null; }
 
-  const game: GameDetails = {
+  const game: CurrentGameDetails = {
     name: data.name,
     rounds: data.rounds,
-    difficulty: data.difficulty
+    difficulty: data.difficulty,
+    hasPassword: data.has_password,
+    status: data.status,
+    currentRound: data.current_round,
+    currentPainterName: data.current_player_name
   };
 
   return game;

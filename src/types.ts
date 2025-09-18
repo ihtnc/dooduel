@@ -2,14 +2,21 @@ export type FormState = {
   [key: string]: string,
 } | undefined;
 
-export interface InitialGameDetails extends GameDetails {
-  code: string,
+export interface CreatedGameDetails extends GameDetails {
+  code: string
 };
 
 export type GameDetails = {
   name: string,
   rounds: number,
-  difficulty: number
+  difficulty: number,
+  hasPassword: boolean
+};
+
+export interface CurrentGameDetails extends GameDetails {
+  status: string,
+  currentRound: number | null,
+  currentPainterName: string | null,
 };
 
 export type User = {

@@ -1,11 +1,11 @@
 "use server";
 
 import { createClient } from "@utilities/supabase";
-import { type InitialGameDetails, type FormState } from "@types";
+import { type CreatedGameDetails, type FormState } from "@types";
 import { parseFormData } from "./parseFormData";
 import { redirect } from "next/navigation";
 
-export async function getCreatedGame(name: string, creator: string): Promise<InitialGameDetails | null> {
+export async function getCreatedGame(name: string, creator: string): Promise<CreatedGameDetails | null> {
   const client = await createClient();
 
   const args = {
@@ -15,11 +15,12 @@ export async function getCreatedGame(name: string, creator: string): Promise<Ini
   const { data, error } = await client.rpc("get_created_game", args);
   if (error) { return null; }
 
-  const game: InitialGameDetails = {
+  const game: CreatedGameDetails = {
     code: data.code,
     name: data.name,
     rounds: data.rounds,
-    difficulty: data.difficulty
+    difficulty: data.difficulty,
+    hasPassword: data.has_password
   };
   return game;
 };

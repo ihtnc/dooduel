@@ -1,12 +1,19 @@
 CREATE OR REPLACE FUNCTION public.start_game(game_code character varying, creator character varying)
- RETURNS game
+ RETURNS record
  LANGUAGE plpgsql
 AS $function$
 DECLARE
-  started_game game;
+  started_game record;
   updated_state game_state;
 BEGIN
-  SELECT *
+  SELECT
+    game.id,
+    game.name,
+    game.rounds,
+    game.difficulty,
+    CASE WHEN char_length(COALESCE(game.password, '')) > 0 THEN true
+    ELSE false
+    END AS has_password
   FROM game
   WHERE code = game_code AND created_by = creator
   INTO started_game;

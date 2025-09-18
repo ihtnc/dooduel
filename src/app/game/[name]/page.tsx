@@ -3,15 +3,16 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getUserContext } from "@/components/userContextProvider";
+import CurrentGame from "@/components/currentGame";
 import { getCurrentGame } from "./actions";
-import type { GameDetails } from "@types";
+import type { CurrentGameDetails } from "@types";
 
 export default function GamePage({ params }: { params: Promise<{ name: string }> }) {
   const router = useRouter();
   const user = getUserContext();
 
   const [pending, setPending] = useState(true);
-  const [game, setGame] = useState<GameDetails | null>(null);
+  const [game, setGame] = useState<CurrentGameDetails | null>(null);
 
   useEffect(() => {
     async function fetchGame() {
@@ -33,12 +34,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
     <div className="flex flex-col items-center justify-center">
       {pending && <div>Loading...</div>}
       {game && !pending && <>
-        <h1 className="text-2xl font-bold mb-4">Current game</h1>
-        <div className="bg-white rounded shadow p-6 w-full max-w-lg">
-          <div><strong>Name:</strong> {game.name}</div>
-          <div><strong>Rounds:</strong> {game.rounds}</div>
-          <div><strong>Difficulty:</strong> {game.difficulty}</div>
-        </div>
+        <CurrentGame game={game} />
       </>}
     </div>
   );

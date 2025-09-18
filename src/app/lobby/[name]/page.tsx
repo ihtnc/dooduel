@@ -4,8 +4,9 @@ import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getUserContext } from "@/components/userContextProvider";
 import BrushButton from "@/components/button/brushButton";
+import CurrentGame from "@/components/currentGame";
 import { getCreatedGame, startGame } from "./actions";
-import type { InitialGameDetails } from "@types";
+import type { CreatedGameDetails, CurrentGameDetails } from "@types";
 
 export default function GamePage({ params }: { params: Promise<{ name: string }> }) {
   const router = useRouter();
@@ -13,7 +14,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
   const user = getUserContext();
 
   const [getPending, setPending] = useState(true);
-  const [game, setGame] = useState<InitialGameDetails | null>(null);
+  const [game, setGame] = useState<CreatedGameDetails | null>(null);
 
   useEffect(() => {
     async function fetchGame() {
@@ -31,16 +32,24 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
     fetchGame();
   }, [router, params, user]);
 
+  let details: CurrentGameDetails | undefined;
+  if (game) {
+    details = {
+      name: game.name,
+      rounds: game.rounds,
+      difficulty: game.difficulty,
+      hasPassword: game.hasPassword,
+      status: "ready",
+      currentRound: null,
+      currentPainterName: null,
+    };
+  }
+
   return (
     <div className="flex flex-col items-center justify-center">
       {getPending && <div>Loading...</div>}
       {game && !getPending && <>
-        <h1 className="text-2xl font-bold mb-4">Game lobby</h1>
-        <div className="bg-white rounded shadow p-6 w-full max-w-lg">
-          <div><strong>Name:</strong> {game.name}</div>
-          <div><strong>Rounds:</strong> {game.rounds}</div>
-          <div><strong>Difficulty:</strong> {game.difficulty}</div>
-        </div>
+        <CurrentGame game={details!} />
         <form action={action} className="flex flex-col gap-4">
           <input type="hidden" name="creator" value={user?.player_name} />
           <input type="hidden" name="code" value={game?.code} />
