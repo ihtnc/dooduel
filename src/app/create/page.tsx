@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { getUserContext } from "@/components/userContextProvider";
-import GameButton from "@/components/button/gameButton";
+import BrushButton from "@/components/button/brushButton";
 import { createGame } from "./actions";
 
 export default function CreatePage() {
@@ -19,9 +19,9 @@ export default function CreatePage() {
         <input type="password" name="password" placeholder="Password" className="border p-2 rounded" maxLength={20} />
         <input type="number" name="rounds" placeholder="Rounds (default: 3)" className="border p-2 rounded" min="1" max="5" />
         <input type="number" name="difficulty" placeholder="Difficulty (default: 2)" className="border p-2 rounded" min="1" max="3" />
-        <GameButton className="w-50" disabled={pending || !user} type="submit" imageAlt="Create Game Icon">
+        <BrushButton className="w-50" disabled={pending || !user} type="submit" imageAlt="Create Game Icon">
           {pending ? "Creating..." : "Create"}
-        </GameButton>
+        </BrushButton>
         {state && <div className="text-red-600">{state.error}</div>}
       </form>
     </div>

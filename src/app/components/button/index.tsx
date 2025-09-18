@@ -33,19 +33,20 @@ export default function Button({
         "cursor-pointer", "group",
         "py-1", "gap-3",
         "flex", "items-center", "justify-center",
-        className)}
+        ...className.split(" ")
+      )}
       disabled={disabled}
       type={type}
     >
       {imageSrc && (
         <Image src={imageSrc} alt={imageAlt || imageSrc} width={50} height={50}
           className={cn("group-hover:scale-120",
-            imageClassName
+            ...imageClassName.split(" ")
           )}
         />
       )}
       {children && (
-        <div className={cn("text-start", "w-20", childrenClassName)}>
+        <div className={cn("text-start", "w-20", ...childrenClassName.split(" "))}>
           {children}
         </div>
       )}

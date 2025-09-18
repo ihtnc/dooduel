@@ -31,7 +31,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
   }, [router, params, user]);
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col align-self-start items-center mt-24">
       {pending && <div>Loading...</div>}
       {game && !pending && <>
         <CurrentGame game={game} />

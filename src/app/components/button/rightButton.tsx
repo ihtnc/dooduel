@@ -17,7 +17,7 @@ export default function RightButton({
       disabled={disabled}
       type={type}
       className={className}
-      imageClassName="-my-1 scale-80 group-hover:scale-100"
+      imageClassName="-my-1 group-hover:scale-140"
       childrenClassName="-ml-2"
     >
       {children}

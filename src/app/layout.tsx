@@ -34,7 +34,7 @@ export default async function RootLayout({
         <UserContextProvider user={session}>
           <section className="flex flex-col min-h-screen gap-5">
             <Header />
-            <div className="flex-grow place-content-center -mt-25">
+            <div className="flex flex-grow mx-auto">
               {children}
             </div>
             <footer className="flex bottom-0 items-center justify-center">

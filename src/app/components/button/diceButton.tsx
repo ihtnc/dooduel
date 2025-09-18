@@ -1,7 +1,7 @@
 import Button from ".";
 import type { IconButtonProps } from "./types";
 
-export default function BattleButton({
+export default function DiceButton({
   children,
   onClick,
   disabled,
@@ -12,12 +12,12 @@ export default function BattleButton({
   return (
     <Button
       onClick={onClick}
-      imageSrc="/icons/battle.png"
+      imageSrc="/icons/dice.png"
       imageAlt={imageAlt}
       disabled={disabled}
       type={type}
       className={className}
-      imageClassName="-my-1 scale-80 group-hover:scale-100"
+      imageClassName="-my-1 scale-120 group-hover:scale-140"
       childrenClassName="-ml-2"
     >
       {children}

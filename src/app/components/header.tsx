@@ -11,7 +11,7 @@ const Header = () => {
   const user = getUserContext();
 
   return (
-    <header className="top-0 flex items-center p-4 gap-5 justify-between">
+    <header className="top-0 flex items-center p-4 gap-5 justify-between -mb-24">
       <Link href="/">
         <HomeButton />
       </Link>

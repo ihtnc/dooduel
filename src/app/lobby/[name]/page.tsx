@@ -46,7 +46,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
   }
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col align-self-start items-center place-items-start mt-24">
       {getPending && <div>Loading...</div>}
       {game && !getPending && <>
         <CurrentGame game={details!} />

@@ -1,7 +1,7 @@
 import Button from ".";
 import type { IconButtonProps } from "./types";
 
-export default function GameButton({
+export default function JoinButton({
   children,
   onClick,
   disabled,
@@ -12,12 +12,13 @@ export default function GameButton({
   return (
     <Button
       onClick={onClick}
-      imageSrc="/icons/game.png"
+      imageSrc="/icons/join.png"
       imageAlt={imageAlt}
       disabled={disabled}
       type={type}
       className={className}
-      imageClassName="-mt-2"
+      imageClassName="-mt-2 scale-90 group-hover:scale-110"
+      childrenClassName="-ml-2"
     >
       {children}
     </Button>
