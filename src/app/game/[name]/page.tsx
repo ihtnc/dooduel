@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getUserContext } from "@/components/userContextProvider";
-import CurrentGame from "@/components/currentGame";
+import GameDetails from "@/components/gameDetails";
 import { getCurrentGame } from "./actions";
 import type { CurrentGameDetails } from "@types";
 
@@ -34,7 +34,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
     <div className="flex flex-col align-self-start items-center mt-24">
       {pending && <div>Loading...</div>}
       {game && !pending && <>
-        <CurrentGame game={game} />
+        <GameDetails game={game} />
       </>}
     </div>
   );

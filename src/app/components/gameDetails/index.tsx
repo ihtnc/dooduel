@@ -1,12 +1,12 @@
 import LockIcon from "@/components/icons/lockIcon";
 import EaselIcon from "@/components/icons/easelIcon";
 import ArtistIcon from "@/components/icons/artistIcon";
-import type { CurrentGameDetails } from "@types";
+import type { GameDetails } from "@types";
 
-export default function CurrentGame({
+export default function GameDetails({
   game
 }: {
-  game: CurrentGameDetails
+  game: GameDetails
 }) {
   const getDifficulty = (difficulty: number) => {
     switch (difficulty) {

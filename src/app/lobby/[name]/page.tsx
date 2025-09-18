@@ -4,9 +4,9 @@ import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getUserContext } from "@/components/userContextProvider";
 import BrushButton from "@/components/button/brushButton";
-import CurrentGame from "@/components/currentGame";
+import GameDetails from "@/components/gameDetails";
 import { getCreatedGame, startGame } from "./actions";
-import type { CreatedGameDetails, CurrentGameDetails } from "@types";
+import type { CreatedGameDetails } from "@types";
 
 export default function GamePage({ params }: { params: Promise<{ name: string }> }) {
   const router = useRouter();
@@ -32,24 +32,11 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
     fetchGame();
   }, [router, params, user]);
 
-  let details: CurrentGameDetails | undefined;
-  if (game) {
-    details = {
-      name: game.name,
-      rounds: game.rounds,
-      difficulty: game.difficulty,
-      hasPassword: game.hasPassword,
-      status: "ready",
-      currentRound: null,
-      currentPainterName: null,
-    };
-  }
-
   return (
     <div className="flex flex-col align-self-start items-center place-items-start mt-24">
       {getPending && <div>Loading...</div>}
       {game && !getPending && <>
-        <CurrentGame game={details!} />
+        <GameDetails game={game} />
         <form action={action} className="flex flex-col gap-4">
           <input type="hidden" name="creator" value={user?.player_name} />
           <input type="hidden" name="code" value={game?.code} />
