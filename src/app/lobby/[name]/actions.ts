@@ -1,12 +1,12 @@
 "use server";
 
-import { createClient } from "@utilities/supabase";
-import { type CreatedGameDetails, type FormState } from "@types";
-import { parseFormData } from "./parseFormData";
 import { redirect } from "next/navigation";
+import { getClient } from "@utilities/supabase/server";
+import { parseFormData } from "./parseFormData";
+import { type CreatedGameDetails, type FormState } from "@types";
 
 export async function getCreatedGame(name: string, creator: string): Promise<CreatedGameDetails | null> {
-  const client = await createClient();
+  const client = await getClient();
 
   const args = {
     game_name: name,
@@ -16,6 +16,7 @@ export async function getCreatedGame(name: string, creator: string): Promise<Cre
   if (error) { return null; }
 
   const game: CreatedGameDetails = {
+    id: data.id,
     code: data.code,
     name: data.name,
     rounds: data.rounds,
@@ -37,7 +38,7 @@ export async function startGame(prevState: FormState, formData: FormData) {
 
   if (Object.keys(errors).length > 0) { return; }
 
-  const client = await createClient();
+  const client = await getClient();
 
   const args = {
     game_code: code,

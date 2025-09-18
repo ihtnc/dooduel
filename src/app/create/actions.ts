@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createClient } from "@utilities/supabase";
+import { getClient } from "@utilities/supabase/server";
 import type { FormState } from "@types";
 import { parseFormData } from "./parseFormData";
 
@@ -35,7 +35,7 @@ export async function createGame(prevState: FormState, formData: FormData) {
 
   if (Object.keys(errors).length > 0) { return errors; }
 
-  const client = await createClient();
+  const client = await getClient();
 
   const password = createData.password;
   const game = {

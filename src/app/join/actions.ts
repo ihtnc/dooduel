@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createClient } from "@utilities/supabase";
+import { getClient } from "@utilities/supabase/server";
 import { type FormState } from "@types";
 import { parseFormData } from "./parseFormData";
 
@@ -22,7 +22,7 @@ export async function joinGame(prevState: FormState, formData: FormData) {
   const avatar = joinData.avatar;
   const code = joinData.code;
 
-  const client = await createClient();
+  const client = await getClient();
 
   const args = {
     game_name: name,

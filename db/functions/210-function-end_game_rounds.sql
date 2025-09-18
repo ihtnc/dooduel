@@ -3,6 +3,7 @@ CREATE OR REPLACE FUNCTION app.end_game_rounds(game_state_id integer) RETURNS bo
   DECLARE available_players integer;
   DECLARE game_round integer;
   DECLARE game_status status;
+  DECLARE current_game_rounds_id integer;
 BEGIN
   SELECT * FROM public.game_state
   WHERE public.game_state.status = 'inprogress'
@@ -44,6 +45,21 @@ BEGIN
     game_round := NULL;
     game_status := 'completed';
   END IF;
+
+  -- get current game round id
+  SELECT id INTO current_game_rounds_id
+  FROM public.game_rounds
+  WHERE game_id = game_record.game_id
+    AND round = game_record.current_round
+  ORDER BY created_at DESC
+  LIMIT 1;
+
+  -- update player scores for the round
+  UPDATE public.player p
+  SET score = score + COALESCE(l.speed_score, 0) + COALESCE(l.accuracy_score, 0)
+  FROM public.game_logs l
+  WHERE l.player_id = p.id
+    AND l.game_rounds_id = current_game_rounds_id;
 
   -- update game state
   UPDATE game_state

@@ -7,6 +7,7 @@ export interface CreatedGameDetails extends GameDetails {
 };
 
 export type GameDetails = {
+  id: number,
   name: string,
   rounds: number,
   difficulty: number,
@@ -23,4 +24,29 @@ export type User = {
   player_name: string,
   avatar: string,
   code: string,
+};
+
+export type PlayerDetails = {
+  id: number,
+  name: string,
+  avatar: string,
+  active: boolean,
+  is_painter: boolean,
+  has_answered: boolean,
+  current_score: number
+};
+
+export interface NewPlayerPayload extends PlayerPayload {
+  name: string,
+  avatar: string,
+};
+
+export interface PlayerUpdatePayload extends PlayerPayload {
+  active: boolean,
+  avatar: string,
+  current_score: number,
+};
+
+export type PlayerPayload = {
+  id: number
 };

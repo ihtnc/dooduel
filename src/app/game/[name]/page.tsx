@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getUserContext } from "@/components/userContextProvider";
 import GameDetails from "@/components/gameDetails";
+import PlayerList from "@/components/playerList";
 import { getCurrentGame } from "./actions";
 import type { CurrentGameDetails } from "@types";
 
@@ -35,6 +36,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       {pending && <div>Loading...</div>}
       {game && !pending && <>
         <GameDetails game={game} />
+        <PlayerList gameId={game.id} />
       </>}
     </div>
   );

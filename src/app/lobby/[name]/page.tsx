@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { getUserContext } from "@/components/userContextProvider";
 import BrushButton from "@/components/button/brushButton";
 import GameDetails from "@/components/gameDetails";
+import PlayerList from "@/components/playerList";
 import { getCreatedGame, startGame } from "./actions";
 import type { CreatedGameDetails } from "@types";
 
@@ -33,7 +34,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
   }, [router, params, user]);
 
   return (
-    <div className="flex flex-col align-self-start items-center place-items-start mt-24">
+    <div className="flex flex-col align-self-start items-center place-items-start mt-24 gap-4">
       {getPending && <div>Loading...</div>}
       {game && !getPending && <>
         <GameDetails game={game} />
@@ -45,6 +46,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
           </BrushButton>
           {update && <div className="text-red-600">{update.error}</div>}
         </form>
+        <PlayerList gameId={game.id} />
       </>}
     </div>
   );

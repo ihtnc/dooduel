@@ -77,11 +77,6 @@ BEGIN
   INSERT INTO game_logs(game_rounds_id, player_id, answer, speed_score, accuracy_score)
   VALUES (current_word.game_rounds_id, selected_player.player_id, answer, speed_score, accuracy_score);
 
-  -- update player score
-  UPDATE player
-  SET score = score + speed_score + accuracy_score
-  WHERE id = selected_player.player_id;
-
   RETURN true;
 END;
 $function$;
