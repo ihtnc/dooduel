@@ -41,7 +41,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
         <form action={action} className="flex flex-col gap-4">
           <input type="hidden" name="creator" value={user?.player_name} />
           <input type="hidden" name="code" value={game?.code} />
-          <BrushButton className="w-50" disabled={startPending || !user} type="submit" imageAlt="Start Game Icon">
+          <BrushButton className="w-50" disabled={startPending || !user} type="submit" imageAlt="Start game">
             {startPending ? "Starting..." : "Start"}
           </BrushButton>
           {update && <div className="text-red-600">{update.error}</div>}

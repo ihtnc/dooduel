@@ -18,7 +18,7 @@ export default function JoinPage() {
         <input type="hidden" name="code" value={user?.code} />
         <input type="text" name="name" placeholder="Game name" className="border p-2 rounded" required />
         <input type="password" name="password" placeholder="Password" className="border p-2 rounded" />
-        <JoinButton className="w-50" disabled={pending || !user} type="submit" imageAlt="Join Game Icon">
+        <JoinButton className="w-50" disabled={pending || !user} type="submit" imageAlt="Join game">
           {pending ? "Joining..." : "Join"}
         </JoinButton>
         {state && <div className="text-red-600">{state.error}</div>}

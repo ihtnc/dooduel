@@ -19,7 +19,7 @@ export default function CreatePage() {
         <input type="password" name="password" placeholder="Password" className="border p-2 rounded" maxLength={20} />
         <input type="number" name="rounds" placeholder="Rounds (default: 3)" className="border p-2 rounded" min="1" max="5" />
         <input type="number" name="difficulty" placeholder="Difficulty (default: 2)" className="border p-2 rounded" min="1" max="3" />
-        <BrushButton className="w-50" disabled={pending || !user} type="submit" imageAlt="Create Game Icon">
+        <BrushButton className="w-50" disabled={pending || !user} type="submit" imageAlt="Create game">
           {pending ? "Creating..." : "Create"}
         </BrushButton>
         {state && <div className="text-red-600">{state.error}</div>}

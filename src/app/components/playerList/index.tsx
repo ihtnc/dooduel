@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getUserContext } from "@/components/userContextProvider";
 import Player from "@/components/playerDetails";
 import client from "@utilities/supabase/browser";
@@ -14,7 +14,7 @@ export default function PlayerList({ gameId }: { gameId: number }) {
   const [pending, setPending] = useState(true);
   const [players, setPlayers] = useState<Array<PlayerDetails>>([]);
 
-  const sort = (list: Array<PlayerDetails>) =>{
+  const sort = useCallback((list: Array<PlayerDetails>) =>{
     const player = list.filter(p => p.name.toLowerCase() === user?.player_name.toLowerCase());
     if (player.length > 0) { player[0].name = `${player[0].name} (You)`; }
 
@@ -34,7 +34,7 @@ export default function PlayerList({ gameId }: { gameId: number }) {
       .sort((a, b) => a.id - b.id);
 
     return [...painter, ...first, ...second, ...third, ...fourth];
-  };
+  }, [user?.player_name]);
 
   useEffect(() => {
     async function fetchGame() {
@@ -49,7 +49,7 @@ export default function PlayerList({ gameId }: { gameId: number }) {
     }
 
     fetchGame();
-  }, [user, gameId]);
+  }, [user, gameId, sort]);
 
   useEffect(() => {
     const handleNewPlayer = (payload: NewPlayerPayload) => {
@@ -115,7 +115,7 @@ export default function PlayerList({ gameId }: { gameId: number }) {
       .subscribe();
 
     return () => { client.removeChannel(channel); }
-  }, [gameId, players]);
+  }, [gameId, players, sort]);
 
 
   return (
