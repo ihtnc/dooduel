@@ -88,7 +88,6 @@ export default function PlayerList({ gameId }: { gameId: number }) {
     };
 
     const handleRoundStart = (payload: PlayerPayload) => {
-
       for (const player of players) {
         player.is_painter = player.id === payload.id;
         player.has_answered = false;
