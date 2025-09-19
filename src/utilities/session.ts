@@ -44,8 +44,8 @@ export async function createSession(player_name: string, avatar: string) {
   const cookieStore = await cookies();
 
   cookieStore.set("session", session, {
-    httpOnly: true,
     secure: true,
+    expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 365 days
     sameSite: "lax",
     path: "/",
   });
