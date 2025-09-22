@@ -1,7 +1,9 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { getClient } from "@utilities/supabase/server";
-import { type CurrentGameDetails } from "@types";
+import type { FormState, CurrentGameDetails } from "@types";
+import { parseFormData } from "./parseFormData";
 
 export async function getCurrentGame(name: string, playerName: string, playerCode: string): Promise<CurrentGameDetails | null> {
   const client = await getClient();
@@ -26,4 +28,25 @@ export async function getCurrentGame(name: string, playerName: string, playerCod
   };
 
   return game;
-}
+};
+
+export async function leaveGame(prevState: FormState, formData: FormData) {
+  const errors: FormState = {};
+  const leaveData = parseFormData(formData);
+
+  const client = await getClient();
+  const args = {
+    game_name: leaveData.game_name,
+    player_name: leaveData.player_name,
+    player_code: leaveData.player_code
+  };
+
+  const { data, error } = await client.rpc("leave_game", args);
+
+  if (!data || error) {
+    errors.error = error?.message || "Unknown error";
+    return errors;
+  }
+
+  redirect(`/`);
+};

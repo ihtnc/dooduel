@@ -15,25 +15,38 @@ export default function PlayerList({ gameId }: { gameId: number }) {
   const [players, setPlayers] = useState<Array<PlayerDetails>>([]);
 
   const sort = useCallback((list: Array<PlayerDetails>) =>{
-    const player = list.filter(p => p.name.toLowerCase() === user?.player_name.toLowerCase());
-    if (player.length > 0) { player[0].name = `${player[0].name} (You)`; }
+    const playerIndex = list.findIndex(p => p.name.toLowerCase() === user?.player_name.toLowerCase());
+    const player = playerIndex < 0 ? null : list.splice(playerIndex, 1)[0];
+    if (player) { player.name = `${player.name} (You)`; }
 
-    const painterIndex = list.findIndex(p => p.is_painter);
-    const painter = list.splice(painterIndex, 1);
+    let painter: PlayerDetails | null = null;
+    if (!player?.is_painter) {
+      const painterIndex = list.findIndex(p => p.is_painter);
+      painter = painterIndex < 0 ? null : list.splice(painterIndex, 1)[0];
+    }
 
+    // show those who have answered first
     const first = list.filter(p => p.active && p.has_answered)
       .sort((a, b) => a.id - b.id);
 
+    // then those who have scores
     const second = list.filter(p => p.active && !p.has_answered && p.current_score > 0)
       .sort((a, b) => a.id - b.id);
 
+    // then those who are at least active
     const third = list.filter(p => p.active && !p.has_answered && p.current_score === 0)
       .sort((a, b) => a.id - b.id);
 
+    // then those who are inactive
     const fourth = list.filter(p => !p.active)
       .sort((a, b) => a.id - b.id);
 
-    return [...painter, ...first, ...second, ...third, ...fourth];
+    // the player and/or painter always goes at the top
+    const top: Array<PlayerDetails> = [];
+    if (painter) { top.push(painter); }
+    if (player) { top.push(player); }
+
+    return [...top, ...first, ...second, ...third, ...fourth];
   }, [user?.player_name]);
 
   useEffect(() => {
