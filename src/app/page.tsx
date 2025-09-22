@@ -15,7 +15,7 @@ export default function Home() {
 
   useEffect(() => {
     async function fetchGameName() {
-      const gameName = await getRecentGameName(user?.player_name || '', user?.code || '');
+      const gameName = await getRecentGameName(user?.playerName || '', user?.code || '');
       if (gameName !== null) {
         setGameName(gameName);
       }
@@ -28,7 +28,7 @@ export default function Home() {
 
   return (
     <main className="flex flex-col justify-center items-center gap-8">
-      {user && <h1 className="text-4xl sm:text-5xl font-bold text-center">Welcome, {user.player_name}!</h1>}
+      {user && <h1 className="text-4xl sm:text-5xl font-bold text-center">Welcome, {user.playerName}!</h1>}
       {pending && <div>Loading...</div>}
       {!pending && <>
         {gameName && <Link href={`/game/${gameName}`}>

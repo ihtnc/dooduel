@@ -23,19 +23,19 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
   useEffect(() => {
     async function fetchGame() {
       const { name } = await params;
-      const game = await getCreatedGame(name, user?.player_name || '');
+      const game = await getCreatedGame(name, user?.playerName || '');
       if (!game) {
         router.replace("/not-found");
         return;
       }
 
-      const players = await getPlayers(game.id, user?.player_name || '', user?.code || '');
+      const players = await getPlayers(game.id, user?.playerName || '', user?.code || '');
       if (players == null) {
         router.replace("/not-found");
         return;
       }
 
-      await updateAvatar(game.id, user?.player_name || '', user?.code || '', user?.avatar || '');
+      await updateAvatar(game.id, user?.playerName || '', user?.code || '', user?.avatar || '');
 
       setGame(game);
       setPlayers(players);
@@ -52,9 +52,9 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
         name: payload.name,
         avatar: payload.avatar,
         active: true,
-        is_painter: false,
-        has_answered: false,
-        current_score: 0,
+        isPainter: false,
+        hasAnswered: false,
+        currentScore: 0,
       });
 
       setPlayers([...players]);
@@ -65,7 +65,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       if (!player) { return; }
 
       player.active = payload.active;
-      player.current_score = payload.current_score;
+      player.currentScore = payload.current_score;
       player.avatar = payload.avatar;
       setPlayers([...players]);
     };
@@ -80,7 +80,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       .subscribe();
 
     return () => { client.removeChannel(channel); }
-  }, [game, players, user?.player_name]);
+  }, [game, players, user?.playerName]);
 
   return (
     <div className="flex flex-col align-self-start items-center place-items-start mt-24 gap-4">
@@ -88,7 +88,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       {game && !getPending && <>
         <GameDetails game={game} />
         <form action={action} className="flex flex-col gap-4">
-          <input type="hidden" name="creator" value={user?.player_name} />
+          <input type="hidden" name="creator" value={user?.playerName} />
           <input type="hidden" name="code" value={game?.code} />
           <BrushButton className="w-50" disabled={startPending || !user} type="submit" imageAlt="Start game">
             {startPending ? "Starting..." : "Start"}

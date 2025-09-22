@@ -32,15 +32,15 @@ export async function decrypt(session: string | undefined = "") {
   }
 };
 
-export async function createSession(player_name: string, avatar: string) {
+export async function createSession(playerName: string, avatar: string) {
   let code = generateCode();
 
   const current = await getSession();
-  if (current?.player_name === player_name) {
+  if (current?.playerName === playerName) {
     code = current.code;
   }
 
-  const session = await encrypt({ player_name, avatar, code });
+  const session = await encrypt({ player_name: playerName, avatar, code });
   const cookieStore = await cookies();
 
   cookieStore.set("session", session, {
@@ -63,7 +63,7 @@ export const getSession = cache(async () => {
   if (!session?.player_name) { return null; }
 
   const user: User = {
-    player_name: session.player_name || '',
+    playerName: session.player_name || '',
     avatar: session.avatar || '',
     code: session.code || '',
   }

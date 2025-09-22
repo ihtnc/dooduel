@@ -21,9 +21,9 @@ export async function getPlayers(gameId: number, playerName: string, playerCode:
       name: player.name,
       avatar: player.avatar,
       active: player.active,
-      is_painter: player.is_painter,
-      has_answered: player.has_answered,
-      current_score: 0
+      isPainter: player.is_painter,
+      hasAnswered: player.has_answered,
+      currentScore: 0
     });
   }
 

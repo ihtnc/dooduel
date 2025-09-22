@@ -15,8 +15,8 @@ export async function save(
   const errors: FormState = {};
   const playerData = parseFormData(formData);
 
-  const player_name = playerData.player_name as string;
-  if (!player_name) {
+  const playerName = playerData.player_name as string;
+  if (!playerName) {
     errors.player_name = "name is required.";
   }
 
@@ -27,7 +27,7 @@ export async function save(
 
   if (Object.keys(errors).length > 0) { return errors; }
 
-  await createSession(player_name, avatar);
+  await createSession(playerName, avatar);
 
   const prev = `${playerData.prev ?? "/"}`;
   redirect(prev);

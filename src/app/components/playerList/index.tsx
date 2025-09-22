@@ -9,27 +9,27 @@ export default function PlayerList({ players, title }: { players: Array<PlayerDe
   const list = [...players];
 
   // get current player
-  const playerIndex = list.findIndex(p => p.name.toLowerCase() === (user?.player_name?.toLowerCase() || ""));
+  const playerIndex = list.findIndex(p => p.name.toLowerCase() === (user?.playerName?.toLowerCase() || ""));
   const player = playerIndex < 0 ? null : { ...list.splice(playerIndex, 1)[0] };
   if (player) { player.name = `${player.name} (You)`; }
 
   // get current painter if not the player
   let painter: PlayerDetails | null = null;
-  if (!player?.is_painter) {
-    const painterIndex = list.findIndex(p => p.is_painter);
+  if (!player?.isPainter) {
+    const painterIndex = list.findIndex(p => p.isPainter);
     painter = painterIndex < 0 ? null : list.splice(painterIndex, 1)[0];
   }
 
   // show those who have answered first
-  const first = list.filter(p => p.active && p.has_answered)
+  const first = list.filter(p => p.active && p.hasAnswered)
     .sort((a, b) => a.id - b.id);
 
   // then those who have scores
-  const second = list.filter(p => p.active && !p.has_answered && p.current_score > 0)
+  const second = list.filter(p => p.active && !p.hasAnswered && p.currentScore > 0)
     .sort((a, b) => a.id - b.id);
 
   // then those who are at least active
-  const third = list.filter(p => p.active && !p.has_answered && p.current_score === 0)
+  const third = list.filter(p => p.active && !p.hasAnswered && p.currentScore === 0)
     .sort((a, b) => a.id - b.id);
 
   // then those who are inactive

@@ -10,7 +10,7 @@ import { save } from "./actions";
 
 export default function PlayerPage() {
   const user = getUserContext();
-  const [name, setName] = useState(user?.player_name || "");
+  const [name, setName] = useState(user?.playerName || "");
   const [avatar, setAvatar] = useState(user?.avatar || "");
   const [state, action, pending] = useActionState(save, {});
   const searchParams = useSearchParams();

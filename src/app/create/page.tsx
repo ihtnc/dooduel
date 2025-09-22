@@ -20,7 +20,7 @@ export default function CreatePage() {
     <div className="flex flex-col items-center justify-center">
       <h1 className="text-2xl font-bold mb-6">Create a new game</h1>
       <form action={action} className="flex flex-col gap-4 items-center">
-        <input type="hidden" name="creator" value={user?.player_name} />
+        <input type="hidden" name="creator" value={user?.playerName} />
         <input type="hidden" name="avatar" value={user?.avatar} />
         <input type="hidden" name="code" value={user?.code} />
         <div className="flex items-center gap-2 w-full">

@@ -67,3 +67,19 @@ export async function updateAvatar(currentGameId: number, playerName: string, pl
 
   return true;
 };
+
+export async function getWordToPaint(currentGameId: number, playerName: string, playerCode: string): Promise<string | null> {
+  const client = await getClient();
+  const args = {
+    current_game_id: currentGameId,
+    player_name: playerName,
+    player_code: playerCode
+  };
+  const { data, error } = await client.rpc("get_word_to_paint", args);
+
+  if (error || (data ?? '') === '') {
+    return null;
+  }
+
+  return data;
+};

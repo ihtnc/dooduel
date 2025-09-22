@@ -13,7 +13,7 @@ export default async function middleware(req: NextRequest) {
 
   const session = await getSession();
 
-  if (isProtectedRoute && !session?.player_name) {
+  if (isProtectedRoute && !session?.playerName) {
     return NextResponse.redirect(new URL("/player", req.nextUrl));
   }
 

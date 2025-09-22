@@ -21,7 +21,7 @@ export interface CurrentGameDetails extends GameDetails {
 };
 
 export type User = {
-  player_name: string,
+  playerName: string,
   avatar: string,
   code: string,
 };
@@ -31,9 +31,9 @@ export type PlayerDetails = {
   name: string,
   avatar: string,
   active: boolean,
-  is_painter: boolean,
-  has_answered: boolean,
-  current_score: number
+  isPainter: boolean,
+  hasAnswered: boolean,
+  currentScore: number
 };
 
 export interface NewPlayerPayload extends PlayerPayload {

@@ -7,8 +7,8 @@ import GameDetails from "@/components/gameDetails";
 import PlayerList from "@/components/playerList";
 import { getPlayers } from "@/components/playerList/actions";
 import FlagButton from "@/components/button/flagButton";
-import GameArea from "@/components/gameArea";
 import client from "@utilities/supabase/browser";
+import GameArea from "./gameArea";
 import { getCurrentGame, leaveGame, updateAvatar } from "./actions";
 import { GameStatus, type NewPlayerPayload, type PlayerDetails, type CurrentGameDetails, type PlayerUpdatePayload, type PlayerPayload, type RoundStartPayload } from "@types";
 
@@ -19,31 +19,31 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
   const [pending, setPending] = useState(true);
   const [game, setGame] = useState<CurrentGameDetails | null>(null);
   const [players, setPlayers] = useState<Array<PlayerDetails>>([]);
-  const [isPainter, setIsPainter] = useState(false);
+  const [player, setPlayer] = useState<PlayerDetails | null>(null);
 
   const [leaveState, leaveAction, leavePending] = useActionState(leaveGame, undefined);
 
   useEffect(() => {
     async function fetchGame() {
       const { name } = await params;
-      const game = await getCurrentGame(name, user?.player_name || '', user?.code || '');
+      const game = await getCurrentGame(name, user?.playerName || '', user?.code || '');
       if (!game) {
         router.replace("/not-found");
         return;
       }
 
-      if (game.status === GameStatus.Initial && game.createdBy.toLowerCase() === user?.player_name.toLowerCase()) {
+      if (game.status === GameStatus.Initial && game.createdBy.toLowerCase() === user?.playerName.toLowerCase()) {
         router.replace(`/lobby/${game.name}`);
         return;
       }
 
-      const players = await getPlayers(game.id, user?.player_name || '', user?.code || '');
+      const players = await getPlayers(game.id, user?.playerName || '', user?.code || '');
       if (players == null) {
         router.replace("/not-found");
         return;
       }
 
-      await updateAvatar(game.id, user?.player_name || '', user?.code || '', user?.avatar || '');
+      await updateAvatar(game.id, user?.playerName || '', user?.code || '', user?.avatar || '');
 
       setGame(game);
       setPlayers(players);
@@ -60,9 +60,9 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
         name: payload.name,
         avatar: payload.avatar,
         active: true,
-        is_painter: false,
-        has_answered: false,
-        current_score: 0,
+        isPainter: false,
+        hasAnswered: false,
+        currentScore: 0,
       });
 
       setPlayers([...players]);
@@ -73,7 +73,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       if (!player) { return; }
 
       player.active = payload.active;
-      player.current_score = payload.current_score;
+      player.currentScore = payload.current_score;
       player.avatar = payload.avatar;
       setPlayers([...players]);
     };
@@ -82,15 +82,15 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       const player = players.find((p) => p.id === payload.id);
       if (!player) { return; }
 
-      player.has_answered = true;
+      player.hasAnswered = true;
       setPlayers([...players]);
     };
 
     const handleRoundStart = (payload: RoundStartPayload) => {
       for (const player of players) {
-        player.is_painter = player.id === payload.painter_id;
-        player.has_answered = false;
-        player.current_score = 0;
+        player.isPainter = player.id === payload.painter_id;
+        player.hasAnswered = false;
+        player.currentScore = 0;
       }
 
       setGame((g) => g ? { ...g, status: GameStatus.InProgress } : g);
@@ -99,14 +99,14 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
 
     const handleRoundReset = () => {
       for (const player of players) {
-        player.is_painter = false;
+        player.isPainter = false;
       }
 
       setGame((g) => g ? { ...g, status: GameStatus.Ready } : g);
       setPlayers([...players]);
     };
 
-    const channel = client.channel(`game:${game?.id}`, {  config: {  } })
+    const channel = client.channel(`game:${game?.id}`)
       .on("broadcast", { event: "new_player" }, (msg) => {
         handleNewPlayer(msg.payload as unknown as NewPlayerPayload);
       })
@@ -128,20 +128,20 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       .subscribe();
 
     return () => { client.removeChannel(channel); }
-  }, [game?.id, players, user?.player_name]);
+  }, [game?.id, players, user?.playerName]);
 
   useEffect(() => {
-    const painter = players.find((p) => p.is_painter);
-    setIsPainter(painter?.name.toLowerCase() === user?.player_name.toLowerCase());
-  }, [players, user?.player_name]);
+    const player = players.find((p) => p.name.toLowerCase() === user?.playerName.toLowerCase());
+    setPlayer(player || null);
+  }, [players, user?.playerName]);
 
   return (
     <div className="flex flex-col align-self-start items-center mt-24">
       {pending && <div>Loading...</div>}
-      {game && !pending && <>
+      {game && player && !pending && <>
         <div className="flex flex-row gap-4">
           <div className="w-168">
-            <GameArea status={game.status} isPainter={isPainter} />
+            <GameArea game={game} player={player} />
           </div>
           <div className="flex flex-col items-center justify-between gap-4 max-w-2xs">
             <div>
@@ -150,7 +150,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
             </div>
             <form action={leaveAction} className="flex">
               <input type="hidden" name="game_name" value={game.name} />
-              <input type="hidden" name="player_name" value={user?.player_name} />
+              <input type="hidden" name="player_name" value={user?.playerName} />
               <input type="hidden" name="player_code" value={user?.code} />
               <FlagButton imageAlt="Leave game" className="w-50" disabled={leavePending || !user} type="submit">
                 {leavePending ? "Leaving..." : "Leave"}
