@@ -5,7 +5,8 @@ CREATE TABLE public.player (
     avatar varchar NOT NULL,
     score numeric NOT NULL DEFAULT 0,
     code varchar NOT NULL,
-    active boolean NOT NULL DEFAULT true
+    active boolean NOT NULL DEFAULT true,
+    created_at timestamp NOT NULL DEFAULT now()
 );
 
 CREATE UNIQUE INDEX unique_game_player ON public.player USING btree (game_id, name);
