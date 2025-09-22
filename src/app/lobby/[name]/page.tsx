@@ -6,7 +6,7 @@ import { getUserContext } from "@/components/userContextProvider";
 import BrushButton from "@/components/button/brushButton";
 import GameDetails from "@/components/gameDetails";
 import PlayerList from "@/components/playerList";
-import { getCreatedGame, startGame } from "./actions";
+import { getCreatedGame, startGame, updateAvatar } from "./actions";
 import type { CreatedGameDetails } from "@types";
 
 export default function GamePage({ params }: { params: Promise<{ name: string }> }) {
@@ -26,6 +26,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
         return;
       }
 
+      await updateAvatar(game.id, user?.player_name || '', user?.code || '', user?.avatar || '');
       setGame(game);
       setPending(false);
     }

@@ -1,17 +1,20 @@
 "use client";
 
 import {  useActionState, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { getUserContext } from "@/components/userContextProvider";
 import ProfileCheckButton from "@/components/button/profileCheckButton";
 import AvatarEditor from "@/components/avatar/editor";
-import { save } from "./actions";
 import NameIcon from "@/components/icons/nameIcon";
+import { save } from "./actions";
 
 export default function PlayerPage() {
   const user = getUserContext();
-  const [name, setName] = useState(user?.player_name || '');
-  const [avatar, setAvatar] = useState(user?.avatar || '');
+  const [name, setName] = useState(user?.player_name || "");
+  const [avatar, setAvatar] = useState(user?.avatar || "");
   const [state, action, pending] = useActionState(save, {});
+  const searchParams = useSearchParams();
+  const prev = searchParams.get('prev') || "/";
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
@@ -35,6 +38,7 @@ export default function PlayerPage() {
           type="hidden"
           value={avatar}
         />
+        <input type="hidden" name="prev" value={prev} />
         <ProfileCheckButton className="w-50" disabled={pending} type="submit" imageAlt="Save profile">
           {pending ? "Saving..." : "Save"}
         </ProfileCheckButton>

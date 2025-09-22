@@ -29,5 +29,6 @@ export async function save(
 
   await createSession(player_name, avatar);
 
-  redirect("/");
+  const prev = `${playerData.prev ?? "/"}`;
+  redirect(prev);
 };

@@ -20,8 +20,8 @@ BEGIN
   FROM game g
   JOIN game_state s ON g.id = s.game_id
   JOIN player p ON g.id = p.game_id
-  WHERE g.name = game_name
-    AND p.name = player_name
+  WHERE g.name ilike game_name
+    AND p.name ilike player_name
     AND p.code = player_code
     AND p.active = true
     AND s.current_player_id <> p.id

@@ -6,7 +6,7 @@ import { getUserContext } from "@/components/userContextProvider";
 import GameDetails from "@/components/gameDetails";
 import PlayerList from "@/components/playerList";
 import FlagButton from "@/components/button/flagButton";
-import { getCurrentGame, leaveGame } from "./actions";
+import { getCurrentGame, leaveGame, updateAvatar } from "./actions";
 import type { CurrentGameDetails } from "@types";
 
 export default function GamePage({ params }: { params: Promise<{ name: string }> }) {
@@ -27,6 +27,13 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
         return;
       }
 
+      if (game.status === "initial" && game.createdBy.toLowerCase() === user?.player_name.toLowerCase()) {
+        router.replace(`/lobby/${game.name}`);
+        return;
+      }
+
+      await updateAvatar(game.id, user?.player_name || '', user?.code || '', user?.avatar || '');
+
       setGame(game);
       setPending(false);
     }
@@ -40,7 +47,9 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       {game && !pending && <>
         <GameDetails game={game} />
         <div className="flex flex-row gap-4">
-          <div className="size-168">Canvas</div>
+          <div className="size-168">
+            Canvas
+          </div>
           <div className="flex flex-col h-168 items-center justify-between gap-4">
             <PlayerList gameId={game.id} />
             <form action={leaveAction} className="flex">

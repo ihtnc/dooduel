@@ -15,7 +15,7 @@ BEGIN
     ELSE false
     END AS has_password
   FROM game
-  WHERE code = game_code AND created_by = creator
+  WHERE code = game_code AND created_by ilike creator
   INTO started_game;
 
   IF NOT FOUND then

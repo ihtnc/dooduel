@@ -18,6 +18,7 @@ export interface CurrentGameDetails extends GameDetails {
   status: string,
   currentRound: number | null,
   currentPainterName: string | null,
+  createdBy: string,
 };
 
 export type User = {

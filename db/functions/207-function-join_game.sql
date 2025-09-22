@@ -37,7 +37,10 @@ BEGIN
     RAISE EXCEPTION 'duplicate player';
 
   ELSIF FOUND AND selected_player.code = player_code THEN
-    UPDATE player SET active = true WHERE id = selected_player.id;
+    UPDATE player
+    SET active = true,
+      avatar = player_avatar
+    WHERE id = selected_player.id;
 
     RETURN selected_game;
   END IF;

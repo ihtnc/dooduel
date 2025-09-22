@@ -16,8 +16,8 @@ BEGIN
   FROM game
   JOIN game_state ON game.id = game_state.game_id
   INTO created_game
-  WHERE game.name = game_name
-    AND game.created_by = creator
+  WHERE game.name ilike game_name
+    AND game.created_by ilike creator
     AND game_state.status = 'initial'
   LIMIT 1;
 

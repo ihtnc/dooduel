@@ -16,13 +16,14 @@ BEGIN
     END AS has_password,
     game_state.status,
     game_state.current_round,
-    player.name AS current_player_name
+    player.name AS current_player_name,
+    game.created_by
   FROM game
   JOIN game_state ON game.id = game_state.game_id
   LEFT JOIN player ON game_state.game_id = player.game_id
     AND game_state.current_player_id = player.id
   INTO selected_game
-  WHERE game.name = game_name
+  WHERE game.name ilike game_name
     AND game_state.status <> 'completed'
   LIMIT 1;
 
@@ -33,7 +34,7 @@ BEGIN
   SELECT *
   FROM player
   WHERE player.game_id = selected_game.id
-    AND player.name = player_name
+    AND player.name ilike player_name
     AND player.code = player_code
     AND player.active = true
   INTO selected_player

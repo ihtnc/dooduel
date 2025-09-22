@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import HomeButton from '@/components//button/homeButton';
 import Avatar from '@/components/avatar';
 import BrushesIcon from '@/components/icons/brushesIcon';
@@ -10,6 +11,7 @@ import { cn } from '@utilities/index';
 
 const Header = () => {
   const user = getUserContext();
+  const pathName = usePathname();
 
   return (
     <header className="top-0 flex items-center p-4 gap-5 justify-between -mb-24">
@@ -20,7 +22,7 @@ const Header = () => {
         <BrushesIcon alt="Dooduel logo" />
         <h1 className="text-2xl font-bold">Dooduel</h1>
       </div>
-      <Link href="/player"className={cn("m-1", "rounded",
+      <Link href={`/player?prev=${pathName}`} className={cn("m-1", "rounded",
         "hover:border-[#44444E]", "hover:bg-[#715A5A]", "hover:border-4", "hover:m-0",
         "dark:hover:bg-[#44444E]",
 

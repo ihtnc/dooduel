@@ -22,7 +22,7 @@ BEGIN
   FROM game_state s
   JOIN player p ON s.game_id = p.game_id
   WHERE s.game_id = current_game_id
-    AND p.name = player_name
+    AND p.name ilike player_name
     AND p.code = player_code
     AND p.active = true
   LIMIT 1;
