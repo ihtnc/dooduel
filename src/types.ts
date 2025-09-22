@@ -15,9 +15,8 @@ export type GameDetails = {
 };
 
 export interface CurrentGameDetails extends GameDetails {
-  status: string,
+  status: GameStatus,
   currentRound: number | null,
-  currentPainterName: string | null,
   createdBy: string,
 };
 
@@ -50,4 +49,19 @@ export interface PlayerUpdatePayload extends PlayerPayload {
 
 export type PlayerPayload = {
   id: number
+};
+
+export type RoundStartPayload = {
+  painter_id: number
+};
+
+export type GamePayload = {
+  id: number
+};
+
+export enum GameStatus {
+  Initial = 'initial',
+  Ready = 'ready',
+  InProgress = 'inprogress',
+  Completed = 'completed'
 };

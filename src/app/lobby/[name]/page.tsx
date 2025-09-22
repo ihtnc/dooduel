@@ -6,16 +6,19 @@ import { getUserContext } from "@/components/userContextProvider";
 import BrushButton from "@/components/button/brushButton";
 import GameDetails from "@/components/gameDetails";
 import PlayerList from "@/components/playerList";
+import { getPlayers } from "@/components/playerList/actions";
+import client from "@utilities/supabase/browser";
 import { getCreatedGame, startGame, updateAvatar } from "./actions";
-import type { CreatedGameDetails } from "@types";
+import type { CreatedGameDetails, NewPlayerPayload, PlayerDetails, PlayerUpdatePayload } from "@types";
 
 export default function GamePage({ params }: { params: Promise<{ name: string }> }) {
   const router = useRouter();
-  const [update, action, startPending] = useActionState(startGame, undefined);
   const user = getUserContext();
 
+  const [update, action, startPending] = useActionState(startGame, undefined);
   const [getPending, setPending] = useState(true);
   const [game, setGame] = useState<CreatedGameDetails | null>(null);
+  const [players, setPlayers] = useState<Array<PlayerDetails>>([]);
 
   useEffect(() => {
     async function fetchGame() {
@@ -26,13 +29,58 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
         return;
       }
 
+      const players = await getPlayers(game.id, user?.player_name || '', user?.code || '');
+      if (players == null) {
+        router.replace("/not-found");
+        return;
+      }
+
       await updateAvatar(game.id, user?.player_name || '', user?.code || '', user?.avatar || '');
+
       setGame(game);
+      setPlayers(players);
       setPending(false);
     }
 
     fetchGame();
   }, [router, params, user]);
+
+  useEffect(() => {
+    const handleNewPlayer = (payload: NewPlayerPayload) => {
+      players.push({
+        id: payload.id,
+        name: payload.name,
+        avatar: payload.avatar,
+        active: true,
+        is_painter: false,
+        has_answered: false,
+        current_score: 0,
+      });
+
+      setPlayers([...players]);
+    };
+
+    const handleUpdatePlayer = (payload: PlayerUpdatePayload) => {
+      const player = players.find((p) => p.id === payload.id);
+      if (!player) { return; }
+
+      player.active = payload.active;
+      player.current_score = payload.current_score;
+      player.avatar = payload.avatar;
+      setPlayers([...players]);
+    };
+
+    const channel = client.channel(`game:${game?.id}`, {  config: {  } })
+      .on("broadcast", { event: "new_player" }, (msg) => {
+        handleNewPlayer(msg.payload as unknown as NewPlayerPayload);
+      })
+      .on("broadcast", { event: "update_player" }, (msg) => {
+        handleUpdatePlayer(msg.payload as unknown as PlayerUpdatePayload);
+      })
+      .subscribe();
+
+    return () => { client.removeChannel(channel); }
+  }, [game, players, user?.player_name]);
 
   return (
     <div className="flex flex-col align-self-start items-center place-items-start mt-24 gap-4">
@@ -47,7 +95,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
           </BrushButton>
           {update && <div className="text-red-600">{update.error}</div>}
         </form>
-        <PlayerList gameId={game.id} />
+        <PlayerList players={players} title="Players" />
       </>}
     </div>
   );

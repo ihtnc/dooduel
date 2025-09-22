@@ -2,11 +2,14 @@ import LockIcon from "@/components/icons/lockIcon";
 import EaselIcon from "@/components/icons/easelIcon";
 import ArtistIcon from "@/components/icons/artistIcon";
 import type { GameDetails } from "@types";
+import { cn } from "@utilities/index";
 
 export default function GameDetails({
-  game
+  game,
+  className
 }: {
-  game: GameDetails
+  game: GameDetails,
+  className?: string
 }) {
   const getDifficulty = (difficulty: number) => {
     switch (difficulty) {
@@ -18,9 +21,9 @@ export default function GameDetails({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-fit">
+    <div className={cn("flex", "flex-col", "items-center", "justify-center", "w-fit", className?.split(" ") || [])}>
       {game && <>
-        <div className="flex items-center h-[50px]">
+        <div className="flex items-center h-[50px] w-full">
           <h1 className="text-2xl font-bold">{game.name}</h1>
           {game.hasPassword && <LockIcon alt="Password protected" className="scale-60" />}
         </div>

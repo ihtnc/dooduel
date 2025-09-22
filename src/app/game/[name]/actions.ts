@@ -24,7 +24,6 @@ export async function getCurrentGame(name: string, playerName: string, playerCod
     hasPassword: data.has_password,
     status: data.status,
     currentRound: data.current_round,
-    currentPainterName: data.current_player_name,
     createdBy: data.created_by,
   };
 

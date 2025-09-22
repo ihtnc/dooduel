@@ -11,7 +11,25 @@ BEGIN
       format('game:%s', NEW.game_id),
       'round_start',
       json_build_object(
-        'id', NEW.current_player_id
+        'painter_id', NEW.current_player_id
+      )
+    );
+  ELSIF TG_OP = 'UPDATE' AND NEW.status = 'completed' THEN
+    INSERT INTO app.outbox (topic, event, payload)
+    VALUES (
+      format('game:%s', NEW.game_id),
+      'game_over',
+      json_build_object(
+        'id', NEW.game_id
+      )
+    );
+  ELSIF TG_OP = 'UPDATE' AND NEW.status = 'ready' THEN
+    INSERT INTO app.outbox (topic, event, payload)
+    VALUES (
+      format('game:%s', NEW.game_id),
+      'game_ready',
+      json_build_object(
+        'id', NEW.game_id
       )
     );
   END IF;
