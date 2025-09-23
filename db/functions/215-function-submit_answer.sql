@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION public.submit_answer(game_name character varying, player_name character varying, player_code character varying, answer character varying)
- RETURNS boolean
+ RETURNS numeric
  LANGUAGE plpgsql
 AS $function$
 DECLARE
@@ -65,11 +65,11 @@ BEGIN
 
   accuracy_modifier := similarity(answer, current_word.value);
   IF accuracy_modifier < current_word.similarity_threshold THEN
-    RETURN false;
+    RETURN accuracy_modifier / current_word.similarity_threshold;
   END IF;
 
   -- calculate score based on time taken to answer
-  speed_modifier := GREATEST(0, 100 - EXTRACT(EPOCH FROM (now() - current_word.created_at))) / 100;
+  speed_modifier := GREATEST(40, 100 - EXTRACT(EPOCH FROM (now() - current_word.created_at))) / 100;
   speed_score := (base_speed_score * speed_modifier);
   accuracy_score := (base_accuracy_score * accuracy_modifier);
 
@@ -77,6 +77,6 @@ BEGIN
   INSERT INTO game_logs(game_rounds_id, player_id, answer, speed_score, accuracy_score)
   VALUES (current_word.game_rounds_id, selected_player.player_id, answer, speed_score, accuracy_score);
 
-  RETURN true;
+  RETURN 1;
 END;
 $function$;

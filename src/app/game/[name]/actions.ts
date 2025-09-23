@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { getClient } from "@utilities/supabase/server";
 import type { FormState, CurrentGameDetails } from "@types";
-import { parseFormData } from "./parseFormData";
+import { parseLeaveFormData, parseSubmitAnswerFormData } from "./parseFormData";
 
 export async function getCurrentGame(name: string, playerName: string, playerCode: string): Promise<CurrentGameDetails | null> {
   const client = await getClient();
@@ -32,7 +32,7 @@ export async function getCurrentGame(name: string, playerName: string, playerCod
 
 export async function leaveGame(prevState: FormState, formData: FormData) {
   const errors: FormState = {};
-  const leaveData = parseFormData(formData);
+  const leaveData = parseLeaveFormData(formData);
 
   const client = await getClient();
   const args = {
@@ -82,4 +82,27 @@ export async function getWordToPaint(currentGameId: number, playerName: string, 
   }
 
   return data;
+};
+
+export async function submitAnswer(prevState: FormState, formData: FormData) {
+  const state: FormState = {};
+  const submitAnswerData = parseSubmitAnswerFormData(formData);
+
+  const client = await getClient();
+  const args = {
+    game_name: submitAnswerData.game_name,
+    player_name: submitAnswerData.player_name,
+    player_code: submitAnswerData.player_code,
+    answer: submitAnswerData.answer
+  };
+
+  const { data, error } = await client.rpc("submit_answer", args);
+
+  if (isNaN(data) || error) {
+    state.error = error?.message || "Unknown error";
+    return state;
+  }
+
+  state.result = `${Number(data)}`;
+  return state;
 };

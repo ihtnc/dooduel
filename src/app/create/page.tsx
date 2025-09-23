@@ -2,8 +2,9 @@
 
 import { useActionState, useState } from "react";
 import { getUserContext } from "@/components/userContextProvider";
-import BrushButton from "@/components/button/brushButton";
 import Slider from "@/components/slider";
+import TextBox from "@/components/textBox";
+import BrushButton from "@/components/button/brushButton";
 import LockIcon from "@/components/icons/lockIcon";
 import EaselIcon from "@/components/icons/easelIcon";
 import KidIcon from "@/components/icons/kidIcon";
@@ -25,7 +26,7 @@ export default function CreatePage() {
         <input type="hidden" name="code" value={user?.code} />
         <div className="flex items-center gap-2 w-full">
           <LockIcon alt="Game password" className="-mr-2" />
-          <input name="password" placeholder="Password" className="border p-2 rounded" maxLength={20} />
+          <TextBox name="password" placeholder="Password" maxLength={20} />
         </div>
         <div className="flex items-center gap-2 w-full">
           <EaselIcon alt="Number of rounds" className="-mr-1 -ml-1" />

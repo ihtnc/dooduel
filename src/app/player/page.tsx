@@ -3,6 +3,7 @@
 import {  useActionState, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { getUserContext } from "@/components/userContextProvider";
+import TextBox from "@/components/textBox";
 import ProfileCheckButton from "@/components/button/profileCheckButton";
 import AvatarEditor from "@/components/avatar/editor";
 import NameIcon from "@/components/icons/nameIcon";
@@ -23,11 +24,10 @@ export default function PlayerPage() {
       <form action={action} className="flex flex-col gap-4 items-center">
         <div className="flex items-center gap-2">
           <NameIcon alt="Player name" />
-          <input
+          <TextBox
             name="player_name"
             type="text"
             placeholder="Player name"
-            className="border rounded px-3 py-2"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required

@@ -1,15 +1,15 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getUserContext } from "@/components/userContextProvider";
 import GameDetails from "@/components/gameDetails";
 import PlayerList from "@/components/playerList";
 import { getPlayers } from "@/components/playerList/actions";
-import FlagButton from "@/components/button/flagButton";
 import client from "@utilities/supabase/browser";
 import GameArea from "./gameArea";
-import { getCurrentGame, leaveGame, updateAvatar } from "./actions";
+import LeaveGame from "./leaveGame";
+import { getCurrentGame, updateAvatar } from "./actions";
 import { GameStatus, type NewPlayerPayload, type PlayerDetails, type CurrentGameDetails, type PlayerUpdatePayload, type PlayerPayload, type RoundStartPayload } from "@types";
 
 export default function GamePage({ params }: { params: Promise<{ name: string }> }) {
@@ -20,8 +20,6 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
   const [game, setGame] = useState<CurrentGameDetails | null>(null);
   const [players, setPlayers] = useState<Array<PlayerDetails>>([]);
   const [player, setPlayer] = useState<PlayerDetails | null>(null);
-
-  const [leaveState, leaveAction, leavePending] = useActionState(leaveGame, undefined);
 
   useEffect(() => {
     async function fetchGame() {
@@ -148,15 +146,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
               <GameDetails game={game} className="-mt-2" />
               <PlayerList players={players} />
             </div>
-            <form action={leaveAction} className="flex">
-              <input type="hidden" name="game_name" value={game.name} />
-              <input type="hidden" name="player_name" value={user?.playerName} />
-              <input type="hidden" name="player_code" value={user?.code} />
-              <FlagButton imageAlt="Leave game" className="w-50" disabled={leavePending || !user} type="submit">
-                {leavePending ? "Leaving..." : "Leave"}
-              </FlagButton>
-              {leaveState && <div className="text-red-600">{leaveState.error}</div>}
-            </form>
+            <LeaveGame game={game} className="mb-18.5" />
           </div>
         </div>
       </>}

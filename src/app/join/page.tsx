@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { getUserContext } from "@/components/userContextProvider";
+import TextBox from "@/components/textBox";
 import JoinButton from "@/components/button/joinButton";
 import NameIcon from "@/components/icons/nameIcon";
 import LockIcon from "@/components/icons/lockIcon";
@@ -20,11 +21,11 @@ export default function JoinPage() {
         <input type="hidden" name="code" value={user?.code} />
         <div className="flex items-center gap-2 w-full">
           <NameIcon alt="Game name" />
-          <input type="text" name="name" placeholder="Game name" className="border p-2 rounded" required />
+          <TextBox type="text" name="name" placeholder="Game name" required />
         </div>
         <div className="flex items-center gap-2 w-full">
           <LockIcon alt="Game password" />
-          <input type="password" name="password" placeholder="Password" className="border p-2 rounded" />
+          <TextBox type="password" name="password" placeholder="Password" />
         </div>
         <JoinButton className="w-50" disabled={pending || !user} type="submit" imageAlt="Join game">
           {pending ? "Joining..." : "Join"}

@@ -21,7 +21,7 @@ export default function PlayerDetails({
           <span className="-ml-2">{player.name}</span>
           {player.isPainter && <span className="-ml-2"><BrushIcon alt="Currently doodling" className="scale-50" /></span>}
           {player.currentScore === 0 && player.hasAnswered && <span className="ml-auto"><CheckIcon alt="Has answered" className="scale-50" /></span>}
-          {player.currentScore > 0 && <span className="ml-auto">{player.currentScore}</span>}
+          {player.currentScore > 0 && <span className="ml-auto">{Math.floor(player.currentScore)}</span>}
         </div>
       </>}
     </div>
