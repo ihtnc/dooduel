@@ -6,7 +6,7 @@ export default function FadingMessage({
   containerClassName,
   childrenClassName,
   fadeDelayMs = 2000,
-  fadeDurationMs = 1000,
+  fadeDurationMs = 3000,
   visible = true,
   enabled = true,
   onFadeComplete
@@ -23,16 +23,14 @@ export default function FadingMessage({
   const [fadeStarted, setFadeStarted] = useState(false);
 
   useEffect(() => {
-    if (!visible) { return; }
-
-    setFadeStarted(false);
-    if (!enabled) { return; }
+    if (!visible || !enabled) { return; }
 
     const delayTimer = setTimeout(() => {
       setFadeStarted(true);
     }, fadeDelayMs);
 
     const fadeTimer = setTimeout(() => {
+      setFadeStarted(false);
       onFadeComplete?.();
     }, fadeDelayMs + fadeDurationMs);
 
@@ -51,7 +49,6 @@ export default function FadingMessage({
           "items-center", "justify-center", "backdrop-blur-xs",
           "transition-opacity",
           `duration-${fadeDurationMs}`,
-          "ease-out",
           fadeStarted ? "opacity-0" : "opacity-100",
           "pointer-events-none",
           containerClassName?.split(" ") ?? []

@@ -5,14 +5,13 @@ import { getUserContext } from "@/components/userContextProvider";
 import FadingMessage from "@/components/fadingMessage";
 import { getWordToPaint } from "./actions";
 import SubmitAnswer from "./submitAnswer";
-import { GameStatus, type CurrentGameDetails, type PlayerDetails } from "@types";
+import RandomTip from "./randomTip";
 import { getCloseMessage, getCorrectMessage, getWrongMessage } from "./utilities";
+import { GameStatus, type CurrentGameDetails, type PlayerDetails } from "@types";
 
 const getTopBarMessage = (status: GameStatus) => {
   switch (status) {
-    case GameStatus.Initial: return "Waiting for players...";
-    case GameStatus.Ready: return "Get ready...";
-    case GameStatus.InProgress: return "Let's Dooduel!";
+    case GameStatus.InProgress: return "Dooduel";
     case GameStatus.Completed: return "Game over!";
   }
 };
@@ -24,6 +23,8 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
   const [message, setMessage] = useState<string>("");
   const [showMessage, setShowMessage] = useState<boolean>(false);
   const [fadeMessage, setFadeMessage] = useState<boolean>(false);
+  const [fadeDelay, setFadeDelay] = useState<number>(3000);
+  const [fadeDuration, setFadeDuration] = useState<number>(2000);
 
   useEffect(() => {
     async function fetchWord() {
@@ -43,10 +44,10 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
   useEffect(() => {
     switch (game.status) {
     case GameStatus.Initial:
-      displayMessage("Waiting to start...", true);
+      displayMessage("Waiting to start...", { disableFade: true });
       break;
     case GameStatus.Ready:
-      displayMessage("Get ready...");
+      displayMessage("Get ready...", { disableFade: true });
       break;
     case GameStatus.InProgress:
       displayMessage("Let's Dooduel!");
@@ -67,13 +68,20 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
       message = getWrongMessage();
     }
 
-    displayMessage(message);
+    displayMessage(message, { fadeDelayMs: 1000, fadeDurationMs: 2000 });
   }, []);
 
-  const displayMessage = (message: string, disableFade?: boolean) => {
+  const displayMessage = (
+    message: string, {
+      fadeDelayMs = 3000, fadeDurationMs = 2000, disableFade
+    } : {
+      fadeDelayMs?: number; fadeDurationMs?: number; disableFade?: boolean
+    } = {} ) => {
     setMessage(message);
     setShowMessage(true);
     setFadeMessage(!disableFade);
+    setFadeDelay(fadeDelayMs);
+    setFadeDuration(fadeDurationMs);
   }
 
   const handleFadeComplete = useCallback(() => {
@@ -84,6 +92,9 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
     {pending && <div>Loading...</div>}
     {!pending && <>
       <div>
+        {(game.status === GameStatus.Initial || game.status === GameStatus.Ready) &&
+          <RandomTip />
+        }
         <strong>
           {player.isPainter && wordToPaint}
           {!player.isPainter && getTopBarMessage(game.status)}
@@ -95,6 +106,8 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
           enabled={fadeMessage}
           containerClassName="size-166"
           onFadeComplete={handleFadeComplete}
+          fadeDelayMs={fadeDelay}
+          fadeDurationMs={fadeDuration}
         >
           <div className="text-4xl font-bold text-[#715A5A]">
             {message}
