@@ -1,4 +1,6 @@
-import { useActionState } from "react";
+"use client";
+
+import { useActionState, useEffect } from "react";
 import TextBox from "@/components/textBox";
 import LightbulbButton from "@/components/button/lightbulbButton";
 import { getUserContext } from "@/components/userContextProvider";
@@ -16,9 +18,11 @@ export default function SubmitAnswer({
 
   const [state, action, pending] = useActionState(submitAnswer, undefined);
 
-  if (!pending && state && onSubmit) {
-    onSubmit(Number(state.result));
-  }
+  useEffect(() => {
+    if (!pending && state) {
+      onSubmit?.(Number(state.result));
+    }
+  }, [pending, state, onSubmit]);
 
   return <>
     <form action={action} className="flex gap-2 items-center">

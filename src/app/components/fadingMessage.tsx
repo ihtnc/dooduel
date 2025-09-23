@@ -1,0 +1,69 @@
+import { ReactNode, useEffect, useState } from "react";
+import { cn } from "@utilities/index";
+
+export default function FadingMessage({
+  children,
+  containerClassName,
+  childrenClassName,
+  fadeDelayMs = 2000,
+  fadeDurationMs = 1000,
+  visible = true,
+  enabled = true,
+  onFadeComplete
+}: {
+  children?: ReactNode;
+  containerClassName?: string;
+  childrenClassName?: string;
+  fadeDelayMs?: number;
+  fadeDurationMs?: number;
+  visible?: boolean;
+  enabled?: boolean;
+  onFadeComplete?: () => void;
+}) {
+  const [fadeStarted, setFadeStarted] = useState(false);
+
+  useEffect(() => {
+    if (!visible) { return; }
+
+    setFadeStarted(false);
+    if (!enabled) { return; }
+
+    const delayTimer = setTimeout(() => {
+      setFadeStarted(true);
+    }, fadeDelayMs);
+
+    const fadeTimer = setTimeout(() => {
+      onFadeComplete?.();
+    }, fadeDelayMs + fadeDurationMs);
+
+    return () => {
+      clearTimeout(delayTimer);
+      clearTimeout(fadeTimer);
+    };
+  }, [visible, enabled, fadeDelayMs, fadeDurationMs, onFadeComplete]);
+
+  if (!visible) { return null; }
+
+  return (
+    <div className="relative flex">
+      <div
+        className={cn("absolute", "top-0", "left-0", "flex",
+          "items-center", "justify-center", "backdrop-blur-xs",
+          "transition-opacity",
+          `duration-${fadeDurationMs}`,
+          "ease-out",
+          fadeStarted ? "opacity-0" : "opacity-100",
+          "pointer-events-none",
+          containerClassName?.split(" ") ?? []
+        )}
+        style={{ zIndex: 1000 }}
+      >
+        <div className={cn("p-4", "rounded",
+          childrenClassName?.split(" ") ?? []
+        )}>
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};
