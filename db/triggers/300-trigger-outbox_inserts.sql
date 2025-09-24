@@ -3,6 +3,18 @@ CREATE OR REPLACE FUNCTION app.handle_outbox_changes()
  LANGUAGE plpgsql
 AS $function$
 BEGIN
+
+  /*
+    game:{id} event payloads
+    new_player:    { id: number, name: string, avatar: string }
+    update_player: { id: number, active: bool, avatar: string, current_score: number }
+    player_answer: { id: number }
+    round_start:   { painter_id: number }
+    game_ready:    { id: number }
+    round_end:     { id: number }
+    game_over:     { id: number }
+  */
+
   IF TG_OP = 'INSERT' THEN
     PERFORM realtime.send(
       NEW.payload,

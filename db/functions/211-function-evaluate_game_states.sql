@@ -5,10 +5,10 @@ DECLARE
   ended_status boolean;
 BEGIN
   FOR game_record IN SELECT * FROM public.game_state
-  WHERE public.game_state.status IN ('ready', 'inprogress')
+  WHERE public.game_state.status IN ('ready', 'inprogress', 'roundend')
 
   LOOP
-    IF game_record.status = 'ready' THEN
+    IF game_record.status = 'ready' OR game_record.status = 'roundend' THEN
       started_status := app.start_game_rounds(game_record.id);
 
       IF started_status THEN

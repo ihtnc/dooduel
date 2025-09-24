@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { getClient } from "@utilities/supabase/server";
-import type { FormState, CurrentGameDetails } from "@types";
+import type { FormState, CurrentGameDetails, RoundDataPayload } from "@types";
 import { parseLeaveFormData, parseSubmitAnswerFormData } from "./parseFormData";
 
 export async function getCurrentGame(name: string, playerName: string, playerCode: string): Promise<CurrentGameDetails | null> {
@@ -68,20 +68,20 @@ export async function updateAvatar(currentGameId: number, playerName: string, pl
   return true;
 };
 
-export async function getWordToPaint(currentGameId: number, playerName: string, playerCode: string): Promise<string | null> {
+export async function getGameRoundData(currentGameId: number, playerName: string, playerCode: string): Promise<RoundDataPayload | null> {
   const client = await getClient();
   const args = {
     current_game_id: currentGameId,
     player_name: playerName,
     player_code: playerCode
   };
-  const { data, error } = await client.rpc("get_word_to_paint", args);
+  const { data, error } = await client.rpc("get_game_round_data", args);
 
   if (error || (data ?? '') === '') {
     return null;
   }
 
-  return data;
+  return data as unknown as RoundDataPayload;
 };
 
 export async function submitAnswer(prevState: FormState, formData: FormData) {
@@ -97,7 +97,6 @@ export async function submitAnswer(prevState: FormState, formData: FormData) {
   };
 
   const { data, error } = await client.rpc("submit_answer", args);
-
   if (isNaN(data) || error) {
     state.error = error?.message || "Unknown error";
     return state;

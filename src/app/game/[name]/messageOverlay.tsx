@@ -1,14 +1,14 @@
 import { ReactNode, useEffect, useState } from "react";
 import { cn } from "@utilities/index";
 
-export default function FadingMessage({
+export default function MessageOverlay({
   children,
   containerClassName,
   childrenClassName,
   fadeDelayMs = 2000,
   fadeDurationMs = 3000,
   visible = true,
-  enabled = true,
+  disableFade = false,
   onFadeComplete
 }: {
   children?: ReactNode;
@@ -17,13 +17,13 @@ export default function FadingMessage({
   fadeDelayMs?: number;
   fadeDurationMs?: number;
   visible?: boolean;
-  enabled?: boolean;
+  disableFade?: boolean;
   onFadeComplete?: () => void;
 }) {
   const [fadeStarted, setFadeStarted] = useState(false);
 
   useEffect(() => {
-    if (!visible || !enabled) { return; }
+    if (!visible || disableFade) { return; }
 
     const delayTimer = setTimeout(() => {
       setFadeStarted(true);
@@ -38,7 +38,7 @@ export default function FadingMessage({
       clearTimeout(delayTimer);
       clearTimeout(fadeTimer);
     };
-  }, [visible, enabled, fadeDelayMs, fadeDurationMs, onFadeComplete]);
+  }, [visible, disableFade, fadeDelayMs, fadeDurationMs, onFadeComplete]);
 
   if (!visible) { return null; }
 

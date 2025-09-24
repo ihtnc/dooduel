@@ -36,9 +36,10 @@ export default function RandomTip() {
       return newIdx;
     };
 
+    // change tip every 20 seconds
     const interval = setInterval(() => {
       setTipIdx(pickNewIdx());
-    }, 10000);
+    }, 20000);
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps

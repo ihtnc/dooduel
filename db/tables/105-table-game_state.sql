@@ -6,3 +6,6 @@ CREATE TABLE public.game_state (
     status status DEFAULT 'initial',
     updated_at timestamp NULL
 );
+
+
+CREATE UNIQUE INDEX game_state_key ON public.game_state USING btree (game_id);

@@ -95,12 +95,30 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       setPlayers([...players]);
     };
 
-    const handleRoundReset = () => {
+    const handleGameReady = () => {
       for (const player of players) {
         player.isPainter = false;
       }
 
       setGame((g) => g ? { ...g, status: GameStatus.Ready } : g);
+      setPlayers([...players]);
+    };
+
+    const handleRoundEnd = () => {
+      for (const player of players) {
+        player.isPainter = false;
+      }
+
+      setGame((g) => g ? { ...g, status: GameStatus.RoundEnd } : g);
+      setPlayers([...players]);
+    };
+
+    const handleGameOver = () => {
+      for (const player of players) {
+        player.isPainter = false;
+      }
+
+      setGame((g) => g ? { ...g, status: GameStatus.Completed } : g);
       setPlayers([...players]);
     };
 
@@ -118,10 +136,13 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
         handleRoundStart(msg.payload as unknown as RoundStartPayload);
       })
       .on("broadcast", { event: "game_ready" }, () => {
-        handleRoundReset();
+        handleGameReady();
+      })
+      .on("broadcast", { event: "round_end" }, () => {
+        handleRoundEnd();
       })
       .on("broadcast", { event: "game_over" }, () => {
-        handleRoundReset();
+        handleGameOver();
       })
       .subscribe();
 

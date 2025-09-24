@@ -4,7 +4,7 @@ DECLARE
   ready_game game_state;
 BEGIN
   SELECT * FROM public.game_state
-  WHERE status = 'ready'
+  WHERE status IN ('ready', 'roundend')
     AND game_id = ready_game_id
   INTO ready_game;
 

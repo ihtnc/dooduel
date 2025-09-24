@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION app.start_game_rounds(game_state_id integer) RETURNS 
   DECLARE next_word game_words;
 BEGIN
   SELECT * FROM public.game_state
-  WHERE public.game_state.status = 'ready'
+  WHERE public.game_state.status in ('ready', 'roundend')
     AND public.game_state.id = game_state_id
   INTO game_record;
 
