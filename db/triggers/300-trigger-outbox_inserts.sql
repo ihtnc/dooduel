@@ -14,6 +14,7 @@ BEGIN
     turn_end:      { id: number }
     round_end:     { id: number }
     game_over:     { id: number }
+    purge_game:   { id: number }
   */
 
   IF TG_OP = 'INSERT' THEN

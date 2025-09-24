@@ -131,6 +131,11 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       setPlayers([...players]);
     };
 
+    const handlePurgeGame = () => {
+      router.replace("/");
+    };
+
+
     const channel = client.channel(`game:${game?.id}`)
       .on("broadcast", { event: "new_player" }, (msg) => {
         handleNewPlayer(msg.payload as unknown as NewPlayerPayload);
@@ -155,6 +160,9 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       })
       .on("broadcast", { event: "game_over" }, () => {
         handleGameOver();
+      })
+      .on("broadcast", { event: "purge_game" }, () => {
+        handlePurgeGame();
       })
       .subscribe();
 
