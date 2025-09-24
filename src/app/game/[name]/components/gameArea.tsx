@@ -5,6 +5,7 @@ import { getUserContext } from "@/components/userContextProvider";
 import MessageOverlay from "./messageOverlay";
 import SubmitAnswer from "./submitAnswer";
 import TopBar from "./topBar";
+import GameCanvas from "./gameCanvas";
 import { getGameRoundData } from "./actions";
 import { getCloseMessage, getCorrectMessage, getWrongMessage, getGameCompletedSubText, getGuesserSubText, getInitialSubText, getPainterSubText, getNewTurnSubText, getNewRoundSubText } from "./utilities";
 import { GameStatus, type InitialRoundDataPayload, type ReadyRoundDataPayload, type RoundDataPayload, type CurrentGameDetails, type PlayerDetails, RoundEndDataPayload, GameCompletedDataPayload, InProgressDataPayload, TurnEndDataPayload } from "@types";
@@ -135,7 +136,7 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
             </div>}
           </div>
         </MessageOverlay>
-        Canvas
+        <GameCanvas />
       </div>
       <div className="flex w-full items-center justify-center">
         {(game.status === GameStatus.Ready || game.status === GameStatus.TurnEnd || game.status === GameStatus.RoundEnd) &&

@@ -7,8 +7,8 @@ import GameDetails from "@/components/gameDetails";
 import PlayerList from "@/components/playerList";
 import { getPlayers } from "@/components/playerList/actions";
 import client from "@utilities/supabase/browser";
-import GameArea from "./gameArea";
-import LeaveGame from "./leaveGame";
+import GameArea from "./components/gameArea";
+import LeaveGame from "./components/leaveGame";
 import { getCurrentGame, updateAvatar } from "./actions";
 import { GameStatus, type NewPlayerPayload, type PlayerDetails, type CurrentGameDetails, type PlayerUpdatePayload, type PlayerPayload, type RoundStartPayload } from "@types";
 
