@@ -33,7 +33,7 @@ BEGIN
   IF available_players > 0 THEN
     -- keep current round since there are still players
     game_round := COALESCE(game_record.current_round, 1);
-    game_status := 'roundend';
+    game_status := 'turnend';
 
   ELSIF game_record.current_round < game_round THEN
     -- move to next round if not the last round

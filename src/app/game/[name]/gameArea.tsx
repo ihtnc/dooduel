@@ -6,8 +6,8 @@ import MessageOverlay from "./messageOverlay";
 import SubmitAnswer from "./submitAnswer";
 import TopBar from "./topBar";
 import { getGameRoundData } from "./actions";
-import { getCloseMessage, getCorrectMessage, getGameCompletedSubText, getGuesserSubText, getInitialSubText, getPainterSubText, getReadySubText, getRoundEndSubText, getWrongMessage } from "./utilities";
-import { GameStatus, type InitialRoundDataPayload, type ReadyRoundDataPayload, type RoundDataPayload, type CurrentGameDetails, type PlayerDetails, RoundEndDataPayload, GameCompletedDataPayload, InProgressDataPayload } from "@types";
+import { getCloseMessage, getCorrectMessage, getWrongMessage, getGameCompletedSubText, getGuesserSubText, getInitialSubText, getPainterSubText, getNewTurnSubText, getNewRoundSubText } from "./utilities";
+import { GameStatus, type InitialRoundDataPayload, type ReadyRoundDataPayload, type RoundDataPayload, type CurrentGameDetails, type PlayerDetails, RoundEndDataPayload, GameCompletedDataPayload, InProgressDataPayload, TurnEndDataPayload } from "@types";
 
 export default function GameArea({ game, player }: { game: CurrentGameDetails, player: PlayerDetails }) {
   const user = getUserContext();
@@ -19,49 +19,53 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
   const [disableFade, setDisableFade] = useState<boolean>();
   const [fadeDelay, setFadeDelay] = useState<number>(3000);
   const [fadeDuration, setFadeDuration] = useState<number>(2000);
-  const [answerSubmitted, setAnswerSubmitted] = useState<boolean>(false);
+  const [answerSubmitted, setAnswerSubmitted] = useState<boolean>(player.hasAnswered);
 
   useEffect(() => {
     async function fetchRoundData() {
       const data = await getGameRoundData(game.id, user?.playerName || '', user?.code || '');
-      if (!data) { return; }
-      if (game.status !== data.status) { return; }
+      if (!data || game.status !== data.status) {
+        displayMessage("Invalid game state!", { disableFade: true, subText: "Not sure how we got here..." });
+        return;
+      }
 
       let subText = "";
       switch (game.status) {
         case GameStatus.Initial:
           const initialPayload = data as InitialRoundDataPayload;
-          const initialData = initialPayload.player_count;
-          subText = getInitialSubText(initialData);
+          subText = getInitialSubText(initialPayload.player_count);
           displayMessage("Waiting to start...", { disableFade: true, subText });
           break;
 
         case GameStatus.Ready:
           const readyPayload = data as ReadyRoundDataPayload;
-          const readyData = readyPayload.painters_left;
-          subText = getReadySubText(readyData);
+          subText = getNewRoundSubText(readyPayload.painters_left);
           displayMessage("Get ready...", { disableFade: true, subText });
+          break;
+
+        case GameStatus.TurnEnd:
+          const turnendPayload = data as TurnEndDataPayload;
+          subText = getNewTurnSubText(turnendPayload.painters_left);
+          displayMessage("Turn complete! However...", { disableFade: true, subText });
           break;
 
         case GameStatus.RoundEnd:
           const roundendPayload = data as RoundEndDataPayload;
-          const roundendData = roundendPayload.painters_left;
-          subText = getRoundEndSubText(roundendData);
-          displayMessage("Round complete! However...", { disableFade: true, subText });
+          subText = getNewRoundSubText(roundendPayload.painters_left);
+          displayMessage(`Get ready for round ${roundendPayload.next_round}!`, { disableFade: true, subText });
           break;
 
         case GameStatus.InProgress:
+          setAnswerSubmitted(false);
           const inProgressPayload = data as InProgressDataPayload;
-          const inProgressData = inProgressPayload.word;
-          const inProgressMessage = player.isPainter ? `Your turn! The word is: ${inProgressData}` : "Let's Dooduel!";
+          const inProgressMessage = player.isPainter ? `Your turn! The word is: ${inProgressPayload.word}` : "Let's Dooduel!";
           subText = player.isPainter ? getPainterSubText() : getGuesserSubText();
           displayMessage(inProgressMessage, { subText });
           break;
 
         case GameStatus.Completed:
           const gameCompletedPayload = data as GameCompletedDataPayload;
-          const gameCompletedData = gameCompletedPayload.total_score;
-          subText = getGameCompletedSubText(gameCompletedData);
+          subText = getGameCompletedSubText(gameCompletedPayload.total_score);
           displayMessage("Game over!", { disableFade: true, subText });
           break;
       }
@@ -134,7 +138,9 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
         Canvas
       </div>
       <div className="flex w-full items-center justify-center">
-        {game.status === GameStatus.Ready && <span className="h-14.5 font-bold text-xl">Doodle hard. Duel harder!</span>}
+        {(game.status === GameStatus.Ready || game.status === GameStatus.TurnEnd || game.status === GameStatus.RoundEnd) &&
+          <span className="h-14.5 font-bold text-xl">Doodle fast. Guess faster!</span>
+        }
         {game.status === GameStatus.InProgress && player.isPainter && "Paint Controls"}
         {game.status === GameStatus.InProgress && !player.isPainter && !answerSubmitted &&
           <SubmitAnswer game={game} onSubmit={handleResult} />

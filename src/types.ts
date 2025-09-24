@@ -63,6 +63,7 @@ export enum GameStatus {
   Initial = 'initial',
   Ready = 'ready',
   InProgress = 'inprogress',
+  TurnEnd = 'turnend',
   RoundEnd = 'roundend',
   Completed = 'completed'
 };
@@ -85,7 +86,12 @@ export interface InProgressDataPayload extends BaseRoundDataPayload {
   word: string
 };
 
+export interface TurnEndDataPayload extends BaseRoundDataPayload {
+  painters_left: number
+};
+
 export interface RoundEndDataPayload extends BaseRoundDataPayload {
+  next_round: number,
   painters_left: number
 };
 

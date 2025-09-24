@@ -11,6 +11,7 @@ BEGIN
     player_answer: { id: number }
     round_start:   { painter_id: number }
     game_ready:    { id: number }
+    turn_end:      { id: number }
     round_end:     { id: number }
     game_over:     { id: number }
   */

@@ -5,6 +5,7 @@ AS $function$
 DECLARE
   started_game record;
   updated_state game_state;
+  player_count integer;
 BEGIN
   SELECT
     game.id,
@@ -20,6 +21,14 @@ BEGIN
 
   IF NOT FOUND then
     RAISE EXCEPTION 'game not found';
+  END IF;
+
+  SELECT COUNT(*) INTO player_count
+  FROM player
+  WHERE game_id = started_game.id;
+
+  IF player_count < 2 THEN
+    RAISE EXCEPTION 'not enough players';
   END IF;
 
   UPDATE game_state

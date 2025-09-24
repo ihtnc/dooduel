@@ -1,1 +1,1 @@
-CREATE TYPE status AS ENUM ('initial', 'ready', 'inprogress', 'roundend', 'completed');
+CREATE TYPE status AS ENUM ('initial', 'ready', 'inprogress', 'turnend', 'roundend', 'completed');

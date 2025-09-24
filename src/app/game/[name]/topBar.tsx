@@ -1,30 +1,53 @@
 "use client";
 
-import { GameStatus, InProgressDataPayload, type CurrentGameDetails, type PlayerDetails, type RoundDataPayload } from "@types";
 import RandomTip from "./randomTip";
+import { GameStatus, InProgressDataPayload, type CurrentGameDetails, type PlayerDetails, type RoundDataPayload } from "@types";
 
 export default function TopBar({ game, player, roundData }: { game: CurrentGameDetails, player: PlayerDetails, roundData: RoundDataPayload | null }) {
-  if (!roundData) { return <>Let&apos;s Dooduel!</>; }
+  const renderDefault = () => <span>Let&apos;s Dooduel!</span>;
+
+  if (!roundData) { return renderDefault(); }
 
   let wordToPaint = "";
-
   if (game.status === GameStatus.InProgress && player.isPainter) {
     const inProgressData = roundData as InProgressDataPayload;
     wordToPaint = inProgressData.word;
   }
 
+  enum ShowInfo {
+    Tip,
+    ForPainter,
+    ForGuesser,
+    GameOver,
+    Default
+  };
+
+  let show = ShowInfo.Default;
+  if (game.status === GameStatus.Initial || game.status === GameStatus.Ready || game.status === GameStatus.TurnEnd || game.status === GameStatus.RoundEnd) {
+    show = ShowInfo.Tip;
+  } else if (game.status === GameStatus.InProgress && player.isPainter && wordToPaint) {
+    show = ShowInfo.ForPainter;
+  } else if (game.status === GameStatus.InProgress && !player.isPainter) {
+    show = ShowInfo.ForGuesser;
+  } else if (game.status === GameStatus.Completed) {
+    show = ShowInfo.GameOver;
+  }
+
   return <>
-    {(game.status === GameStatus.Initial || game.status === GameStatus.Ready || game.status === GameStatus.RoundEnd) &&
+    {show === ShowInfo.Tip &&
       <span><RandomTip /></span>
     }
-    {(game.status === GameStatus.InProgress && player.isPainter && wordToPaint) &&
+    {show === ShowInfo.ForPainter &&
       <span>Your word: <strong>{wordToPaint}</strong></span>
     }
-    {(game.status === GameStatus.InProgress && !player.isPainter) &&
+    {show === ShowInfo.ForGuesser &&
       <span>Look at the doodle and guess the word</span>
     }
-    {(game.status === GameStatus.Completed) &&
+    {show === ShowInfo.GameOver &&
       <span>Game over!</span>
+    }
+    {show === ShowInfo.Default &&
+      renderDefault()
     }
   </>;
 };

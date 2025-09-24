@@ -11,6 +11,7 @@ BEGIN
     g.id AS game_id,
     gs.id AS game_state_id,
     gs.status,
+    gs.current_round,
     p.id AS player_id
   INTO game_details
   FROM game g
@@ -29,7 +30,8 @@ BEGIN
   payloads
     initial:    { status: string, player_count: number };
     ready:      { status: string, painters_left: number };
-    roundend:   { status: string, painters_left: number };
+    turnend:    { status: string, painters_left: number };
+    roundend:   { status: string, next_round: number, painters_left: number };
     inprogress: { status: string, word?: string };
     completed:  { status: string, total_score: number };
   */
@@ -43,9 +45,17 @@ BEGIN
     WHERE game_id = game_details.game_id
       AND active = true;
 
+  ELSIF game_details.status = 'ready' OR game_details.status = 'turnend' THEN
+    SELECT jsonb_build_object(
+      'status', game_details.status,
+      'painters_left', COUNT(id)
+    ) INTO game_round_data
+    FROM app.get_painters(game_details.game_id);
+
   ELSIF game_details.status = 'ready' OR game_details.status = 'roundend' THEN
     SELECT jsonb_build_object(
       'status', game_details.status,
+      'next_round', game_details.current_round,
       'painters_left', COUNT(id)
     ) INTO game_round_data
     FROM app.get_painters(game_details.game_id);

@@ -32,6 +32,16 @@ BEGIN
         'id', NEW.game_id
       )
     );
+  ELSIF TG_OP = 'UPDATE' AND NEW.status = 'turnend' THEN
+    INSERT INTO app.outbox (topic, event, payload)
+    VALUES (
+      format('game:%s', NEW.game_id),
+      'turn_end',
+      json_build_object(
+        'id', NEW.game_id
+      )
+    );
+
   ELSIF TG_OP = 'UPDATE' AND NEW.status = 'roundend' THEN
     INSERT INTO app.outbox (topic, event, payload)
     VALUES (
