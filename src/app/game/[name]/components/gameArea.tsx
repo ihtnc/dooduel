@@ -10,7 +10,7 @@ import { getGameRoundData } from "./actions";
 import { getCloseMessage, getCorrectMessage, getWrongMessage, getGameCompletedSubText, getGuesserSubText, getInitialSubText, getPainterSubText, getNewTurnSubText, getNewRoundSubText } from "./utilities";
 import { GameStatus, type InitialRoundDataPayload, type ReadyRoundDataPayload, type RoundDataPayload, type CurrentGameDetails, type PlayerDetails, RoundEndDataPayload, GameCompletedDataPayload, InProgressDataPayload, TurnEndDataPayload } from "@types";
 
-export default function GameArea({ game, player }: { game: CurrentGameDetails, player: PlayerDetails }) {
+export default function GameArea({ game, player, refreshKey }: { game: CurrentGameDetails, player: PlayerDetails, refreshKey: Date }) {
   const user = getUserContext();
   const [pending, setPending] = useState(true);
   const [roundData, setRoundData] = useState<RoundDataPayload | null>(null);
@@ -76,7 +76,7 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
     }
 
     fetchRoundData();
-  }, [game.id, game.status, user, player.isPainter]);
+  }, [game.id, game.status, user, player.isPainter, refreshKey]);
 
   const handleResult = useCallback((result: number) => {
     let message = "";
