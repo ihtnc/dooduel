@@ -8,10 +8,12 @@ export default function TopBar({ game, player, roundData }: { game: CurrentGameD
 
   if (!roundData) { return renderDefault(); }
 
+  let currentRound = 0;
   let wordToPaint = "";
-  if (game.status === GameStatus.InProgress && player.isPainter) {
+  if (game.status === GameStatus.InProgress) {
     const inProgressData = roundData as InProgressDataPayload;
-    wordToPaint = inProgressData.word;
+    wordToPaint = player.isPainter ? inProgressData.word : "";
+    currentRound = inProgressData.current_round;
   }
 
   enum ShowInfo {
@@ -35,16 +37,22 @@ export default function TopBar({ game, player, roundData }: { game: CurrentGameD
 
   return <>
     {show === ShowInfo.Tip &&
-      <span><RandomTip /></span>
+      <RandomTip />
     }
     {show === ShowInfo.ForPainter &&
-      <span>Your word: <strong>{wordToPaint}</strong></span>
+      <>
+        <span className="flex font-bold">Round {currentRound}:</span>
+        <div className="flex items-center justify-center gap-1">Your word is <span className="font-bold text-xl text-[color:var(--primary)]">{wordToPaint}</span></div>
+      </>
     }
     {show === ShowInfo.ForGuesser &&
-      <span>Look at the doodle and guess the word</span>
+      <>
+        <span className="flex font-bold">Round {currentRound}:</span>
+        <span className="flex">Look at the doodle and guess the word</span>
+      </>
     }
     {show === ShowInfo.GameOver &&
-      <span>Game over!</span>
+      <>Game over!</>
     }
     {show === ShowInfo.Default &&
       renderDefault()

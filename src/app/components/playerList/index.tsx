@@ -46,7 +46,7 @@ export default function PlayerList({ players, title }: { players: Array<PlayerDe
   return (
     <div className="flex flex-col items-center min-w-2xs gap-4">
       {title && <div className="text-center mt-4 -mb-2"><h1 className="text-2xl font-bold">{title}</h1></div>}
-      <ul className="w-full border-t-4 border-t-[#715A5A] pt-2">
+      <ul className="w-full border-t-4 border-t-[color:var(--primary)] pt-2">
         {sorted.map((player) => (
           <li key={player.name}>
             <Player player={player} />

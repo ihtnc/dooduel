@@ -18,7 +18,7 @@ export default function HomeButton({
       type={type}
       className={className}
       imageClassName="-my-1 scale-80 group-hover:scale-100"
-      childrenClassName="-ml-2"
+      childrenClassName="-ml-4"
     >
       {children}
     </Button>

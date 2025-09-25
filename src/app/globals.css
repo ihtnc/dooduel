@@ -7,6 +7,11 @@
   --foreground: #37353E;
 }
 
+@theme {
+  --primary: #715A5A;
+  --secondary: #44444E;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

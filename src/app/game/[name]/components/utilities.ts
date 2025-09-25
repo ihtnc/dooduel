@@ -90,67 +90,95 @@ export const getInitialSubText = (playerCount: number): string => {
   return options[idx];
 };
 
-const getNewTurnOptions = (paintersLeft: number): string[] => ([
-  `${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} waiting… patiently-ish.`,
-  `${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} practicing by doodling in the margins.`,
-  `${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} revving their drawing engines.`,
-  `Breaking news: ${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} still stuck in queue.`,
-  `${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} waiting for destiny (and their turn).`,
-  `${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} channeling their inner Picasso${paintersLeft !== 1 ? 's' : ''}.`,
-  `${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} plotting a masterpiece takeover.`,
-  `${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} waiting for their turn like pros at a theme park line.`,
-  `${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} mastering the ancient art of patience.`,
-  `${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} whispering 'soon... soon...'`,
-  `${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} stuck in the digital waiting room.`,
-  `${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} dusting off their game faces.`,
-  `${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} warming up their scribble muscles.`,
-  `${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} contemplating the mysteries of the universe (or just waiting).`,
-  `${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} perfecting their doodling face.`
-]);
-
-export const getNewTurnSubText = (paintersLeft: number): string => {
-  const options = getNewTurnOptions(paintersLeft);
-  options.push(...[
-    `The ${paintersLeft !== 1 ? `${paintersLeft} players` : 'last player'} left ${paintersLeft !== 1 ? 'are' : 'is'} sharpening their imaginary pencils.`,
-    `The ${paintersLeft !== 1 ? `${paintersLeft} players` : 'last player'} left to doodle ${paintersLeft !== 1 ? 'are' : 'is'} ready. Are YOU?`,
-    `The ${paintersLeft !== 1 ? `${paintersLeft} players` : 'last player'} left ${paintersLeft !== 1 ? 'are' : 'is'} meditating on the meaning of doodles.`,
-    `${paintersLeft} player${paintersLeft !== 1 ? 's' : ''} left on standby, ready to unleash chaos.`,
-    `${paintersLeft} player${paintersLeft !== 1 ? 's' : ''} left to draw.`,
-    `${paintersLeft} player${paintersLeft !== 1 ? 's' : ''} left to make magic happen.`,
-    `${paintersLeft} player${paintersLeft !== 1 ? 's' : ''} left to turn doodles into doozies.`,
-    `${paintersLeft} player${paintersLeft !== 1 ? 's' : ''} left to create some doodle drama.`,
-    `${paintersLeft} player${paintersLeft !== 1 ? 's' : ''} left to draw their way to victory.`,
-    `${paintersLeft} player${paintersLeft !== 1 ? 's' : ''} left to unleash their inner artist.`,
-    `${paintersLeft} player${paintersLeft !== 1 ? 's' : ''} left to bring their wildest doodles to life.`,
-    `There ${paintersLeft !== 1 ? `are ${paintersLeft} players` : 'is 1 player'} left to doodle.`,
-    `Feels like ${paintersLeft !== 1 ? `1 of ${paintersLeft} players` : 'the last player'} is about to draw any minute now!`,
-    `There ${paintersLeft !== 1 ? `are ${paintersLeft} players` : 'is 1 player'} left to unleash their creativity.`,
-    `To think that just a minute ago, there were still ${paintersLeft + 1} players left...`
-  ]);
+export const getReadySubText = (playerCount: number): string => {
+  const options = [
+    `${playerCount} players are waiting… patiently-ish.`,
+    `${playerCount-1} other player${playerCount-1 > 1 ? 's are' : ' is'} ready. Are YOU?`,
+    `${playerCount} players are on standby, ready to unleash chaos.`,
+    `${playerCount} players are going to make magic happen!`,
+    `There are ${playerCount} players bringing their wildest doodles to life.`,
+    `There are ${playerCount} players ready to doodle!`,
+    `There are ${playerCount} players plotting a masterpiece takeover.`,
+    `${playerCount} players are warming up their scribble muscles.`,
+    `There are ${playerCount} players perfecting their doodling face.`,
+    `Feels like 1 of ${playerCount} players is about to draw any minute now!`
+  ];
 
   const idx = Math.floor(Math.random() * options.length);
   return options[idx];
 };
 
-export const getNewRoundSubText = (paintersLeft: number): string => {
-  const options = getNewTurnOptions(paintersLeft);
-  options.push(...[
-    `${paintersLeft} players are sharpening their imaginary pencils.`,
-    `${paintersLeft} players are ready. Are YOU?`,
-    `${paintersLeft} players are meditating on the meaning of doodles.`,
-    `${paintersLeft} players are on standby, ready to unleash chaos.`,
-    `There are ${paintersLeft} players waiting for their turn to draw.`,
-    `${paintersLeft} players are going to make magic happen!`,
-    `${paintersLeft} players will turn doodles into doozies!`,
-    `There are ${paintersLeft} players eager to create some doodle drama.`,
-    `${paintersLeft} players will draw their way to victory!`,
-    `There are ${paintersLeft} players waiting to unleash their inner artist.`,
-    `There are ${paintersLeft} players bringing their wildest doodles to life.`,
-    `There are ${paintersLeft} players ready to doodle!`,
-    `Feels like 1 of ${paintersLeft} players is about to draw any minute now!`,
-    `${paintersLeft} players will unleash their creativity.`,
-    `${paintersLeft} players have arrived!`,
-  ]);
+export const getNewTurnSubText = (paintersLeft: number): string => {
+  const options = [
+    `By the way, ${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} still waiting to draw... patiently-ish.`,
+    `Also, ${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} practicing for their turn by doodling in the margins.`,
+    `Note: ${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} revving their drawing engines for their turn.`,
+    `Breaking news: ${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} still stuck in the doodler queue.`,
+    `But ${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} still waiting for destiny (and their turn to draw).`,
+    `And ${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} channeling their inner Picasso${paintersLeft !== 1 ? 's' : ''} for their turn.`,
+    `But wait, ${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} still plotting a masterpiece takeover...`,
+    `But ${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} still waiting to draw like pros at a theme park line...`,
+    `Hmmm... Why ${paintersLeft !== 1 ? `are those ${paintersLeft} players` : 'is that player'} whispering 'soon... soon...'?`,
+    `By the way, ${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} still stuck in the digital waiting room.`,
+    `Also, ${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} warming up their scribble muscles for their turn.`,
+    `Though ${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} still waiting for their turn to draw.`,
+    `Meanwhile, ${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} still perfecting their doodling face.`,
+    `In other news: ${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} dusting off their game faces for their turn.`,
+    `And the ${paintersLeft !== 1 ? `${paintersLeft} players` : 'last player'} left ${paintersLeft !== 1 ? 'are' : 'is'} sharpening their imaginary pencils.`,
+    `The ${paintersLeft !== 1 ? `${paintersLeft} players` : 'last player'} left to doodle ${paintersLeft !== 1 ? 'are' : 'is'} ready. Are YOU?`,
+    `The ${paintersLeft !== 1 ? `${paintersLeft} doodlers` : 'last doodler'} left ${paintersLeft !== 1 ? 'are' : 'is'} meditating on the meaning of doodles.`,
+    `To think that just a minute ago, there were still ${paintersLeft + 1} players left to draw...`,
+    `And there ${paintersLeft !== 1 ? `are ${paintersLeft} players` : 'is a player'} left on standby, ready to unleash chaos.`,
+    `But there ${paintersLeft !== 1 ? `are ${paintersLeft} players` : 'is a player'} left to draw.`,
+    `Though there ${paintersLeft !== 1 ? `are ${paintersLeft} players` : 'is a player'} left to make magic happen.`,
+    `Did you know? There ${paintersLeft !== 1 ? `are ${paintersLeft} players` : 'is a player'} left to turn doodles into doozies.`,
+    `But wait! There ${paintersLeft !== 1 ? `are ${paintersLeft} players` : 'is a player'} left to create some doodle drama.`,
+    `Breaking news: ${paintersLeft} player${paintersLeft !== 1 ? 's' : ''} left to draw their way to victory.`,
+    `Hmmm... Feels like ${paintersLeft !== 1 ? `1 of ${paintersLeft} players` : 'the last player'} is about to draw any minute now!`,
+    `There ${paintersLeft !== 1 ? `are ${paintersLeft} players` : 'is 1 player'} left to doodle though.`,
+    `Note: There ${paintersLeft !== 1 ? `are ${paintersLeft} players` : 'is 1 player'} left to unleash their creativity.`,
+    `In other news: ${paintersLeft} player${paintersLeft !== 1 ? 's are' : ' is'} yet to unleash their inner artist.`,
+    `Coming up: ${paintersLeft} other player${paintersLeft !== 1 ? 's' : ''} still to bring their wildest doodles to life.`,
+    `Note: There ${paintersLeft !== 1 ? `are ${paintersLeft} players` : 'is a player'} left mastering the art of waiting for their turn.`
+  ];
+
+  const idx = Math.floor(Math.random() * options.length);
+  return options[idx];
+};
+
+export const getNewRoundSubText = (player_count: number): string => {
+  const options = [
+    `By the way, ${player_count} players are waiting for the next round... patiently-ish.`,
+    `Also, ${player_count} players are practicing for the next round by doodling in the margins.`,
+    `Note: ${player_count} players are revving their drawing engines for the next round.`,
+    `Breaking news: ${player_count} players got stuck in the doodler queue.`,
+    `${player_count} players are now waiting for their destiny (and the next round).`,
+    `Next round, ${player_count} players will channel their inner Picassos.`,
+    `But wait, ${player_count} players are plotting the next masterpiece takeover...`,
+    `Now ${player_count} players are waiting for the next round like pros at a theme park line...`,
+    `Hmmm... Why are those ${player_count} players whispering 'again... again...'?`,
+    `By the way, ${player_count} players are stuck again in the digital waiting room.`,
+    `Also, ${player_count} players are now warming up their scribble muscles for the next round.`,
+    `${player_count} players are now waiting for their next turn to draw.`,
+    `Meanwhile, ${player_count} players are perfecting their doodling face for the next round.`,
+    `In other news: ${player_count} players are dusting off their game faces for the next round.`,
+    `${player_count} players are now sharpening their imaginary pencils for the next round.`,
+    `The ${player_count} players to doodle on the next round are ready. Are YOU?`,
+    `${player_count} doodlers are meditating on the meaning of doodles before the next round.`,
+    `To think that before this round started, there were about ${player_count} players...`,
+    `Now ${player_count} players are on standby, ready to unleash chaos.`,
+    `There are ${player_count} players waiting to draw on the next round.`,
+    `Now ${player_count} players are waiting to make magic happen.`,
+    `Did you know? ${player_count} players will turn doodles into doozies next round.`,
+    `But wait! There are ${player_count} players to create some new doodle drama.`,
+    `Breaking news: Next round, ${player_count} players will draw their way to victory.`,
+    `Hmmm... Feels like 1 of ${player_count} players is about to draw any minute now!`,
+    `There are ${player_count} players to doodle on the next round.`,
+    `Now ${player_count} players will unleash their creativity on their next turn.`,
+    `In other news: ${player_count} players are ready to unleash their inner artist. Again.`,
+    `Coming up: ${player_count - 1} other player${player_count - 1 > 1 ? 's' : ''} to bring their wildest doodles to life.`,
+    `Note: There are ${player_count} players mastering the art of waiting for the next round.`
+  ];
 
   const idx = Math.floor(Math.random() * options.length);
   return options[idx];

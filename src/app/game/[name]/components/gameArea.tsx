@@ -7,13 +7,14 @@ import SubmitAnswer from "./submitAnswer";
 import TopBar from "./topBar";
 import GameCanvas from "./gameCanvas";
 import { getGameRoundData } from "./actions";
-import { getCloseMessage, getCorrectMessage, getWrongMessage, getGameCompletedSubText, getGuesserSubText, getInitialSubText, getPainterSubText, getNewTurnSubText, getNewRoundSubText } from "./utilities";
+import { getCloseMessage, getCorrectMessage, getWrongMessage, getGameCompletedSubText, getGuesserSubText, getInitialSubText, getPainterSubText, getNewTurnSubText, getNewRoundSubText, getReadySubText } from "./utilities";
 import { GameStatus, type InitialRoundDataPayload, type ReadyRoundDataPayload, type RoundDataPayload, type CurrentGameDetails, type PlayerDetails, RoundEndDataPayload, GameCompletedDataPayload, InProgressDataPayload, TurnEndDataPayload } from "@types";
 
 export default function GameArea({ game, player, refreshKey }: { game: CurrentGameDetails, player: PlayerDetails, refreshKey: Date }) {
   const user = getUserContext();
   const [pending, setPending] = useState(true);
   const [roundData, setRoundData] = useState<RoundDataPayload | null>(null);
+  const [messageTitle, setMessageTitle] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [subText, setSubText] = useState<string>("");
   const [showMessage, setShowMessage] = useState<boolean>(false);
@@ -25,11 +26,12 @@ export default function GameArea({ game, player, refreshKey }: { game: CurrentGa
   useEffect(() => {
     async function fetchRoundData() {
       const data = await getGameRoundData(game.id, user?.playerName || '', user?.code || '');
-      if (!data || game.status !== data.status) {
+      if (!data) {
         displayMessage("Invalid game state!", { disableFade: true, subText: "Not sure how we got here..." });
         return;
       }
 
+      let messageTitle = "";
       let subText = "";
       switch (game.status) {
         case GameStatus.Initial:
@@ -40,34 +42,38 @@ export default function GameArea({ game, player, refreshKey }: { game: CurrentGa
 
         case GameStatus.Ready:
           const readyPayload = data as ReadyRoundDataPayload;
-          subText = getNewRoundSubText(readyPayload.painters_left);
-          displayMessage("Get ready...", { disableFade: true, subText });
+          messageTitle = `Round 1 of ${game.rounds}`;
+          subText = getReadySubText(readyPayload.player_count);
+          displayMessage("Get ready...", { disableFade: true, subText, messageTitle });
           break;
 
         case GameStatus.TurnEnd:
-          const turnendPayload = data as TurnEndDataPayload;
+          const turnendPayload = data as unknown as TurnEndDataPayload;
+          messageTitle = "Turn complete! The word was:"
           subText = getNewTurnSubText(turnendPayload.painters_left);
-          displayMessage("Turn complete! However...", { disableFade: true, subText });
+          displayMessage(turnendPayload.word, { disableFade: true, subText, messageTitle });
           break;
 
         case GameStatus.RoundEnd:
           const roundendPayload = data as RoundEndDataPayload;
-          subText = getNewRoundSubText(roundendPayload.painters_left);
-          displayMessage(`Get ready for round ${roundendPayload.next_round}!`, { disableFade: true, subText });
+          messageTitle = `Round ${roundendPayload.current_round} complete! The word was:`;
+          subText = getNewRoundSubText(roundendPayload.player_count);
+          displayMessage(roundendPayload.word, { disableFade: true, subText, messageTitle });
           break;
 
         case GameStatus.InProgress:
-          setAnswerSubmitted(false);
           const inProgressPayload = data as InProgressDataPayload;
-          const inProgressMessage = player.isPainter ? `Your turn! The word is: ${inProgressPayload.word}` : "Let's Dooduel!";
+          messageTitle = player.isPainter ? "Your turn to draw! The word is:" : "";
+          const inProgressMessage = player.isPainter ? inProgressPayload.word : "Let's Dooduel!";
           subText = player.isPainter ? getPainterSubText() : getGuesserSubText();
-          displayMessage(inProgressMessage, { subText });
+          displayMessage(inProgressMessage, { subText, messageTitle });
           break;
 
         case GameStatus.Completed:
           const gameCompletedPayload = data as GameCompletedDataPayload;
+          messageTitle = "Game over! The word was:";
           subText = getGameCompletedSubText(gameCompletedPayload.total_score);
-          displayMessage("Game over!", { disableFade: true, subText });
+          displayMessage(gameCompletedPayload.word, { disableFade: true, subText, messageTitle });
           break;
       }
 
@@ -76,38 +82,57 @@ export default function GameArea({ game, player, refreshKey }: { game: CurrentGa
     }
 
     fetchRoundData();
-  }, [game.id, game.status, user, player.isPainter, refreshKey]);
+  }, [game.id, game.status, game.rounds, user, player.isPainter, refreshKey]);
+
+  useEffect(() => {
+    if (answerSubmitted !== player.hasAnswered && player.hasAnswered) {
+      // the player_answered event came through
+      //   this means the player submitted a correct answer
+      //   so show the correct answer message
+      const message = getCorrectMessage();
+      displayMessage(message, { fadeDelayMs: 1500, fadeDurationMs: 1000 });
+    }
+
+    setAnswerSubmitted(player.hasAnswered);
+  }, [player.hasAnswered, answerSubmitted]);
 
   const handleResult = useCallback((result: number) => {
     let message = "";
     if (result === 1) {
-      message = getCorrectMessage();
-      setAnswerSubmitted(true);
+      // we don't expect this to be called
+      //   since correct answers will trigger the player_answered event
+      //   and that will hide the submit answer component
+      //   which would then prevent this function from being called
+      // but in case the event arrives late and this function gets called,
+      //   we need handle it gracefully by making sure we don't show any message
+      return;
     } else if (result < 1 && result > 0.5) {
       message = getCloseMessage();
     } else {
       message = getWrongMessage();
     }
 
-    displayMessage(message, { fadeDelayMs: 1000, fadeDurationMs: 1000 });
+    displayMessage(message, { fadeDelayMs: 1500, fadeDurationMs: 1000 });
   }, []);
 
   const displayMessage = (
     message: string, {
-      fadeDelayMs = 3000, fadeDurationMs = 1000, disableFade, subText = ""
+      fadeDelayMs = 3000, fadeDurationMs = 1500, disableFade = false, messageTitle = "", subText = ""
     } : {
-      fadeDelayMs?: number; fadeDurationMs?: number; disableFade?: boolean, subText?: string
+      fadeDelayMs?: number; fadeDurationMs?: number; disableFade?: boolean, messageTitle?: string, subText?: string
     } = {} ) => {
+    setMessageTitle(messageTitle);
     setMessage(message);
     setSubText(subText);
-    setDisableFade(disableFade);
     setFadeDelay(fadeDelayMs);
     setFadeDuration(fadeDurationMs);
+    setDisableFade(disableFade);
     setShowMessage(true);
   }
 
   const handleFadeComplete = useCallback(() => {
     setShowMessage(false);
+    setMessageTitle("");
     setMessage("");
     setSubText("");
   }, []);
@@ -115,10 +140,10 @@ export default function GameArea({ game, player, refreshKey }: { game: CurrentGa
   return <div className="flex flex-col items-center gap-4">
     {pending && <div>Loading...</div>}
     {!pending && <>
-      <div>
+      <div className="flex items-center justify-center gap-2">
         <TopBar game={game} player={player} roundData={roundData} />
       </div>
-      <div className="size-168 border-4 border-[#715A5A]">
+      <div className="size-168 border-4 border-[color:var(--primary)]">
         <MessageOverlay
           visible={showMessage}
           disableFade={disableFade}
@@ -128,7 +153,10 @@ export default function GameArea({ game, player, refreshKey }: { game: CurrentGa
           fadeDurationMs={fadeDuration}
         >
           <div className="flex flex-col items-center">
-            <div className="text-4xl font-bold text-[#715A5A]">
+            {messageTitle && <div className="text-lg font-bold mb-2">
+              {messageTitle}
+            </div>}
+            <div className="text-4xl font-bold text-[color:var(--primary)]">
               {message}
             </div>
             {subText && <div className="text-lg mt-2">
@@ -143,10 +171,10 @@ export default function GameArea({ game, player, refreshKey }: { game: CurrentGa
           <span className="h-14.5 font-bold text-xl">Doodle fast. Guess faster!</span>
         }
         {game.status === GameStatus.InProgress && player.isPainter && "Paint Controls"}
-        {game.status === GameStatus.InProgress && !player.isPainter && !answerSubmitted &&
+        {game.status === GameStatus.InProgress && !player.isPainter && !player.hasAnswered &&
           <SubmitAnswer game={game} onSubmit={handleResult} />
         }
-        {game.status === GameStatus.InProgress && !player.isPainter && answerSubmitted && "Reactions"}
+        {game.status === GameStatus.InProgress && !player.isPainter && player.hasAnswered && "Reactions"}
         {game.status === GameStatus.Completed && "Summary"}
       </div>
     </>}

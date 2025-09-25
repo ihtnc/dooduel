@@ -79,22 +79,27 @@ export interface InitialRoundDataPayload extends BaseRoundDataPayload {
 };
 
 export interface ReadyRoundDataPayload extends BaseRoundDataPayload {
-  painters_left: number
+  player_count: number
 };
 
 export interface InProgressDataPayload extends BaseRoundDataPayload {
+  current_round: number,
   word: string
 };
 
 export interface TurnEndDataPayload extends BaseRoundDataPayload {
+  current_round: number,
+  word: string,
   painters_left: number
 };
 
 export interface RoundEndDataPayload extends BaseRoundDataPayload {
-  next_round: number,
-  painters_left: number
+  current_round: number,
+  word: string,
+  player_count: number
 };
 
 export interface GameCompletedDataPayload extends BaseRoundDataPayload {
   total_score: number
+  word: string,
 }

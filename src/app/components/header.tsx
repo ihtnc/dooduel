@@ -23,8 +23,8 @@ const Header = () => {
         <h1 className="text-2xl font-bold">Dooduel</h1>
       </div>
       <Link href={`/player?prev=${pathName}`} className={cn("m-1", "rounded",
-        "hover:border-[#44444E]", "hover:bg-[#715A5A]", "hover:border-4", "hover:m-0",
-        "dark:hover:bg-[#44444E]",
+        "hover:border-[color:var(--secondary)]", "hover:bg-[color:var(--primary)]", "hover:border-4", "hover:m-0",
+        "dark:hover:bg-[color:var(--secondary)]",
 
       )}>
         <Avatar code={user?.avatar} alt="Player profile" className="group-hover:scale-110" />
