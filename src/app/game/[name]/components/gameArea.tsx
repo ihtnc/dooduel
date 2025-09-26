@@ -6,9 +6,10 @@ import MessageOverlay from "./messageOverlay";
 import SubmitAnswer from "./submitAnswer";
 import TopBar from "./topBar";
 import GameCanvas from "./gameCanvas";
+import BrushOptions from "./brushOptions";
 import { getGameRoundData } from "./actions";
 import { getCloseMessage, getCorrectMessage, getWrongMessage, getGameCompletedSubText, getGuesserSubText, getInitialSubText, getPainterSubText, getNewTurnSubText, getNewRoundSubText, getReadySubText } from "./utilities";
-import { GameStatus, type InitialRoundDataPayload, type ReadyRoundDataPayload, type RoundDataPayload, type CurrentGameDetails, type PlayerDetails, RoundEndDataPayload, GameCompletedDataPayload, InProgressDataPayload, TurnEndDataPayload } from "@types";
+import { GameStatus, type InitialRoundDataPayload, type ReadyRoundDataPayload, type RoundDataPayload, type CurrentGameDetails, type PlayerDetails, RoundEndDataPayload, GameCompletedDataPayload, InProgressDataPayload, TurnEndDataPayload, Brush } from "@types";
 
 export default function GameArea({ game, player, refreshKey }: { game: CurrentGameDetails, player: PlayerDetails, refreshKey: Date }) {
   const user = getUserContext();
@@ -22,6 +23,7 @@ export default function GameArea({ game, player, refreshKey }: { game: CurrentGa
   const [fadeDelay, setFadeDelay] = useState<number>(3000);
   const [fadeDuration, setFadeDuration] = useState<number>(2000);
   const [answerSubmitted, setAnswerSubmitted] = useState<boolean>(player.hasAnswered);
+  const [brush, setBrush] = useState<Brush>();
 
   useEffect(() => {
     async function fetchRoundData() {
@@ -115,6 +117,10 @@ export default function GameArea({ game, player, refreshKey }: { game: CurrentGa
     displayMessage(message, { fadeDelayMs: 1500, fadeDurationMs: 1000 });
   }, []);
 
+  const handleBrushChange = (newBrush: Brush) => {
+    setBrush(newBrush);
+  }
+
   const displayMessage = (
     message: string, {
       fadeDelayMs = 3000, fadeDurationMs = 1500, disableFade = false, messageTitle = "", subText = ""
@@ -143,7 +149,7 @@ export default function GameArea({ game, player, refreshKey }: { game: CurrentGa
       <div className="flex items-center justify-center gap-2">
         <TopBar game={game} player={player} roundData={roundData} />
       </div>
-      <div className="size-168 border-4 border-[color:var(--primary)]">
+      <div className="size-168 border-4 border-[color:var(--primary)] rounded-xl">
         <MessageOverlay
           visible={showMessage}
           disableFade={disableFade}
@@ -170,7 +176,9 @@ export default function GameArea({ game, player, refreshKey }: { game: CurrentGa
         {(game.status === GameStatus.Ready || game.status === GameStatus.TurnEnd || game.status === GameStatus.RoundEnd) &&
           <span className="h-14.5 font-bold text-xl">Doodle fast. Guess faster!</span>
         }
-        {game.status === GameStatus.InProgress && player.isPainter && "Paint Controls"}
+        {game.status === GameStatus.InProgress && player.isPainter &&
+          <BrushOptions brush={brush} onChange={handleBrushChange} />
+        }
         {game.status === GameStatus.InProgress && !player.isPainter && !player.hasAnswered &&
           <SubmitAnswer game={game} onSubmit={handleResult} />
         }

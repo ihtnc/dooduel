@@ -22,7 +22,7 @@ const Header = () => {
         <BrushesIcon alt="Dooduel logo" />
         <h1 className="text-2xl font-bold">Dooduel</h1>
       </div>
-      <Link href={`/player?prev=${pathName}`} className={cn("m-1", "rounded",
+      <Link href={`/player?prev=${pathName}`} className={cn("m-1", "rounded-xl",
         "hover:border-[color:var(--secondary)]", "hover:bg-[color:var(--primary)]", "hover:border-4", "hover:m-0",
         "dark:hover:bg-[color:var(--secondary)]",
 

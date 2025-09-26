@@ -103,3 +103,8 @@ export interface GameCompletedDataPayload extends BaseRoundDataPayload {
   total_score: number
   word: string,
 }
+
+export type Brush = {
+  size: number,
+  color: string
+};
