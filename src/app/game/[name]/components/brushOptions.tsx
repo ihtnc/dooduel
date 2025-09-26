@@ -1,3 +1,4 @@
+import { useState } from "react";
 import BigDotIcon from "@/components/icons/bigDotIcon";
 import PaintCanIcon from "@/components/icons/paintCanIcon";
 import SmallDotIcon from "@/components/icons/smallDotIcon";
@@ -5,33 +6,39 @@ import Slider from "@/components/slider";
 import { cn } from "@utilities/index";
 import { Brush } from "@types";
 
+export const DEFAULT_BRUSH: Brush = {
+  size: 1,
+  color: "#000000"
+};
+
 export default function BrushOptions({
-  brush,
-  onChange
+  onChange,
 }: {
-  brush?: Brush;
   onChange?: (brush: Brush) => void;
 }) {
-  const selectedBrush = brush || { size: 1, color: "#000000" };
-  if (selectedBrush.size < 1) { selectedBrush.size = 1; }
-  else if (selectedBrush.size > 3) { selectedBrush.size = 3; }
-
-  let selectedColor = "black";
-  for (const color of Object.keys(colorMap)) {
-    const item = colorMap[color];
-    if (item.value === selectedBrush.color) {
-      selectedColor = color;
-      selectedBrush.color = item.value;
-      break;
-    }
-  }
+  const [selectedBrush, setSelectedBrush] = useState<Brush>(DEFAULT_BRUSH);
+  const [selectedColor, setSelectedColor] = useState("black");
 
   const handleBrushSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange?.({ size: parseInt(e.target.value, 10), color: selectedBrush.color });
+    const newBrush = { size: parseInt(e.target.value, 10), color: selectedBrush.color };
+    if (newBrush.size < 1) { newBrush.size = 1; }
+    else if (newBrush.size > 3) { newBrush.size = 3; }
+
+    setSelectedBrush(newBrush);
+    onChange?.(newBrush);
   }
 
   const handleBrushColorChange = (color: string) => {
-    onChange?.({ size: selectedBrush.size, color });
+    const newBrush = { size: selectedBrush.size, color };
+    for (const color of Object.keys(colorMap)) {
+      const item = colorMap[color];
+      if (item.value === newBrush.color) {
+        setSelectedColor(color);
+        setSelectedBrush(newBrush);
+        onChange?.(newBrush);
+        break;
+      }
+    }
   }
 
   return (

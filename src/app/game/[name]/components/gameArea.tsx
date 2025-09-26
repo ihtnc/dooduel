@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { getUserContext } from "@/components/userContextProvider";
 import MessageOverlay from "./messageOverlay";
 import SubmitAnswer from "./submitAnswer";
 import TopBar from "./topBar";
 import GameCanvas from "./gameCanvas";
-import BrushOptions from "./brushOptions";
+import BrushOptions, { DEFAULT_BRUSH } from "./brushOptions";
 import { getGameRoundData } from "./actions";
 import { getCloseMessage, getCorrectMessage, getWrongMessage, getGameCompletedSubText, getGuesserSubText, getInitialSubText, getPainterSubText, getNewTurnSubText, getNewRoundSubText, getReadySubText } from "./utilities";
 import { GameStatus, type InitialRoundDataPayload, type ReadyRoundDataPayload, type RoundDataPayload, type CurrentGameDetails, type PlayerDetails, RoundEndDataPayload, GameCompletedDataPayload, InProgressDataPayload, TurnEndDataPayload, Brush } from "@types";
@@ -23,7 +23,7 @@ export default function GameArea({ game, player, refreshKey }: { game: CurrentGa
   const [fadeDelay, setFadeDelay] = useState<number>(3000);
   const [fadeDuration, setFadeDuration] = useState<number>(2000);
   const [answerSubmitted, setAnswerSubmitted] = useState<boolean>(player.hasAnswered);
-  const [brush, setBrush] = useState<Brush>();
+  const brush = useRef<Brush>(DEFAULT_BRUSH);
 
   useEffect(() => {
     async function fetchRoundData() {
@@ -118,7 +118,7 @@ export default function GameArea({ game, player, refreshKey }: { game: CurrentGa
   }, []);
 
   const handleBrushChange = (newBrush: Brush) => {
-    setBrush(newBrush);
+    brush.current = { ...newBrush };
   }
 
   const displayMessage = (
@@ -170,14 +170,14 @@ export default function GameArea({ game, player, refreshKey }: { game: CurrentGa
             </div>}
           </div>
         </MessageOverlay>
-        <GameCanvas />
+        <GameCanvas getBrush={() => brush.current} />
       </div>
       <div className="flex w-full items-center justify-center">
         {(game.status === GameStatus.Ready || game.status === GameStatus.TurnEnd || game.status === GameStatus.RoundEnd) &&
           <span className="h-14.5 font-bold text-xl">Doodle fast. Guess faster!</span>
         }
         {game.status === GameStatus.InProgress && player.isPainter &&
-          <BrushOptions brush={brush} onChange={handleBrushChange} />
+          <BrushOptions onChange={handleBrushChange} />
         }
         {game.status === GameStatus.InProgress && !player.isPainter && !player.hasAnswered &&
           <SubmitAnswer game={game} onSubmit={handleResult} />
