@@ -5,6 +5,11 @@ import Slider from "@/components/slider";
 import { cn } from "@utilities/index";
 import { Brush } from "@types";
 
+export const DEFAULT_BRUSH: Brush = {
+  size: 1,
+  color: "#000000"
+};
+
 export default function BrushOptions({
   brush,
   onChange
@@ -12,7 +17,7 @@ export default function BrushOptions({
   brush?: Brush;
   onChange?: (brush: Brush) => void;
 }) {
-  const selectedBrush = brush || { size: 1, color: "#000000" };
+  const selectedBrush = brush || DEFAULT_BRUSH;
   if (selectedBrush.size < 1) { selectedBrush.size = 1; }
   else if (selectedBrush.size > 3) { selectedBrush.size = 3; }
 

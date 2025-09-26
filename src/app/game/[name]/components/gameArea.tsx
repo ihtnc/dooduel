@@ -6,7 +6,7 @@ import MessageOverlay from "./messageOverlay";
 import SubmitAnswer from "./submitAnswer";
 import TopBar from "./topBar";
 import GameCanvas from "./gameCanvas";
-import BrushOptions from "./brushOptions";
+import BrushOptions, { DEFAULT_BRUSH } from "./brushOptions";
 import { getGameRoundData } from "./actions";
 import { getCloseMessage, getCorrectMessage, getWrongMessage, getGameCompletedSubText, getGuesserSubText, getInitialSubText, getPainterSubText, getNewTurnSubText, getNewRoundSubText, getReadySubText } from "./utilities";
 import { GameStatus, type InitialRoundDataPayload, type ReadyRoundDataPayload, type RoundDataPayload, type CurrentGameDetails, type PlayerDetails, RoundEndDataPayload, GameCompletedDataPayload, InProgressDataPayload, TurnEndDataPayload, Brush } from "@types";
@@ -23,7 +23,7 @@ export default function GameArea({ game, player, refreshKey }: { game: CurrentGa
   const [fadeDelay, setFadeDelay] = useState<number>(3000);
   const [fadeDuration, setFadeDuration] = useState<number>(2000);
   const [answerSubmitted, setAnswerSubmitted] = useState<boolean>(player.hasAnswered);
-  const [brush, setBrush] = useState<Brush>();
+  const [brush, setBrush] = useState<Brush>(DEFAULT_BRUSH);
 
   useEffect(() => {
     async function fetchRoundData() {
@@ -170,7 +170,7 @@ export default function GameArea({ game, player, refreshKey }: { game: CurrentGa
             </div>}
           </div>
         </MessageOverlay>
-        <GameCanvas />
+        <GameCanvas brush={brush} />
       </div>
       <div className="flex w-full items-center justify-center">
         {(game.status === GameStatus.Ready || game.status === GameStatus.TurnEnd || game.status === GameStatus.RoundEnd) &&
