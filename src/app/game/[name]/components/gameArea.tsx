@@ -6,12 +6,14 @@ import MessageOverlay from "./messageOverlay";
 import SubmitAnswer from "./submitAnswer";
 import TopBar from "./topBar";
 import GameCanvas from "./gameCanvas";
+import ReadOnlyGameCanvas from "./readOnlyGameCanvas";
 import BrushOptions, { DEFAULT_BRUSH } from "./brushOptions";
 import { getGameRoundData } from "./actions";
 import { getCloseMessage, getCorrectMessage, getWrongMessage, getGameCompletedSubText, getGuesserSubText, getInitialSubText, getPainterSubText, getNewTurnSubText, getNewRoundSubText, getReadySubText } from "./utilities";
-import { GameStatus, type InitialRoundDataPayload, type ReadyRoundDataPayload, type RoundDataPayload, type CurrentGameDetails, type PlayerDetails, RoundEndDataPayload, GameCompletedDataPayload, InProgressDataPayload, TurnEndDataPayload, Brush } from "@types";
+import { GameStatus, type InitialRoundDataPayload, type ReadyRoundDataPayload, type RoundDataPayload, type CurrentGameDetails, type PlayerDetails, type RoundEndDataPayload, type GameCompletedDataPayload, type InProgressDataPayload, type TurnEndDataPayload } from "@types";
+import type { Brush } from "./types";
 
-export default function GameArea({ game, player, refreshKey }: { game: CurrentGameDetails, player: PlayerDetails, refreshKey: Date }) {
+export default function GameArea({ game, player }: { game: CurrentGameDetails, player: PlayerDetails }) {
   const user = getUserContext();
   const [pending, setPending] = useState(true);
   const [roundData, setRoundData] = useState<RoundDataPayload | null>(null);
@@ -84,7 +86,7 @@ export default function GameArea({ game, player, refreshKey }: { game: CurrentGa
     }
 
     fetchRoundData();
-  }, [game.id, game.status, game.rounds, user, player.isPainter, refreshKey]);
+  }, [game.id, game.status, game.rounds, user, player.isPainter]);
 
   useEffect(() => {
     if (answerSubmitted !== player.hasAnswered && player.hasAnswered) {
@@ -143,6 +145,8 @@ export default function GameArea({ game, player, refreshKey }: { game: CurrentGa
     setSubText("");
   }, []);
 
+  const canvasRoundId = (!pending && game.status === GameStatus.InProgress) ? (roundData as InProgressDataPayload).round_id : undefined;
+
   return <div className="flex flex-col items-center gap-4">
     {pending && <div>Loading...</div>}
     {!pending && <>
@@ -153,7 +157,7 @@ export default function GameArea({ game, player, refreshKey }: { game: CurrentGa
         <MessageOverlay
           visible={showMessage}
           disableFade={disableFade}
-          containerClassName="size-166"
+          containerClassName="size-166 border-2 border-[color:var(--primary)] rounded-l"
           onFadeComplete={handleFadeComplete}
           fadeDelayMs={fadeDelay}
           fadeDurationMs={fadeDuration}
@@ -170,7 +174,8 @@ export default function GameArea({ game, player, refreshKey }: { game: CurrentGa
             </div>}
           </div>
         </MessageOverlay>
-        <GameCanvas getBrush={() => brush.current} />
+        {player.isPainter && <GameCanvas roundId={canvasRoundId} getBrush={() => brush.current} />}
+        {!player.isPainter && <ReadOnlyGameCanvas gameId={game.id} roundId={canvasRoundId} />}
       </div>
       <div className="flex w-full items-center justify-center">
         {(game.status === GameStatus.Ready || game.status === GameStatus.TurnEnd || game.status === GameStatus.RoundEnd) &&

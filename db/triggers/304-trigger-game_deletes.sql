@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION app.handle_game_deletes()
- RETURNS trigger
- LANGUAGE plpgsql
+  RETURNS trigger
+  LANGUAGE plpgsql
 AS $function$
 BEGIN
   IF TG_OP = 'DELETE' THEN

@@ -83,17 +83,20 @@ export interface ReadyRoundDataPayload extends BaseRoundDataPayload {
 };
 
 export interface InProgressDataPayload extends BaseRoundDataPayload {
+  round_id: number,
   current_round: number,
   word: string
 };
 
 export interface TurnEndDataPayload extends BaseRoundDataPayload {
+  round_id: number,
   current_round: number,
   word: string,
   painters_left: number
 };
 
 export interface RoundEndDataPayload extends BaseRoundDataPayload {
+  round_id: number,
   current_round: number,
   word: string,
   player_count: number
@@ -102,9 +105,13 @@ export interface RoundEndDataPayload extends BaseRoundDataPayload {
 export interface GameCompletedDataPayload extends BaseRoundDataPayload {
   total_score: number
   word: string,
-}
+};
 
-export type Brush = {
-  size: number,
-  color: string
+export type CanvasUpdatePayload = {
+  brush_size: number,
+  brush_color: string,
+  from_x: number,
+  from_y: number,
+  to_x: number,
+  to_y: number
 };

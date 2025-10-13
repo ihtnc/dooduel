@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION app.handle_game_state_updates()
- RETURNS trigger
- LANGUAGE plpgsql
+  RETURNS trigger
+  LANGUAGE plpgsql
 AS $function$
 DECLARE
   current_game_id integer;

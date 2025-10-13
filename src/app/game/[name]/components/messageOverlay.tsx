@@ -48,7 +48,7 @@ export default function MessageOverlay({
     <div className="relative flex">
       <div
         className={cn("absolute", "top-0", "left-0", "flex",
-          "items-center", "justify-center", "backdrop-blur-xs",
+          "items-center", "justify-center", "backdrop-blur-xl", "bg-white/30",
           "transition-opacity",
           `duration-${fadeDurationMs}`,
           fadeStarted ? "opacity-0" : "opacity-100",

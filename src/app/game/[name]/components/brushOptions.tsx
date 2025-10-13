@@ -4,7 +4,7 @@ import PaintCanIcon from "@/components/icons/paintCanIcon";
 import SmallDotIcon from "@/components/icons/smallDotIcon";
 import Slider from "@/components/slider";
 import { cn } from "@utilities/index";
-import { Brush } from "@types";
+import { Brush } from "./types";
 
 export const DEFAULT_BRUSH: Brush = {
   size: 1,
@@ -69,7 +69,7 @@ const colorMap: Record<string, { class: string, value: string}> = {
   "blue": { class: "bg-blue-700", value: "#1447E6" },
   "green": { class: "bg-green-700", value: "#008236" },
   "yellow": { class: "bg-yellow-500", value: "#F0B100" },
-  "black": { class: "bg-black", value: "#000000" },
+  "black": { class: "bg-black", value: "#37353E" },
   "white": { class: "bg-white border", value: "#FFFFFF" },
 };
 

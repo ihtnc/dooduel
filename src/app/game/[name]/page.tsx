@@ -20,7 +20,6 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
   const [game, setGame] = useState<CurrentGameDetails | null>(null);
   const [players, setPlayers] = useState<Array<PlayerDetails>>([]);
   const [player, setPlayer] = useState<PlayerDetails | null>(null);
-  const [refreshKey, setRefreshKey] = useState<Date>(new Date());
 
   useEffect(() => {
     async function fetchGame() {
@@ -139,11 +138,9 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
     const channel = client.channel(`game:${game?.id}`)
       .on("broadcast", { event: "new_player" }, (msg) => {
         handleNewPlayer(msg.payload as unknown as NewPlayerPayload);
-        setRefreshKey(new Date());
       })
       .on("broadcast", { event: "update_player" }, (msg) => {
         handleUpdatePlayer(msg.payload as unknown as PlayerUpdatePayload);
-        setRefreshKey(new Date());
       })
       .on("broadcast", { event: "player_answer" }, (msg) => {
         handlePlayerAnswered(msg.payload as unknown as PlayerPayload);
@@ -182,7 +179,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       {game && player && !pending && <>
         <div className="flex flex-row gap-4">
           <div className="w-168">
-            <GameArea game={game} player={player} refreshKey={refreshKey} />
+            <GameArea game={game} player={player} />
           </div>
           <div className="flex flex-col items-center justify-between gap-4 max-w-2xs">
             <div>

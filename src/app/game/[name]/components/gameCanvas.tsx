@@ -1,15 +1,28 @@
 "use client";
 
-import { type PointerEventHandler, useRef } from "react";
+import { type PointerEventHandler, useEffect, useRef, useState } from "react";
 import { type AnimatedCanvasRenderFunction, type AnimatedCanvasTransformFunction, type InitialiseDataHandler, use2dAnimatedCanvas } from "@ihtnc/use-animated-canvas";
-import { type Brush } from "@types";
+import { getUserContext } from "@/components/userContextProvider";
+import { drawCanvas, getGameCanvas } from "./actions";
+import { renderSegment } from "./utilities";
+import type { Segment, Brush, Layer, Coordinate, CanvasData } from "./types";
 
 export default function GameCanvas({
+  roundId,
   getBrush
 } : {
+  roundId?: number,
   getBrush: () => Brush
 }) {
-  type Coordinate = { x: number, y: number };
+  const SEND_INTERVAL_MS = 500;
+
+  const [pending, setPending] = useState(true);
+  const user = getUserContext();
+  const layerCount = useRef(0);
+  const associatedRoundId = useRef(0);
+  const forceRedraw = useRef(!pending);
+  const currentCanvas = useRef<Array<Layer>>([]);
+  const canvasData = useRef<Array<CanvasData>>([]);
 
   let currentCoordinate: Coordinate | null = null;
   let startDrawing = false;
@@ -18,32 +31,80 @@ export default function GameCanvas({
     current?: Segment,
     brush: Brush,
     layers: Array<Layer>,
-    redrawLayers: boolean,
+    redrawCanvas: boolean,
   };
 
-  type Layer = {
-    segments: Record<string, Segment>,
-    brush: Brush,
-  };
+  useEffect(() => {
+    async function fetchCanvas() {
+      if (roundId === undefined) {
+        associatedRoundId.current = 0;
+        setPending(false);
+        return;
+      }
 
-  type Segment = {
-    from: Coordinate,
-    to: Coordinate,
-  };
+      const canvas = await getGameCanvas(roundId, user?.playerName || '', user?.code || '');
+      if (canvas) {
+        associatedRoundId.current = roundId;
+        currentCanvas.current = canvas;
+        layerCount.current = canvas.length;
+        forceRedraw.current = true;
+      }
+      setPending(false);
+    };
 
-  const layerCount = useRef(0);
+    async function uploadCanvas() {
+      const list = canvasData.current.splice(0, canvasData.current.length);
+      await drawCanvas(roundId!, user?.playerName || '', user?.code || '', list);
+    };
+
+    currentCanvas.current = [];
+    layerCount.current = 0;
+    forceRedraw.current = true;
+    fetchCanvas();
+
+    const uploader = setInterval(() => {
+      if (roundId === undefined) { return; }
+      if (canvasData.current.length === 0) { return; }
+
+      uploadCanvas();
+    }, SEND_INTERVAL_MS);
+
+    return () => {
+      clearInterval(uploader);
+    };
+  }, [roundId, user]);
+
+  if (roundId !== associatedRoundId.current) {
+    currentCanvas.current = [];
+    layerCount.current = 0;
+    canvasData.current = [];
+  }
+
+  forceRedraw.current = !pending;
 
   const initialiseData: InitialiseDataHandler<DrawData> = () => {
+    if (roundId === undefined) {
+      currentCanvas.current = [];
+      layerCount.current = 0;
+    }
+
     const brush = getBrush();
-    return { brush, layers: [], redrawLayers: false };
+    return { brush, layers: currentCanvas.current, redrawCanvas: currentCanvas.current.length > 0 };
   }
 
   const preRenderTransform: AnimatedCanvasTransformFunction<DrawData> = (data) => {
+    data.data!.redrawCanvas = data.data!.redrawCanvas || forceRedraw.current;
+    forceRedraw.current = false;
+
+    if (data.data!.redrawCanvas) {
+      data.data!.layers = currentCanvas.current;
+    }
+
     if (!startDrawing || currentCoordinate == null) {
       data.data = {
         brush: data.data!.brush,
         layers: data.data!.layers,
-        redrawLayers: data.data!.redrawLayers,
+        redrawCanvas: data.data!.redrawCanvas,
       };
 
       layerCount.current = data.data.layers.length;
@@ -54,98 +115,67 @@ export default function GameCanvas({
     const brush = getBrush();
     if (data.data!.layers.length === layerCount.current) {
       data.data?.layers.push({
-        segments: {},
+        segments: [],
         brush: { ...brush }
       });
     }
 
-    const { from } = data.data!.current ?? { from: undefined };
+    const { to } = data.data!.current ?? { to: undefined };
     data.data!.current = {
       to: { ...currentCoordinate },
-      from: from || { ...currentCoordinate },
+      from: to || { ...currentCoordinate },
     };
     data.data!.brush = { ...brush };
 
     return data;
   };
 
-  const renderPreviousLayers: AnimatedCanvasRenderFunction<DrawData> = (context, data) => {
-    if (data.data!.redrawLayers === false) { return; }
+  const renderCurrentCanvas: AnimatedCanvasRenderFunction<DrawData> = (context, data) => {
+    if (data.data!.redrawCanvas === false) { return; }
+
+    context.beginPath();
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+
     if (data.data!.layers.length === 0) { return; }
 
+    context.save();
     for (const layer of data.data!.layers) {
       const { brush, segments } = layer;
-      if (Object.values(segments).length === 0) { continue; }
+      if (segments.length === 0) { continue; }
 
-      context.strokeStyle = brush.color;
-      context.lineCap = "round";
-
-      const width = brush.size * 10;
-
-      for (const segment of Object.values(segments)) {
-        const { from, to } = segment;
-
-        if (from.x === to.x && from.y === to.y) {
-          context.fillStyle = brush.color;
-          context.beginPath();
-          context.arc(from.x, from.y, width / 2, 0, 2 * Math.PI);
-          context.fill();
-          context.closePath();
-          continue;
-        }
-
-        context.lineWidth = width;
-        context.beginPath();
-        context.moveTo(from.x, from.y);
-        context.lineTo(to.x, to.y);
-        context.stroke();
-        context.closePath();
+      for (const segment of segments) {
+        renderSegment(context, brush, segment);
       }
     }
+    context.restore();
   };
 
-  const renderCurrent: AnimatedCanvasRenderFunction<DrawData> = (context, data) => {
+  const renderUpdate: AnimatedCanvasRenderFunction<DrawData> = (context, data) => {
     if (data.data!.current === undefined) { return; }
 
-    const { brush: b } = data.data!;
-    const { from, to } = data.data!.current!;
-
-    context.strokeStyle = b.color;
-    context.lineCap = "round";
-
-    const width = b.size * 10;
-
-    if (from.x === to.x && from.y === to.y) {
-      context.fillStyle = b.color;
-
-      context.beginPath();
-      context.arc(from.x, from.y, width / 2, 0, 2 * Math.PI);
-      context.fill();
-      context.closePath();
-      return;
-    }
-
-    context.lineWidth = width;
-    context.beginPath();
-    context.moveTo(from.x, from.y);
-    context.lineTo(to.x, to.y);
-    context.stroke();
-    context.closePath();
+    context.save();
+    const { brush, current } = data.data!;
+    renderSegment(context, brush, current!);
+    context.restore();
   };
 
   const postRenderTransform: AnimatedCanvasTransformFunction<DrawData> = (data) => {
+    data.data!.redrawCanvas = false;
+
     if (!startDrawing || data.data!.current === undefined) { return data; }
 
-    const { from, to } = data.data!.current;
-    const key = `${from.x},${from.y}-${to.x},${to.y}`;
-    const lastLayer = (data.data!.layers!.length > 0) ? data.data!.layers!.slice(-1)[0] : null;
-    const { segments } = lastLayer || { segments: {} as Record<string, Segment> };
-    if (lastLayer !== null && (Object.values(segments).length === 0 || segments[key] === undefined)) {
-      segments[key] = { from: { ...from }, to: { ...to } };
+    let lastLayer = (data.data!.layers.length > 0) ? data.data!.layers![data.data!.layers.length - 1] : null;
+    if (!lastLayer) {
+      lastLayer = { brush: data.data!.brush, segments: [] };
+      data.data!.layers.push(lastLayer);
     }
 
-    data.data!.current.from = { ...to };
-    data.data!.redrawLayers = false;
+    const { from, to } = data.data!.current;
+    const isDifferentCoordinate = from.x !== to.x || from.y !== to.y;
+    if (isDifferentCoordinate) {
+      lastLayer.segments.push(data.data!.current);
+      canvasData.current.push({ segment: data.data!.current, brush: data.data!.brush });
+    }
 
     return data;
   }
@@ -153,9 +183,9 @@ export default function GameCanvas({
   const { Canvas } = use2dAnimatedCanvas<DrawData>({
     initialiseData,
     preRenderTransform,
-    render: [renderPreviousLayers, renderCurrent],
+    render: [renderCurrentCanvas, renderUpdate],
     postRenderTransform,
-    options: { clearEveryFrame: false }
+    options: { clearEveryFrame: false, protectData: false }
   });
 
   const handlePointerDown: PointerEventHandler<HTMLCanvasElement> = () => {
@@ -189,7 +219,7 @@ export default function GameCanvas({
   return (<>
     <div className="canvas-container size-166 flex flex-col items-center justify-center">
       <Canvas
-        className="border w-full h-full"
+        className="border w-full h-full cursor-crosshair"
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
         onPointerMove={handlePointerMove}

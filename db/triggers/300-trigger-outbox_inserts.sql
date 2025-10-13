@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION app.handle_outbox_changes()
- RETURNS trigger
- LANGUAGE plpgsql
+  RETURNS trigger
+  LANGUAGE plpgsql
 AS $function$
 BEGIN
 
@@ -14,7 +14,10 @@ BEGIN
     turn_end:      { id: number }
     round_end:     { id: number }
     game_over:     { id: number }
-    purge_game:   { id: number }
+    purge_game:    { id: number }
+
+    game:{id}:round:{id} event payloads
+    update_canvas: { brush_size: number, brush_color: string, from_x: number, from_y: number, to_x: number, to_y: number }
   */
 
   IF TG_OP = 'INSERT' THEN

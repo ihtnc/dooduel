@@ -30,6 +30,7 @@ BEGIN
   SELECT
     g.id AS game_id,
     p.id AS painter_id,
+    gr.id AS game_rounds_id,
     gr.round,
     gw.value AS word
   FROM game g
@@ -44,10 +45,10 @@ BEGIN
   payloads
     initial:    { status: string, player_count: number };
     ready:      { status: string, player_count: number };
-    turnend:    { status: string, current_round: number, word: string, painters_left: number };
-    roundend:   { status: string, current_round: number, word: string, player_count: number };
-    inprogress: { status: string, current_round: number, word?: string };
-    completed:  { status: string, total_score: number };
+    turnend:    { round_id: number, status: string, current_round: number, word: string, painters_left: number };
+    roundend:   { round_id: number, status: string, current_round: number, word: string, player_count: number };
+    inprogress: { round_id: number, status: string, current_round: number, word?: string };
+    completed:  { status: string, word: string, total_score: number };
   */
 
   IF game_details.status = 'initial' THEN
@@ -68,6 +69,7 @@ BEGIN
 
   ELSIF game_details.status = 'turnend' THEN
     SELECT jsonb_build_object(
+      'round_id', latest_round.game_rounds_id,
       'status', game_details.status,
       'current_round', game_details.current_round,
       'word', latest_round.word,
@@ -77,6 +79,7 @@ BEGIN
 
   ELSIF game_details.status = 'roundend' THEN
     SELECT jsonb_build_object(
+      'round_id', latest_round.game_rounds_id,
       'status', game_details.status,
       'current_round', game_details.current_round - 1,
       'word', latest_round.word,
@@ -87,6 +90,7 @@ BEGIN
   ELSIF game_details.status = 'inprogress' THEN
     IF latest_round.painter_id = game_details.player_id AND latest_round.round = game_details.current_round THEN
       SELECT jsonb_build_object(
+        'round_id', latest_round.game_rounds_id,
         'status', game_details.status,
         'current_round', game_details.current_round,
         'word', latest_round.word
@@ -94,6 +98,7 @@ BEGIN
 
     ELSE
       SELECT jsonb_build_object(
+        'round_id', latest_round.game_rounds_id,
         'status', game_details.status,
         'current_round', game_details.current_round,
         'word', ''

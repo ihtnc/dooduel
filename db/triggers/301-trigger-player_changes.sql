@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION app.handle_player_changes()
- RETURNS trigger
- LANGUAGE plpgsql
+  RETURNS trigger
+  LANGUAGE plpgsql
 AS $function$
 BEGIN
   IF TG_OP = 'INSERT' THEN
