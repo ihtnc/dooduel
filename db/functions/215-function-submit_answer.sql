@@ -1,6 +1,7 @@
 CREATE OR REPLACE FUNCTION public.submit_answer(game_name character varying, player_name character varying, player_code character varying, answer character varying)
- RETURNS numeric
- LANGUAGE plpgsql
+  RETURNS numeric
+  LANGUAGE plpgsql
+  SET search_path = public
 AS $function$
 DECLARE
   selected_player record;

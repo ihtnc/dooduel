@@ -1,6 +1,7 @@
 CREATE OR REPLACE FUNCTION public.create_game(password character varying, rounds numeric, difficulty numeric, creator_name character varying, creator_avatar character varying, creator_code character varying)
- RETURNS game
- LANGUAGE plpgsql
+  RETURNS game
+  LANGUAGE plpgsql
+  SET search_path = public
 AS $function$
   DECLARE inserted_game game;
 BEGIN

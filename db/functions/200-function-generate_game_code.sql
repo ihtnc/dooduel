@@ -1,6 +1,7 @@
 CREATE OR REPLACE FUNCTION public.generate_game_code()
   RETURNS text
   LANGUAGE plpgsql
+  SET search_path = public
 AS $function$
 DECLARE
   charset TEXT := 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

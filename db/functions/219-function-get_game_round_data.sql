@@ -1,6 +1,7 @@
 CREATE OR REPLACE FUNCTION public.get_game_round_data(current_game_id integer, player_name character varying, player_code character varying)
- RETURNS jsonb
- LANGUAGE plpgsql
+  RETURNS jsonb
+  LANGUAGE plpgsql
+  SET search_path = public
 AS $function$
 DECLARE
   game_details record;

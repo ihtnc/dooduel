@@ -1,6 +1,7 @@
 CREATE OR REPLACE FUNCTION public.update_player_avatar(current_game_id integer, player_name character varying, player_code character varying, new_avatar character varying)
   RETURNS boolean
   LANGUAGE plpgsql
+  SET search_path = public
 AS $function$
 DECLARE
   selected_game_id integer;

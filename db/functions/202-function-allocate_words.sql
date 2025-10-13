@@ -1,5 +1,7 @@
 CREATE OR REPLACE FUNCTION public.allocate_words(game_code character varying, creator character varying)
-RETURNS void AS $$
+  RETURNS void
+  SET search_path = public
+AS $$
 DECLARE selected_game game;
 BEGIN
   SELECT g.*

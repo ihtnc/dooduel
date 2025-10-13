@@ -1,4 +1,7 @@
-CREATE OR REPLACE FUNCTION app.end_game_rounds(game_state_id integer) RETURNS boolean AS $$
+CREATE OR REPLACE FUNCTION app.end_game_rounds(game_state_id integer)
+  RETURNS boolean
+  SET search_path = app
+AS $$
   DECLARE game_record record;
   DECLARE available_players integer;
   DECLARE game_round integer;

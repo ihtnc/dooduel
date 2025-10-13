@@ -1,6 +1,7 @@
 CREATE OR REPLACE FUNCTION public.leave_game(game_name character varying, player_name character varying, player_code character varying)
- RETURNS boolean
- LANGUAGE plpgsql
+  RETURNS boolean
+  LANGUAGE plpgsql
+  SET search_path = public
 AS $function$
 DECLARE
   player_id integer;

@@ -1,4 +1,7 @@
-CREATE OR REPLACE FUNCTION app.evaluate_game_states() RETURNS void AS $$
+CREATE OR REPLACE FUNCTION app.evaluate_game_states()
+  RETURNS void
+  SET search_path = app
+AS $$
 DECLARE
   game_record record;
   started_status boolean;

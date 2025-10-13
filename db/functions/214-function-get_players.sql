@@ -8,6 +8,7 @@ CREATE OR REPLACE FUNCTION public.get_players(current_game_id integer, player_na
     has_answered boolean
   )
   LANGUAGE plpgsql
+  SET search_path = public
 AS $function$
 DECLARE
   current_game record;

@@ -1,4 +1,7 @@
-CREATE OR REPLACE FUNCTION app.purge_old_outbox() RETURNS void AS $$
+CREATE OR REPLACE FUNCTION app.purge_old_outbox()
+  RETURNS void
+  SET search_path = app
+AS $$
 DECLARE
   deleted_count integer := 0;
 BEGIN

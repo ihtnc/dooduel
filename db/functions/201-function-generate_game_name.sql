@@ -1,6 +1,7 @@
 CREATE OR REPLACE FUNCTION public.generate_game_name()
- RETURNS text
- LANGUAGE plpgsql
+  RETURNS text
+  LANGUAGE plpgsql
+  SET search_path = public
 AS $function$
 DECLARE
   word1 TEXT;

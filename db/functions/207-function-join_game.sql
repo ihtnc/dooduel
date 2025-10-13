@@ -1,6 +1,7 @@
 CREATE OR REPLACE FUNCTION public.join_game(game_name character varying, game_password character varying, player_name character varying, player_avatar character varying, player_code character varying)
- RETURNS record
- LANGUAGE plpgsql
+  RETURNS record
+  LANGUAGE plpgsql
+  SET search_path = public
 AS $function$
 DECLARE
   selected_game record;

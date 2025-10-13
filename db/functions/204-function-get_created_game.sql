@@ -1,6 +1,7 @@
 CREATE OR REPLACE FUNCTION public.get_created_game(game_name character varying, creator character varying)
- RETURNS record
- LANGUAGE plpgsql
+  RETURNS record
+  LANGUAGE plpgsql
+  SET search_path = public
 AS $function$
 DECLARE created_game record;
 BEGIN
