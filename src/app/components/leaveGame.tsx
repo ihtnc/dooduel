@@ -4,10 +4,10 @@ import { useActionState } from "react";
 import { getUserContext } from "@/components/userContextProvider";
 import FlagButton from "@/components/button/flagButton";
 import { cn } from "@utilities/index";
-import { leaveGame } from "./actions";
-import type { CurrentGameDetails } from "@types";
+import { leaveGame } from "../game/[name]/components/actions";
+import type { GameDetails } from "@types";
 
-export default function LeaveGame({ game, className }: { game: CurrentGameDetails, className?: string }) {
+export default function LeaveGame({ game, className }: { game: GameDetails, className?: string }) {
   const user = getUserContext();
 
   const [state, action, pending] = useActionState(leaveGame, undefined);

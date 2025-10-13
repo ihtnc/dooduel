@@ -1,12 +1,19 @@
-CREATE OR REPLACE FUNCTION public.get_recent_game_name(player_name character varying, player_code character varying)
- RETURNS character varying
- LANGUAGE plpgsql
+CREATE OR REPLACE FUNCTION public.get_recent_game(player_name character varying, player_code character varying)
+  RETURNS record
+  LANGUAGE plpgsql
+  SET search_path = public
 AS $function$
 DECLARE
-  game_name character varying;
+  game_details record;
 BEGIN
   SELECT
-    game.name into game_name
+    game.id,
+    game.name,
+    game.rounds,
+    game.difficulty,
+    CASE WHEN char_length(COALESCE(game.password, '')) > 0 THEN true
+    ELSE false
+    END AS has_password
   FROM game
   JOIN game_state ON game.id = game_state.game_id
   JOIN player ON game_state.game_id = player.game_id
@@ -16,12 +23,13 @@ BEGIN
     AND player.code = player_code
     AND player.active = true
   ORDER BY player.created_at DESC
+  INTO game_details
   LIMIT 1;
 
   IF NOT FOUND then
     RETURN NULL;
   END IF;
 
-  RETURN game_name;
+  RETURN game_details;
 END;
 $function$;

@@ -6,9 +6,9 @@ import { getUserContext } from "@/components/userContextProvider";
 import GameDetails from "@/components/gameDetails";
 import PlayerList from "@/components/playerList";
 import { getPlayers } from "@/components/playerList/actions";
+import LeaveGame from "@/components/leaveGame";
 import client from "@utilities/supabase/browser";
 import GameArea from "./components/gameArea";
-import LeaveGame from "./components/leaveGame";
 import { getCurrentGame, updateAvatar } from "./actions";
 import { GameStatus, type NewPlayerPayload, type PlayerDetails, type CurrentGameDetails, type PlayerUpdatePayload, type PlayerPayload, type RoundStartPayload } from "@types";
 
