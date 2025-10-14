@@ -1,3 +1,5 @@
+-- Stores the drawing actions made by players during their turn
+
 CREATE TABLE public.game_canvas (
     id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     game_rounds_id integer NOT NULL REFERENCES public.game_rounds(id),
@@ -9,3 +11,5 @@ CREATE TABLE public.game_canvas (
     to_y numeric NOT NULL,
     created_at timestamp NOT NULL DEFAULT now()
 );
+
+ALTER TABLE public.game_canvas ENABLE ROW LEVEL SECURITY;

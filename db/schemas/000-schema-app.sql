@@ -1,3 +1,5 @@
+-- Creates the 'app' schema which will contain non-public, application-specific tables and functions
+
 CREATE SCHEMA app;
 GRANT USAGE ON SCHEMA app TO anon, authenticated, service_role;
 GRANT ALL ON ALL TABLES IN SCHEMA app TO anon, authenticated, service_role;
