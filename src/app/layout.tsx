@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { UserContextProvider } from "@/components/userContextProvider";
 import Header from "@/components/header";
+import Footer from "@/components/footer";
 import { getSession } from "@utilities/session";
 import "./globals.css";
 
@@ -32,14 +33,12 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased max-w-5xl mx-auto`}
       >
         <UserContextProvider user={session}>
-          <section className="flex flex-col min-h-screen gap-5">
+          <section className="flex flex-col h-screen min-h-170 gap-5">
             <Header />
             <div className="flex flex-grow mx-auto">
               {children}
             </div>
-            <footer className="flex bottom-0 items-center justify-center">
-              Footer
-            </footer>
+            <Footer />
           </section>
         </UserContextProvider>
       </body>

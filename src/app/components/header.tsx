@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import HomeButton from '@/components//button/homeButton';
+import HomeButton from '@/components/button/homeButton';
 import Avatar from '@/components/avatar';
 import BrushesIcon from '@/components/icons/brushesIcon';
 import { getUserContext } from '@/components/userContextProvider';
