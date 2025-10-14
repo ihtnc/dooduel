@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION public.submit_answer(game_name character varying, player_name character varying, player_code character varying, answer character varying)
+CREATE OR REPLACE FUNCTION public.submit_answer(round_id integer, player_name character varying, player_code character varying, answer character varying)
   RETURNS numeric
   LANGUAGE plpgsql
   SET search_path = public
@@ -15,20 +15,19 @@ DECLARE
   accuracy_score numeric;
 BEGIN
   SELECT
-    g.id AS game_id,
-    s.current_round,
+    gr.game_id,
+    gs.current_round,
     p.id AS player_id
-  FROM game g
-  JOIN game_state s ON g.id = s.game_id
-  JOIN player p ON g.id = p.game_id
-  WHERE g.name ilike game_name
-    AND p.name ilike player_name
+  FROM game_rounds gr
+  JOIN game_state gs ON gr.game_id = gs.game_id
+  JOIN player p ON gr.game_id = p.game_id
+  WHERE gr.id = round_id
+    AND p.name ILIKE player_name
     AND p.code = player_code
     AND p.active = true
-    AND s.current_player_id <> p.id
-    AND s.status = 'inprogress'
-  INTO selected_player
-  LIMIT 1;
+    AND gs.current_player_id <> p.id
+    AND gs.status = 'inprogress'
+  INTO selected_player;
 
   IF NOT FOUND then
     RAISE EXCEPTION 'game/player not found';

@@ -187,7 +187,7 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
           <BrushOptions onChange={handleBrushChange} />
         }
         {game.status === GameStatus.InProgress && !player.isPainter && !player.hasAnswered &&
-          <SubmitAnswer game={game} onSubmit={handleResult} />
+          <SubmitAnswer roundId={canvasRoundId} onSubmit={handleResult} />
         }
         {game.status === GameStatus.InProgress && !player.isPainter && player.hasAnswered && "Reactions"}
         {game.status === GameStatus.Completed &&

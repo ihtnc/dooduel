@@ -5,13 +5,12 @@ import TextBox from "@/components/textBox";
 import LightbulbButton from "@/components/button/lightbulbButton";
 import { getUserContext } from "@/components/userContextProvider";
 import { submitAnswer } from "./actions";
-import type { CurrentGameDetails } from "@types";
 
 export default function SubmitAnswer({
-  game,
+  roundId,
   onSubmit
 }: {
-  game: CurrentGameDetails,
+  roundId?: number,
   onSubmit?: (result: number) => void
 }) {
   const user = getUserContext();
@@ -26,7 +25,7 @@ export default function SubmitAnswer({
 
   return <>
     <form action={action} className="flex gap-2 items-center">
-      <input type="hidden" name="game_name" value={game.name} />
+      <input type="hidden" name="round_id" value={roundId} />
       <input type="hidden" name="player_name" value={user?.playerName} />
       <input type="hidden" name="player_code" value={user?.code} />
       <TextBox type="text" name="answer" placeholder="Enter guess..." required className="flex w-75" />

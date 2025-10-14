@@ -47,9 +47,16 @@ export async function submitAnswer(prevState: FormState, formData: FormData) {
   const state: FormState = {};
   const submitAnswerData = parseSubmitAnswerFormData(formData);
 
+  const roundId = Number(submitAnswerData.round_id);
+  if (Number.isNaN(roundId) || roundId <= 0) {
+    state.error = "invalid game state!";
+  }
+
+  if (Object.keys(state).length > 0) { return state; }
+
   const client = await getClient();
   const args = {
-    game_name: submitAnswerData.game_name,
+    round_id: submitAnswerData.round_id,
     player_name: submitAnswerData.player_name,
     player_code: submitAnswerData.player_code,
     answer: submitAnswerData.answer

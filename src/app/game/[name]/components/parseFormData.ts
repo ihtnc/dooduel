@@ -15,7 +15,7 @@ export function parseLeaveFormData(formData: FormData): LeaveGameForm {
 };
 
 type SubmitAnswerForm = {
-  game_name: FormDataEntryValue | null,
+  round_id: FormDataEntryValue | null,
   player_name: FormDataEntryValue | null,
   player_code: FormDataEntryValue | null,
   answer: FormDataEntryValue | null,
@@ -23,7 +23,7 @@ type SubmitAnswerForm = {
 
 export function parseSubmitAnswerFormData(formData: FormData): SubmitAnswerForm {
   const data: SubmitAnswerForm = {
-    game_name: formData.get("game_name"),
+    round_id: formData.get("round_id"),
     player_name: formData.get("player_name"),
     player_code: formData.get("player_code"),
     answer: formData.get("answer"),
