@@ -7,8 +7,9 @@ DECLARE
   selected_player record;
   current_word record;
   current_log record;
-  base_speed_score numeric := 950;
+  base_speed_score numeric := 940;
   base_accuracy_score numeric := 50;
+  -- reaction score is 10 but is added when a reaction is given at the end of the round
   speed_modifier numeric;
   accuracy_modifier numeric;
   speed_score numeric;

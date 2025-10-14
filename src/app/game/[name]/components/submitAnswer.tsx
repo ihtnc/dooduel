@@ -24,8 +24,8 @@ export default function SubmitAnswer({
   }, [pending, state, onSubmit]);
 
   return <>
-    <form action={action} className="flex gap-2 items-center">
-      <input type="hidden" name="round_id" value={roundId} />
+    <form action={action} className={"flex gap-2 items-center"}>
+      <input type="hidden" name="round_id" value={roundId || ""} />
       <input type="hidden" name="player_name" value={user?.playerName} />
       <input type="hidden" name="player_code" value={user?.code} />
       <TextBox type="text" name="answer" placeholder="Enter guess..." required className="flex w-75" />

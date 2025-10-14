@@ -180,22 +180,24 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
         {player.isPainter && <GameCanvas roundId={canvasRoundId} getBrush={() => brush.current} />}
         {!player.isPainter && <ReadOnlyGameCanvas gameId={game.id} roundId={canvasRoundId} />}
       </div>
-      <div className="flex w-full items-center justify-center">
+      <div className="flex w-full items-center justify-center gap-4">
         {(game.status === GameStatus.Ready || game.status === GameStatus.TurnEnd || game.status === GameStatus.RoundEnd) &&
           <span className="h-14.5 font-bold text-xl">Doodle fast. Guess faster!</span>
         }
         {game.status === GameStatus.InProgress && player.isPainter &&
           <BrushOptions onChange={handleBrushChange} />
         }
+        {game.status === GameStatus.InProgress && !player.isPainter &&
+          <Reactions roundId={canvasRoundId} collapsible={!player.hasAnswered}
+            uncollapsibleClassName="w-full"
+          />
+        }
         {game.status === GameStatus.InProgress && !player.isPainter && !player.hasAnswered &&
           <SubmitAnswer roundId={canvasRoundId} onSubmit={handleResult} />
         }
-        {game.status === GameStatus.InProgress && !player.isPainter && player.hasAnswered &&
-          <Reactions roundId={canvasRoundId} />
-        }
         {game.status === GameStatus.Completed &&
           <Link href={`/summary/${game.name}`}>
-            <TrophyButton  className="w-50">Summary</TrophyButton>
+            <TrophyButton className="w-50">Summary</TrophyButton>
           </Link>
         }
       </div>

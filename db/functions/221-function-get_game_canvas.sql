@@ -17,8 +17,7 @@ DECLARE
 BEGIN
   -- ensure player is active on the target round's game
   SELECT
-    g.id AS game_id,
-    gs.current_round
+    g.id
   INTO game_details
   FROM game_rounds gr
   JOIN game g ON gr.game_id = g.id
