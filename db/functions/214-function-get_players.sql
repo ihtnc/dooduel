@@ -5,7 +5,8 @@ CREATE OR REPLACE FUNCTION public.get_players(current_game_id integer, player_na
     avatar character varying,
     active boolean,
     is_painter boolean,
-    has_answered boolean
+    has_answered boolean,
+    score numeric
   )
   LANGUAGE plpgsql
   SET search_path = public
@@ -54,7 +55,8 @@ BEGIN
     p.avatar,
     p.active,
     CASE WHEN p.id = current_game.current_player_id THEN true ELSE false END AS is_painter,
-    CASE WHEN gl.id IS NULL THEN false ELSE true END AS has_answered
+    CASE WHEN gl.id IS NULL THEN false ELSE true END AS has_answered,
+    CASE WHEN current_game.status = 'completed' THEN p.score ELSE 0 END AS score
   FROM player p
   LEFT JOIN game_logs gl
     ON p.id = gl.player_id AND gl.game_rounds_id = current_round_id

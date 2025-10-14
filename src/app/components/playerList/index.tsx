@@ -1,17 +1,33 @@
 "use client";
 
-import Player from "@/components/playerDetails";
 import { getUserContext } from "@/components/userContextProvider";
+import PlayerListItem from "./playerListItem";
 import type { PlayerDetails } from "@types";
 
-export default function PlayerList({ players, title }: { players: Array<PlayerDetails>, title?: string }) {
+export default function PlayerList({
+  players,
+  title,
+  sortByScore,
+  hightlightCurrentPlayer,
+  addRowNumber
+}: {
+  players: Array<PlayerDetails>,
+  title?: string,
+  sortByScore?: boolean,
+  hightlightCurrentPlayer?: boolean,
+  addRowNumber?: boolean
+}) {
   const user = getUserContext();
   const list = [...players];
 
   // get current player
   const playerIndex = list.findIndex(p => p.name.toLowerCase() === (user?.playerName?.toLowerCase() || ""));
   const player = playerIndex < 0 ? null : { ...list.splice(playerIndex, 1)[0] };
-  if (player) { player.name = `${player.name} (You)`; }
+  let playerId = 0;
+  if (player) {
+    playerId = player.id;
+    player.name = `${player.name} (You)`;
+  }
 
   // get current painter if not the player
   let painter: PlayerDetails | null = null;
@@ -43,13 +59,20 @@ export default function PlayerList({ players, title }: { players: Array<PlayerDe
 
   const sorted = [...top, ...first, ...second, ...third, ...fourth];
 
+  if (sortByScore) {
+    sorted.sort((a, b) => b.currentScore - a.currentScore || a.name.localeCompare(b.name));
+  }
+
   return (
     <div className="flex flex-col items-center min-w-2xs gap-4">
       {title && <div className="text-center mt-4 -mb-2"><h1 className="text-2xl font-bold">{title}</h1></div>}
       <ul className="w-full border-t-4 border-t-[color:var(--primary)] pt-2">
-        {sorted.map((player) => (
-          <li key={player.name}>
-            <Player player={player} />
+        {sorted.map((player, index) => (
+          <li key={player.name} className="flex flex-row">
+            {addRowNumber && <span className="text-sm font-bold text-[var(--primary)] mr-1 mt-2">{index + 1}</span>}
+            <PlayerListItem player={player}
+              className={hightlightCurrentPlayer && player.id === playerId ? "font-bold text-[var(--primary)]" : ""}
+            />
           </li>
         ))}
       </ul>

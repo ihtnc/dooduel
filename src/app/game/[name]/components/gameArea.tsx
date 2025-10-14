@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
+import Link from "next/link";
 import { getUserContext } from "@/components/userContextProvider";
+import TrophyButton from "@/components/button/trophyButton";
 import MessageOverlay from "./messageOverlay";
 import SubmitAnswer from "./submitAnswer";
 import TopBar from "./topBar";
@@ -188,7 +190,11 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
           <SubmitAnswer game={game} onSubmit={handleResult} />
         }
         {game.status === GameStatus.InProgress && !player.isPainter && player.hasAnswered && "Reactions"}
-        {game.status === GameStatus.Completed && "Summary"}
+        {game.status === GameStatus.Completed &&
+          <Link href={`/summary/${game.name}`}>
+            <TrophyButton  className="w-50">Summary</TrophyButton>
+          </Link>
+        }
       </div>
     </>}
   </div>;

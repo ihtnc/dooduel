@@ -30,6 +30,11 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
         return;
       }
 
+      if (game.status === GameStatus.Completed) {
+        router.replace(`/summary/${game.name}`);
+        return;
+      }
+
       if (game.status === GameStatus.Initial && game.createdBy.toLowerCase() === user?.playerName.toLowerCase()) {
         router.replace(`/lobby/${game.name}`);
         return;

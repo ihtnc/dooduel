@@ -12,18 +12,18 @@ const Footer = () => {
       <div className="flex flex-row gap-2">
         <div className="flex items-center">
           <BrushesIcon alt="Dooduel logo" className="size-6 mr-1" />
-          Dooduel &copy; by&nbsp;<Link href="https://github.com/ihtnc" className="underline" target="blank" rel="noopener noreferrer">ihtnc</Link>
+          Dooduel &copy; by&nbsp;<Link href="https://github.com/ihtnc" className="hover:underline font-bold text-[var(--primary)]" target="blank" rel="noopener noreferrer">ihtnc</Link>
         </div>
         <span className="scale-75 font-bold mt-0.5 text-[var(--primary)]">|</span>
         <Link href="https://github.com/ihtnc/dooduel" target="blank" rel="noopener noreferrer"
-          className="flex flex-row items-center underline gap-1 group">
+          className="flex flex-row items-center group hover:underline gap-1 font-bold text-[var(--primary)]">
           <CodeIcon alt="Code" className="size-6 group-hover:scale-120 -ml-1" />
           Code
         </Link>
         <span className="scale-75 font-bold mt-0.5 text-[var(--primary)]">|</span>
         <Link href="https://github.com/ihtnc/dooduel/issues" target="blank" rel="noopener noreferrer"
-          className="flex flex-row items-center underline gap-1 group">
-          <BugIcon alt="Issues" className="size-6 group-hover:scale-120" />
+          className="flex flex-row items-center group hover:underline gap-1 font-bold text-[var(--primary)]">
+          <BugIcon alt="Issues" className="size-6 mt-1 group-hover:scale-120" />
           Bug?
         </Link>
       </div>

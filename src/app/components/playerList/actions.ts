@@ -23,7 +23,7 @@ export async function getPlayers(gameId: number, playerName: string, playerCode:
       active: player.active,
       isPainter: player.is_painter,
       hasAnswered: player.has_answered,
-      currentScore: 0
+      currentScore: player.score
     });
   }
 
