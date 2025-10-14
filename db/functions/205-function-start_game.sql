@@ -7,6 +7,7 @@ DECLARE
   started_game record;
   player_count integer;
 BEGIN
+  -- ensure target game is on initial status and created by the user
   SELECT
     game.id,
     game.name,
@@ -26,6 +27,7 @@ BEGIN
     RAISE EXCEPTION 'game not found';
   END IF;
 
+  -- ensure there are at least 2 players
   SELECT COUNT(*) INTO player_count
   FROM player
   WHERE game_id = started_game.id;

@@ -7,6 +7,7 @@ AS $$
   DECLARE next_player player;
   DECLARE next_word game_words;
 BEGIN
+  -- ensure target game is on "ready" status (ready/turnend/roundend)
   SELECT * FROM public.game_state
   WHERE public.game_state.status in ('ready', 'turnend', 'roundend')
     AND public.game_state.id = game_state_id
@@ -16,7 +17,7 @@ BEGIN
     RETURN FALSE;
   END IF;
 
-  -- get next player
+  -- get next random player
   SELECT * FROM app.get_painters(game_record.game_id)
   ORDER BY random()
   LIMIT 1

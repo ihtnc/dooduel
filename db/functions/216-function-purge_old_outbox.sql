@@ -9,6 +9,8 @@ BEGIN
   FROM app.outbox
   WHERE (created_at <= now() - interval '6 hours');
 
+  -- delete outbox records older than 6 hours
+  -- this coincides with the retention period of the completed games
   DELETE FROM app.outbox
   WHERE (created_at <= now() - interval '6 hours');
 

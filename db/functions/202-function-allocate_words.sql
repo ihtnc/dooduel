@@ -4,6 +4,7 @@ CREATE OR REPLACE FUNCTION public.allocate_words(game_code character varying, cr
 AS $$
 DECLARE selected_game game;
 BEGIN
+  -- ensure target game is on initial status and is created by the player
   SELECT g.*
   FROM public.game g
   JOIN public.game_state gs ON g.id = gs.game_id

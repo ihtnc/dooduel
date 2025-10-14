@@ -4,12 +4,14 @@ AS $$
 DECLARE
   ready_game game_state;
 BEGIN
+  -- get all games that are on "ready" status (ready/turnend/roundend)
   SELECT * FROM public.game_state
   WHERE status IN ('ready', 'turnend', 'roundend')
     AND game_id = ready_game_id
   INTO ready_game;
 
-  -- get painters from current rounds of each ready game
+  -- get painters from the current round of the target game
+  -- if game is not ready, then no painters will be found
   CREATE TEMP TABLE IF NOT EXISTS tmp_painters ON COMMIT DROP AS
   SELECT game_id, painter_id AS player_id FROM public.game_rounds LIMIT 0;
 

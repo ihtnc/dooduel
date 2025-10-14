@@ -14,6 +14,7 @@ DECLARE
   speed_score numeric;
   accuracy_score numeric;
 BEGIN
+  -- ensure player is active on the target game and it's not their turn to draw
   SELECT
     gr.game_id,
     gs.current_round,
@@ -51,7 +52,7 @@ BEGIN
     RAISE EXCEPTION 'invalid game state';
   END IF;
 
-  -- check if player has already submitted an answer for this round
+  -- ensure player has not submitted an answer for this round yet
   SELECT *
   FROM game_logs
   WHERE game_rounds_id = current_word.game_rounds_id

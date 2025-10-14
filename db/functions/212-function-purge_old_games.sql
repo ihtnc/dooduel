@@ -6,6 +6,8 @@ DECLARE
   game_record record;
   deleted_count integer := 0;
 BEGIN
+  -- get all games that are completed for more than 1 hour
+  --   or games that are not completed but are created more than 6 hours ago
   FOR game_record IN
   SELECT s.*
   FROM public.game_state s

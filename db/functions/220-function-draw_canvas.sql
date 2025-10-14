@@ -7,10 +7,10 @@ DECLARE
   game_details record;
   latest_round record;
 BEGIN
+  -- ensure player is active on the target round's game and is the painter for that round
   SELECT
     g.id AS game_id,
-    gs.current_round,
-    p.id AS player_id
+    gs.current_round
   INTO game_details
   FROM game_rounds gr
   JOIN player p ON gr.painter_id = p.id
@@ -25,6 +25,7 @@ BEGIN
     RETURN false;
   END IF;
 
+  -- ensure the target round is the latest round of the game
   SELECT
     gr.id
   FROM game g
@@ -35,7 +36,7 @@ BEGIN
   INTO latest_round
   LIMIT 1;
 
-  IF NOT FOUND THEN
+  IF NOT FOUND OR latest_round.id <> round_id THEN
     RETURN false;
   END IF;
 

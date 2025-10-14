@@ -15,6 +15,7 @@ DECLARE
   current_game record;
   current_round_id integer;
 BEGIN
+  -- ensure player is active on the target game
   SELECT
     s.game_id,
     s.current_round,

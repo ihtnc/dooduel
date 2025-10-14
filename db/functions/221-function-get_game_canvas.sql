@@ -15,10 +15,10 @@ DECLARE
   game_details record;
   latest_round record;
 BEGIN
+  -- ensure player is active on the target round's game
   SELECT
     g.id AS game_id,
-    gs.current_round,
-    p.id AS player_id
+    gs.current_round
   INTO game_details
   FROM game_rounds gr
   JOIN game g ON gr.game_id = g.id
@@ -31,20 +31,6 @@ BEGIN
 
   IF NOT FOUND then
     RAISE EXCEPTION 'game/player not found';
-  END IF;
-
-  SELECT
-    gr.id
-  FROM game g
-  JOIN game_rounds gr ON g.id = gr.game_id
-  WHERE gr.game_id = game_details.game_id
-    AND gr.round = game_details.current_round
-  ORDER BY gr.created_at DESC
-  INTO latest_round
-  LIMIT 1;
-
-  IF NOT FOUND THEN
-    RAISE EXCEPTION 'invalid game state';
   END IF;
 
   RETURN QUERY

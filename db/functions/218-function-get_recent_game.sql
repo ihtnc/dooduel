@@ -6,6 +6,7 @@ AS $function$
 DECLARE
   game_details record;
 BEGIN
+  -- get the most recent game where the player is still active
   SELECT
     game.id,
     game.name,

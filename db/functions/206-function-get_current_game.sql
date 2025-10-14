@@ -6,6 +6,7 @@ AS $function$
 DECLARE
   selected_game record;
 BEGIN
+  -- ensure player is active on the target game
   SELECT
     game.id,
     game.name,

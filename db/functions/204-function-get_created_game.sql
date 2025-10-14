@@ -5,6 +5,7 @@ CREATE OR REPLACE FUNCTION public.get_created_game(game_name character varying, 
 AS $function$
 DECLARE created_game record;
 BEGIN
+  -- ensure target game is on initial status and is created by the player
   SELECT
     game.id,
     game.name,

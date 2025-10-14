@@ -6,6 +6,7 @@ AS $function$
   DECLARE active_game_id integer;
   DECLARE inserted_game game;
 BEGIN
+  -- ensure player is not in any other game
   SELECT game_id into active_game_id
   FROM player
   WHERE name ILIKE creator_name

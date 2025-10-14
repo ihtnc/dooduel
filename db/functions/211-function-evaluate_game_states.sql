@@ -7,10 +7,13 @@ DECLARE
   started_status boolean;
   ended_status boolean;
 BEGIN
+  -- get all games that can be moved forward (not initial/completed)
   FOR game_record IN SELECT * FROM public.game_state
   WHERE public.game_state.status IN ('ready', 'inprogress', 'turnend', 'roundend')
 
   LOOP
+    -- since this function will be called by a cron job that runs every 30 seconds,
+    --   this effectively starts a new round after 30 seconds
     IF game_record.status = 'ready' OR game_record.status = 'turnend' OR game_record.status = 'roundend' THEN
       started_status := app.start_game_rounds(game_record.id);
 
@@ -20,6 +23,7 @@ BEGIN
         RAISE WARNING 'Unable to start new round for game_id %', game_record.id;
       END IF;
 
+    -- end the round for applicable games after 1 minute
     ELSIF game_record.status = 'inprogress' AND game_record.updated_at <= now() - interval '1 minute' THEN
       ended_status := app.end_game_rounds(game_record.id);
 

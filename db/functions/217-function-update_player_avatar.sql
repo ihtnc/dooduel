@@ -7,6 +7,7 @@ DECLARE
   selected_game_id integer;
   player_id integer;
 BEGIN
+  -- ensure player is active on the target game
   SELECT
     game_id INTO selected_game_id
   FROM player

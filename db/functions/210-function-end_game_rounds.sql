@@ -8,6 +8,7 @@ AS $$
   DECLARE game_status status;
   DECLARE current_game_rounds_id integer;
 BEGIN
+  -- ensure target game is on inprogress status
   SELECT * FROM public.game_state
   WHERE public.game_state.status = 'inprogress'
     AND public.game_state.id = game_state_id

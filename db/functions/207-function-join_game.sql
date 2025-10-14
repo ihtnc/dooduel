@@ -8,6 +8,7 @@ DECLARE
   selected_game record;
   selected_player player;
 BEGIN
+  -- ensure player is not in any other game
   SELECT game.id INTO active_game_id
   FROM player
   JOIN game ON player.game_id = game.id
@@ -20,6 +21,7 @@ BEGIN
     RAISE EXCEPTION 'already joined a game';
   END IF;
 
+  -- ensure a game exists with specified details and is not in completed status
   SELECT
     game.id,
     game.name,
@@ -47,9 +49,11 @@ BEGIN
   INTO selected_player
   LIMIT 1;
 
+  -- ensure player name is not already taken in the target game
   IF FOUND AND selected_player.code <> player_code THEN
     RAISE EXCEPTION 'duplicate player';
 
+  -- if player exists but is inactive, just reactivate
   ELSIF FOUND AND selected_player.code = player_code THEN
     UPDATE player
     SET active = true,

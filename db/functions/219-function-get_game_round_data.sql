@@ -8,6 +8,7 @@ DECLARE
   latest_round record;
   game_round_data jsonb;
 BEGIN
+  -- ensure player is active on the target game
   SELECT
     g.id AS game_id,
     gs.id AS game_state_id,
@@ -27,6 +28,7 @@ BEGIN
     RAISE EXCEPTION 'game/player not found';
   END IF;
 
+  -- get relevant details for the round
   SELECT
     g.id AS game_id,
     p.id AS painter_id,
