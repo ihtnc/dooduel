@@ -11,6 +11,7 @@ BEGIN
     game.code,
     game.rounds,
     game.difficulty,
+    game_state.status,
     CASE WHEN char_length(COALESCE(game.password, '')) > 0 THEN true
     ELSE false
     END AS has_password

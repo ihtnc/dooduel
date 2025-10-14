@@ -9,13 +9,13 @@ export interface CreatedGameDetails extends GameDetails {
 export type GameDetails = {
   id: number,
   name: string,
+  status: GameStatus,
   rounds: number,
   difficulty: number,
   hasPassword: boolean
 };
 
 export interface CurrentGameDetails extends GameDetails {
-  status: GameStatus,
   currentRound: number | null,
   createdBy: string,
 };

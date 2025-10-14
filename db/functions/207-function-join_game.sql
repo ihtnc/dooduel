@@ -4,9 +4,22 @@ CREATE OR REPLACE FUNCTION public.join_game(game_name character varying, game_pa
   SET search_path = public
 AS $function$
 DECLARE
+  active_game_id integer;
   selected_game record;
   selected_player player;
 BEGIN
+  SELECT game.id INTO active_game_id
+  FROM player
+  JOIN game ON player.game_id = game.id
+  WHERE player.name ILIKE player_name
+    AND player.code = player_code
+    AND player.active = true
+    AND game.name NOT ILIKE game_name;
+
+  IF FOUND then
+    RAISE EXCEPTION 'already joined a game';
+  END IF;
+
   SELECT
     game.id,
     game.name,

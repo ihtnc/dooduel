@@ -16,6 +16,7 @@ export async function getRecentGame(playerName: string, playerCode: string): Pro
   const game: GameDetails = {
     id: data.id,
     name: data.name,
+    status: data.status,
     rounds: data.rounds,
     difficulty: data.difficulty,
     hasPassword: data.has_password,

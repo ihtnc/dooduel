@@ -16,7 +16,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
   const user = getUserContext();
 
   const [update, action, startPending] = useActionState(startGame, undefined);
-  const [getPending, setPending] = useState(true);
+  const [pending, setPending] = useState(true);
   const [game, setGame] = useState<CreatedGameDetails | null>(null);
   const [players, setPlayers] = useState<Array<PlayerDetails>>([]);
 
@@ -84,8 +84,8 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
 
   return (
     <div className="flex flex-col align-self-start items-center place-items-start mt-24 gap-4">
-      {getPending && <div>Loading...</div>}
-      {game && !getPending && <>
+      {pending && <div>Loading...</div>}
+      {game && !pending && <>
         <GameDetails game={game} />
         <form action={action} className="flex flex-col gap-4">
           <input type="hidden" name="creator" value={user?.playerName} />

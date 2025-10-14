@@ -5,7 +5,6 @@ CREATE OR REPLACE FUNCTION public.start_game(game_code character varying, creato
 AS $function$
 DECLARE
   started_game record;
-  updated_state game_state;
   player_count integer;
 BEGIN
   SELECT
@@ -17,7 +16,10 @@ BEGIN
     ELSE false
     END AS has_password
   FROM game
-  WHERE code = game_code AND created_by ilike creator
+  JOIN game_state ON game.id = game_state.game_id
+  WHERE code = game_code
+    AND created_by ilike creator
+    AND game_state.status = 'initial'
   INTO started_game;
 
   IF NOT FOUND then
@@ -34,13 +36,7 @@ BEGIN
 
   UPDATE game_state
   SET status = 'ready'
-  WHERE game_state.game_id = started_game.id
-  AND game_state.status = 'initial'
-  RETURNING * INTO updated_state;
-
-  IF NOT FOUND then
-    RAISE EXCEPTION 'game not found';
-  END IF;
+  WHERE game_state.game_id = started_game.id;
 
   RETURN started_game;
 END;

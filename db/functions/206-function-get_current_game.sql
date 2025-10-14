@@ -5,7 +5,6 @@ CREATE OR REPLACE FUNCTION public.get_current_game(game_name character varying, 
 AS $function$
 DECLARE
   selected_game record;
-  selected_player player;
 BEGIN
   SELECT
     game.id,
@@ -19,27 +18,17 @@ BEGIN
     game_state.current_round,
     game.created_by
   FROM game
-  JOIN game_state ON game.id = game_state.game_id
-  INTO selected_game
+    JOIN game_state ON game.id = game_state.game_id
+    JOIN player ON game.id = player.game_id
   WHERE game.name ilike game_name
-    AND game_state.status <> 'completed'
-  LIMIT 1;
-
-  IF NOT FOUND then
-    RAISE EXCEPTION 'game not found';
-  END IF;
-
-  SELECT *
-  FROM player
-  WHERE player.game_id = selected_game.id
     AND player.name ilike player_name
     AND player.code = player_code
     AND player.active = true
-  INTO selected_player
+  INTO selected_game
   LIMIT 1;
 
   IF NOT FOUND then
-    RAISE EXCEPTION 'player not found';
+    RAISE EXCEPTION 'game/player not found';
   END IF;
 
   RETURN selected_game;

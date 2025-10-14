@@ -3,8 +3,19 @@ CREATE OR REPLACE FUNCTION public.create_game(password character varying, rounds
   LANGUAGE plpgsql
   SET search_path = public
 AS $function$
+  DECLARE active_game_id integer;
   DECLARE inserted_game game;
 BEGIN
+  SELECT game_id into active_game_id
+  FROM player
+  WHERE name ILIKE creator_name
+    AND code = creator_code
+    AND active = true;
+
+  IF FOUND then
+    RAISE EXCEPTION 'already joined a game';
+  END IF;
+
   INSERT INTO game (password, created_by, rounds, difficulty)
   VALUES (password, creator_name, rounds, difficulty)
   RETURNING * INTO inserted_game;

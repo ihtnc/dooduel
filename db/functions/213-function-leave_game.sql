@@ -16,7 +16,6 @@ BEGIN
     AND p.name ilike player_name
     AND p.code = player_code
     AND p.active = true
-    AND s.status <> 'completed'
   LIMIT 1;
 
   IF NOT FOUND then

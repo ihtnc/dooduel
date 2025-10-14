@@ -19,6 +19,7 @@ export async function getCreatedGame(name: string, creator: string): Promise<Cre
     id: data.id,
     code: data.code,
     name: data.name,
+    status: data.status,
     rounds: data.rounds,
     difficulty: data.difficulty,
     hasPassword: data.has_password

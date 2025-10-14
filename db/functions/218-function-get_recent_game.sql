@@ -9,6 +9,7 @@ BEGIN
   SELECT
     game.id,
     game.name,
+    game_state.status,
     game.rounds,
     game.difficulty,
     CASE WHEN char_length(COALESCE(game.password, '')) > 0 THEN true
@@ -18,8 +19,7 @@ BEGIN
   JOIN game_state ON game.id = game_state.game_id
   JOIN player ON game_state.game_id = player.game_id
     AND game.id = player.game_id
-  WHERE game_state.status <> 'completed'
-    AND player.name ilike player_name
+  WHERE player.name ilike player_name
     AND player.code = player_code
     AND player.active = true
   ORDER BY player.created_at DESC
