@@ -14,6 +14,7 @@ import { getGameRoundData } from "./actions";
 import { getCloseMessage, getCorrectMessage, getWrongMessage, getGameCompletedSubText, getGuesserSubText, getInitialSubText, getPainterSubText, getNewTurnSubText, getNewRoundSubText, getReadySubText } from "./utilities";
 import { GameStatus, type InitialRoundDataPayload, type ReadyRoundDataPayload, type RoundDataPayload, type CurrentGameDetails, type PlayerDetails, type RoundEndDataPayload, type GameCompletedDataPayload, type InProgressDataPayload, type TurnEndDataPayload } from "@types";
 import type { Brush } from "./types";
+import Reactions from "./reactions";
 
 export default function GameArea({ game, player }: { game: CurrentGameDetails, player: PlayerDetails }) {
   const user = getUserContext();
@@ -189,7 +190,9 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
         {game.status === GameStatus.InProgress && !player.isPainter && !player.hasAnswered &&
           <SubmitAnswer roundId={canvasRoundId} onSubmit={handleResult} />
         }
-        {game.status === GameStatus.InProgress && !player.isPainter && player.hasAnswered && "Reactions"}
+        {game.status === GameStatus.InProgress && !player.isPainter && player.hasAnswered &&
+          <Reactions roundId={canvasRoundId} />
+        }
         {game.status === GameStatus.Completed &&
           <Link href={`/summary/${game.name}`}>
             <TrophyButton  className="w-50">Summary</TrophyButton>
