@@ -18,7 +18,7 @@ BEGIN
 
   ELSIF TG_OP = 'UPDATE' THEN
     -- when a player changes active status or score send notification
-    IF (OLD.active IS DISTINCT FROM NEW.active) OR (OLD.score IS DISTINCT FROM NEW.score) THEN
+    IF (OLD.active IS DISTINCT FROM NEW.active) OR (OLD.score IS DISTINCT FROM NEW.score) OR (OLD.avatar IS DISTINCT FROM NEW.avatar) THEN
       INSERT INTO app.outbox (topic, event, payload)
       VALUES (
         format('game:%s', NEW.game_id),

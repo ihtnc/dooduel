@@ -26,7 +26,7 @@ BEGIN
   WHERE game_id = selected_game_id
     AND name ILIKE player_name
     AND code = player_code
-    AND avatar IS DISTINCT FROM new_avatar
+    AND avatar <> new_avatar
   RETURNING id INTO player_id;
 
   IF NOT FOUND then
