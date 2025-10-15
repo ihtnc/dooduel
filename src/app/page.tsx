@@ -5,9 +5,10 @@ import Link from "next/link";
 import { getUserContext } from "@/components/userContextProvider";
 import BrushButton from "@/components/button/brushButton";
 import JoinButton from "@/components/button/joinButton";
-import ResumeButton from "./components/button/resumeButton";
+import ResumeButton from "@/components/button/resumeButton";
+import LeaveGame from "@/components/leaveGame";
+import Loading from "@/components/loading";
 import { getRecentGame } from "./actions";
-import LeaveGame from "./components/leaveGame";
 import type { GameDetails } from "@types";
 
 export default function Home() {
@@ -31,7 +32,11 @@ export default function Home() {
   return (
     <main className="flex flex-col justify-center items-center gap-8">
       {user && <h1 className="text-4xl sm:text-5xl font-bold text-center">Welcome, {user.playerName}!</h1>}
-      {pending && <div>Loading...</div>}
+      {pending &&
+        <div className="flex h-full">
+          <Loading className="-mt-16 self-center size-20" />
+        </div>
+      }
       {!pending && <>
         {game && <Link href={`/game/${game.name}`}>
           <ResumeButton className="w-50">Resume</ResumeButton>

@@ -7,6 +7,7 @@ import GameDetails from "@/components/gameDetails";
 import PlayerList from "@/components/playerList";
 import { getPlayers } from "@/components/playerList/actions";
 import LeaveGame from "@/components/leaveGame";
+import Loading from "@/components/loading";
 import client from "@utilities/supabase/browser";
 import GameArea from "./components/gameArea";
 import { getCurrentGame, updateAvatar } from "./actions";
@@ -180,7 +181,11 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
 
   return (
     <div className="flex flex-col align-self-start items-center mt-24">
-      {pending && <div>Loading...</div>}
+      {pending &&
+        <div className="flex h-full">
+          <Loading className="-mt-16 self-center size-20" />
+        </div>
+      }
       {game && player && !pending && <>
         <div className="flex flex-row gap-4">
           <div className="w-168">

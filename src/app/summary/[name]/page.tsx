@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { getUserContext } from "@/components/userContextProvider";
 import GameDetails from "@/components/gameDetails";
 import LeaveGame from "@/components/leaveGame";
+import Loading from "@/components/loading";
 import PlayerList from "@/components/playerList";
 import { getPlayers } from "@/components/playerList/actions";
 import TrophyIcon from "@/components/icons/trophyIcon";
@@ -49,7 +50,11 @@ export default function SummaryPage({ params }: { params: Promise<{ name: string
 
   return (
     <div className="flex flex-col align-self-start items-center mt-24 gap-4">
-      {pending && <div>Loading...</div>}
+      {pending &&
+        <div className="flex h-full">
+          <Loading className="-mt-16 self-center size-20" />
+        </div>
+      }
       {game && !pending && <>
         <GameDetails game={game} />
         <div className="flex flex-row items-center text-lg font-bold text-[var(--primary)] gap-2">

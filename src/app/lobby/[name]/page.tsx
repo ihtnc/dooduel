@@ -7,6 +7,7 @@ import BrushButton from "@/components/button/brushButton";
 import GameDetails from "@/components/gameDetails";
 import PlayerList from "@/components/playerList";
 import { getPlayers } from "@/components/playerList/actions";
+import Loading from "@/components/loading";
 import client from "@utilities/supabase/browser";
 import { getCreatedGame, startGame, updateAvatar } from "./actions";
 import type { CreatedGameDetails, NewPlayerPayload, PlayerDetails, PlayerUpdatePayload } from "@types";
@@ -84,7 +85,11 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
 
   return (
     <div className="flex flex-col align-self-start items-center place-items-start mt-24 gap-4">
-      {pending && <div>Loading...</div>}
+      {pending &&
+        <div className="flex h-full">
+          <Loading className="-mt-16 self-center size-20" />
+        </div>
+      }
       {game && !pending && <>
         <GameDetails game={game} />
         <form action={action} className="flex flex-col gap-4">

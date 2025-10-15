@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import { getUserContext } from "@/components/userContextProvider";
+import Loading from "@/components/loading";
 import TrophyButton from "@/components/button/trophyButton";
 import MessageOverlay from "./messageOverlay";
 import SubmitAnswer from "./submitAnswer";
@@ -150,57 +151,64 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
 
   const canvasRoundId = (!pending && game.status === GameStatus.InProgress) ? (roundData as InProgressDataPayload).round_id : undefined;
 
-  return <div className="flex flex-col items-center gap-4">
-    {pending && <div>Loading...</div>}
-    {!pending && <>
-      <div className="flex items-center justify-center gap-2">
-        <TopBar game={game} player={player} roundData={roundData} />
+  return <>
+    {pending &&
+      <div className="flex items-center justify-center w-full">
+        <Loading className="mt-16 size-20" />
       </div>
-      <div className="size-168 border-4 border-[color:var(--primary)] rounded-xl">
-        <MessageOverlay
-          visible={showMessage}
-          disableFade={disableFade}
-          containerClassName="size-166 border-2 border-[color:var(--primary)] rounded-l"
-          onFadeComplete={handleFadeComplete}
-          fadeDelayMs={fadeDelay}
-          fadeDurationMs={fadeDuration}
-        >
-          <div className="flex flex-col items-center">
-            {messageTitle && <div className="text-lg font-bold mb-2">
-              {messageTitle}
-            </div>}
-            <div className="text-4xl font-bold text-[color:var(--primary)]">
-              {message}
+    }
+
+    {!pending &&
+      <div className="flex flex-col items-center gap-4">
+        <div className="flex items-center justify-center gap-2">
+          <TopBar game={game} player={player} roundData={roundData} />
+        </div>
+        <div className="size-168 border-4 border-[color:var(--primary)] rounded-xl">
+          <MessageOverlay
+            visible={showMessage}
+            disableFade={disableFade}
+            containerClassName="size-166 border-2 border-[color:var(--primary)] rounded-l"
+            onFadeComplete={handleFadeComplete}
+            fadeDelayMs={fadeDelay}
+            fadeDurationMs={fadeDuration}
+          >
+            <div className="flex flex-col items-center">
+              {messageTitle && <div className="text-lg font-bold mb-2">
+                {messageTitle}
+              </div>}
+              <div className="text-4xl font-bold text-[color:var(--primary)]">
+                {message}
+              </div>
+              {subText && <div className="text-lg mt-2">
+                {subText}
+              </div>}
             </div>
-            {subText && <div className="text-lg mt-2">
-              {subText}
-            </div>}
-          </div>
-        </MessageOverlay>
-        {player.isPainter && <GameCanvas roundId={canvasRoundId} getBrush={() => brush.current} />}
-        {!player.isPainter && <ReadOnlyGameCanvas gameId={game.id} roundId={canvasRoundId} />}
+          </MessageOverlay>
+          {player.isPainter && <GameCanvas roundId={canvasRoundId} getBrush={() => brush.current} />}
+          {!player.isPainter && <ReadOnlyGameCanvas gameId={game.id} roundId={canvasRoundId} />}
+        </div>
+        <div className="flex w-full items-center justify-center gap-4">
+          {(game.status === GameStatus.Ready || game.status === GameStatus.TurnEnd || game.status === GameStatus.RoundEnd) &&
+            <span className="h-14.5 font-bold text-xl">Doodle fast. Guess faster!</span>
+          }
+          {game.status === GameStatus.InProgress && player.isPainter &&
+            <BrushOptions onChange={handleBrushChange} />
+          }
+          {game.status === GameStatus.InProgress && !player.isPainter &&
+            <Reactions roundId={canvasRoundId} collapsible={!player.hasAnswered}
+              uncollapsibleClassName="w-full"
+            />
+          }
+          {game.status === GameStatus.InProgress && !player.isPainter && !player.hasAnswered &&
+            <SubmitAnswer roundId={canvasRoundId} onSubmit={handleResult} />
+          }
+          {game.status === GameStatus.Completed &&
+            <Link href={`/summary/${game.name}`}>
+              <TrophyButton className="w-50">Summary</TrophyButton>
+            </Link>
+          }
+        </div>
       </div>
-      <div className="flex w-full items-center justify-center gap-4">
-        {(game.status === GameStatus.Ready || game.status === GameStatus.TurnEnd || game.status === GameStatus.RoundEnd) &&
-          <span className="h-14.5 font-bold text-xl">Doodle fast. Guess faster!</span>
-        }
-        {game.status === GameStatus.InProgress && player.isPainter &&
-          <BrushOptions onChange={handleBrushChange} />
-        }
-        {game.status === GameStatus.InProgress && !player.isPainter &&
-          <Reactions roundId={canvasRoundId} collapsible={!player.hasAnswered}
-            uncollapsibleClassName="w-full"
-          />
-        }
-        {game.status === GameStatus.InProgress && !player.isPainter && !player.hasAnswered &&
-          <SubmitAnswer roundId={canvasRoundId} onSubmit={handleResult} />
-        }
-        {game.status === GameStatus.Completed &&
-          <Link href={`/summary/${game.name}`}>
-            <TrophyButton className="w-50">Summary</TrophyButton>
-          </Link>
-        }
-      </div>
-    </>}
-  </div>;
+    }
+  </>;
 };
