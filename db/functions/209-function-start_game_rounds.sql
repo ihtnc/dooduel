@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION app.start_game_rounds(game_state_id integer)
   RETURNS boolean
-  SET search_path = app
+  SET search_path = app, public
 AS $$
   DECLARE game_record game_state;
   DECLARE game_round integer;
@@ -22,6 +22,10 @@ BEGIN
   ORDER BY random()
   LIMIT 1
   INTO next_player;
+
+  IF NOT FOUND then
+    RETURN FALSE;
+  END IF;
 
   game_round := COALESCE(game_record.current_round, 1);
 
