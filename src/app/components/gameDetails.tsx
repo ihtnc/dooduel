@@ -24,7 +24,7 @@ export default function GameDetails({
     <div className={cn("flex", "flex-col", "items-center", "justify-center", "w-fit", className?.split(" ") || [])}>
       {game && <>
         <div className="flex items-center h-[50px] w-full">
-          <h1 className="font-bold font-primary-xl">{game.name}</h1>
+          <h1 className="font-primary-xl">{game.name}</h1>
           {game.hasPassword && <LockIcon alt="Password protected" className="scale-60" />}
         </div>
         <div className="-mt-4 flex items-center w-full gap-4">

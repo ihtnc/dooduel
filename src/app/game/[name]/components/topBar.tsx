@@ -42,7 +42,7 @@ export default function TopBar({ game, player, roundData }: { game: CurrentGameD
     {show === ShowInfo.ForPainter &&
       <>
         <span className="flex font-bold">Round {currentRound}:</span>
-        <div className="flex items-center justify-center gap-1">Your word is <span className="font-bold text-[color:var(--primary)] font-primary-xl">{wordToPaint}</span></div>
+        <div className="flex items-center justify-center gap-1">Your word is <span className="text-[color:var(--primary)] font-primary-xl">{wordToPaint}</span></div>
       </>
     }
     {show === ShowInfo.ForGuesser &&

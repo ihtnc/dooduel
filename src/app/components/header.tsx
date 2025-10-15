@@ -20,7 +20,7 @@ const Header = () => {
       </Link>
       <div className="flex items-center">
         <BrushesIcon alt="Dooduel logo" />
-        <h1 className="font-bold font-primary-lg">Dooduel</h1>
+        <h1 className="font-primary-lg">Dooduel</h1>
       </div>
       <Link href={`/player?prev=${pathName}`} className={cn("m-1", "rounded-xl",
         "hover:border-[color:var(--secondary)]", "hover:bg-[color:var(--primary)]", "hover:border-4", "hover:m-0",

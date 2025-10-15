@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import HomeButton from "@/components/button/homeButton";
-import MissingBrushIcon from "@/components/icons/missingBrushIcon";
+import BrokenBrushIcon from "@/components/icons/brokenBrushIcon";
 
 export default function NotFoundPage() {
   return (
     <div className="flex flex-col items-center justify-center p-8">
-      <MissingBrushIcon alt="Not found" className="scale-150 mb-8" />
-      <h1 className="mb-4 font-subheading">That doesn&apos;t seem to exist</h1>
+      <BrokenBrushIcon alt="Error" className="scale-150 mb-8" />
+      <h1 className="mb-4 font-subheading">That shouldn&apos;t happen</h1>
       <Link href="/">
         <HomeButton imageAlt="Home" className="w-50">
           Home

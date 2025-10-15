@@ -154,7 +154,7 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
   return <>
     {pending &&
       <div className="flex items-center justify-center w-full">
-        <Loading className="mt-16 size-20" />
+        <Loading className="mt-16 scale-150" />
       </div>
     }
 
@@ -176,7 +176,7 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
               {messageTitle && <div className="text-lg font-bold mb-2">
                 {messageTitle}
               </div>}
-              <div className="font-bold text-[color:var(--primary)] font-primary-4xl">
+              <div className="text-[color:var(--primary)] font-primary-4xl">
                 {message}
               </div>
               {subText && <div className="text-lg mt-2">
@@ -189,7 +189,7 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
         </div>
         <div className="flex w-full items-center justify-center gap-4">
           {(game.status === GameStatus.Ready || game.status === GameStatus.TurnEnd || game.status === GameStatus.RoundEnd) &&
-            <span className="h-14.5 font-bold font-primary-lg">Doodle fast. Guess faster!</span>
+            <span className="h-14.5 font-primary-lg">Doodle fast. Guess faster!</span>
           }
           {game.status === GameStatus.InProgress && player.isPainter &&
             <BrushOptions onChange={handleBrushChange} />

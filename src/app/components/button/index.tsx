@@ -26,7 +26,7 @@ export default function Button({
   return (
     <button
       onClick={onClick}
-      className={cn("border-4 border-[color:var(--primary)]", "font-bold", "rounded-xl",
+      className={cn("border-4 border-[color:var(--primary)]", "rounded-xl",
         "hover:border-[color:var(--secondary)]", "hover:bg-[color:var(--primary)]", "hover:text-white",
         "dark:hover:bg-[color:var(--secondary)]",
         "disabled:opacity-50", "disabled:cursor-not-allowed",

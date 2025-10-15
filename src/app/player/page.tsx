@@ -19,7 +19,7 @@ export default function PlayerPage() {
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
-      <h1 className="text-2xl font-bold mb-6 font-subheading">Your details</h1>
+      <h1 className="mb-6 font-subheading">Your details</h1>
       <AvatarEditor code={avatar} onChange={setAvatar} />
       <form action={action} className="flex flex-col gap-4 items-center">
         <div className="flex items-center gap-2">

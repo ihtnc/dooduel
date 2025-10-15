@@ -41,13 +41,12 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
         return;
       }
 
+      await updateAvatar(game.id, user?.playerName || '', user?.code || '', user?.avatar || '');
+
       const players = await getPlayers(game.id, user?.playerName || '', user?.code || '');
       if (players == null) {
-        router.replace("/not-found");
-        return;
+        throw new Error("Game has no players");
       }
-
-      await updateAvatar(game.id, user?.playerName || '', user?.code || '', user?.avatar || '');
 
       setGame(game);
       setPlayers(players);
@@ -183,7 +182,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
     <div className="flex flex-col align-self-start items-center mt-24">
       {pending &&
         <div className="flex h-full">
-          <Loading className="-mt-16 self-center size-20" />
+          <Loading className="-mt-16 self-center scale-150" />
         </div>
       }
       {game && player && !pending && <>
