@@ -39,6 +39,7 @@ BEGIN
   LEFT JOIN game_rounds gr ON g.id = gr.game_id
   LEFT JOIN player p ON gr.painter_id = p.id
   LEFT JOIN game_words gw ON gr.game_word_id = gw.id
+  WHERE g.id = game_details.game_id
   ORDER BY gr.created_at DESC
   INTO latest_round
   LIMIT 1;
