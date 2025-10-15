@@ -31,13 +31,13 @@ export default function Home() {
 
   return (
     <main className="flex flex-col justify-center items-center gap-8">
-      {user && <h1 className="text-4xl sm:text-5xl font-bold text-center">Welcome, {user.playerName}!</h1>}
       {pending &&
         <div className="flex h-full">
           <Loading className="-mt-16 self-center size-20" />
         </div>
       }
       {!pending && <>
+        {user && <h1 className="font-bold text-center font-heading">Welcome, {user.playerName}!</h1>}
         {game && <Link href={`/game/${game.name}`}>
           <ResumeButton className="w-50">Resume</ResumeButton>
         </Link>}

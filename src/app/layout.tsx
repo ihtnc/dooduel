@@ -4,6 +4,7 @@ import { UserContextProvider } from "@/components/userContextProvider";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { getSession } from "@utilities/session";
+import { PrimaryFont } from "@fonts";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -30,7 +31,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased max-w-5xl mx-auto`}
+        className={`${geistSans.variable} ${geistMono.variable} ${PrimaryFont.variable} antialiased max-w-5xl mx-auto`}
       >
         <UserContextProvider user={session}>
           <section className="flex flex-col h-screen min-h-170 gap-5">

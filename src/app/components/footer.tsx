@@ -12,7 +12,7 @@ const Footer = () => {
       <div className="flex flex-row gap-2">
         <div className="flex items-center">
           <BrushesIcon alt="Dooduel logo" className="size-6 mr-1" />
-          Dooduel &copy; by&nbsp;<Link href="https://github.com/ihtnc" className="hover:underline font-bold text-[var(--primary)]" target="blank" rel="noopener noreferrer">ihtnc</Link>
+          <span className="font-primary">Dooduel &copy;</span>&nbsp;by&nbsp;<Link href="https://github.com/ihtnc" className="hover:underline font-bold text-[var(--primary)]" target="blank" rel="noopener noreferrer">ihtnc</Link>
         </div>
         <span className="scale-75 font-bold mt-0.5 text-[var(--primary)]">|</span>
         <Link href="https://github.com/ihtnc/dooduel" target="blank" rel="noopener noreferrer"

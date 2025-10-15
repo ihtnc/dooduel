@@ -46,7 +46,7 @@ export default function Button({
         />
       )}
       {children && (
-        <div className={cn("text-start", "w-20", ...childrenClassName.split(" "))}>
+        <div className={cn("text-start", "w-20", "font-primary", ...childrenClassName.split(" "))}>
           {children}
         </div>
       )}

@@ -57,7 +57,7 @@ export default function SummaryPage({ params }: { params: Promise<{ name: string
       }
       {game && !pending && <>
         <GameDetails game={game} />
-        <div className="flex flex-row items-center text-lg font-bold text-[var(--primary)] gap-2">
+        <div className="flex flex-row items-center font-bold font-subheading gap-2">
           <TrophyIcon alt="Leaderboard" className="-mt-2" />
           Leaderboard
         </div>

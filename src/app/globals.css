@@ -7,6 +7,42 @@
   --foreground: #37353E;
 }
 
+.font-primary {
+  @apply font-[family-name:var(--font-primary)] text-2xl;
+}
+
+.font-primary-lg {
+  @apply font-[family-name:var(--font-primary)] text-3xl;
+}
+
+.font-primary-xl {
+  @apply font-[family-name:var(--font-primary)] text-4xl;
+}
+
+.font-primary-2xl {
+  @apply font-[family-name:var(--font-primary)] text-5xl;
+}
+
+.font-primary-3xl {
+  @apply font-[family-name:var(--font-primary)] text-6xl;
+}
+
+.font-primary-4xl {
+  @apply font-[family-name:var(--font-primary)] text-7xl;
+}
+
+.font-primary-5xl {
+  @apply font-[family-name:var(--font-primary)] text-8xl;
+}
+
+.font-heading {
+  @apply font-[family-name:var(--font-primary)] text-7xl sm:text-8xl text-[var(--primary)];
+}
+
+.font-subheading {
+  @apply font-[family-name:var(--font-primary)] text-5xl text-[var(--primary)];
+}
+
 @theme {
   --primary: #715A5A;
   --secondary: #44444E;
@@ -22,5 +58,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }

@@ -65,7 +65,7 @@ export default function PlayerList({
 
   return (
     <div className="flex flex-col items-center min-w-2xs gap-4">
-      {title && <div className="text-center mt-4 -mb-2"><h1 className="text-2xl font-bold">{title}</h1></div>}
+      {title && <div className="text-center mt-4 -mb-2"><h1 className="font-bold font-primary-xl">{title}</h1></div>}
       <ul className="w-full border-t-4 border-t-[color:var(--primary)] pt-2">
         {sorted.map((player, index) => (
           <li key={player.name} className="flex flex-row">
