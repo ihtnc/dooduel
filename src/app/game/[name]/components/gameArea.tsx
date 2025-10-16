@@ -173,13 +173,13 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
             fadeDurationMs={fadeDuration}
           >
             <div className="flex flex-col items-center">
-              {messageTitle && <div className="text-lg font-bold mb-2">
+              {messageTitle && <div className="text-lg font-bold mb-2 text-center">
                 {messageTitle}
               </div>}
-              <div className="text-[color:var(--primary)] font-primary-4xl">
+              <div className="text-[color:var(--primary)] font-primary-4xl text-center">
                 {message}
               </div>
-              {subText && <div className="text-lg mt-2">
+              {subText && <div className="text-lg mt-2 text-center">
                 {subText}
               </div>}
             </div>

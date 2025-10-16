@@ -8,7 +8,7 @@ import LeaveGame from "@/components/leaveGame";
 import Loading from "@/components/loading";
 import PlayerList from "@/components/playerList";
 import { getPlayers } from "@/components/playerList/actions";
-import TrophyIcon from "@/components/icons/trophyIcon";
+import PodiumIcon from "@/components/icons/podiumIcon";
 import { getCurrentGame } from "./actions";
 import { GameStatus, type PlayerDetails, type CurrentGameDetails } from "@types";
 
@@ -57,7 +57,7 @@ export default function SummaryPage({ params }: { params: Promise<{ name: string
       {game && !pending && <>
         <GameDetails game={game} />
         <div className="flex flex-row items-center font-subheading gap-2">
-          <TrophyIcon alt="Leaderboard" className="-mt-2" />
+          <PodiumIcon alt="Leaderboard" className="-mt-2 scale-120" />
           Leaderboard
         </div>
         <PlayerList players={players}

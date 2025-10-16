@@ -45,7 +45,9 @@ export default function RandomTip() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (<>
-    {tips[tipIdx]}
-  </>);
+  return (
+    <span className="text-center">
+      {tips[tipIdx]}
+    </span>
+  );
 };

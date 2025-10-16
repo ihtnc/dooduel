@@ -22,7 +22,7 @@ export default function PlayerListItem({
           {<Avatar alt={`${player.name} avatar`} code={player.avatar} className="scale-60" />}
           <span className="-ml-4">{player.name}</span>
           {player.isPainter && <span className="-ml-4 -mr-3"><BrushIcon alt="Currently doodling" className="scale-50" /></span>}
-          {player.currentScore === 0 && player.hasAnswered && <span className="-ml-3 -mr-1"><CheckIcon alt="Has answered" className="scale-50" /></span>}
+          {player.currentScore === 0 && player.hasAnswered && <span className="ml-auto -mr-1"><CheckIcon alt="Has answered" className="scale-50" /></span>}
           {player.currentScore > 0 && <span className="ml-auto pr-2">{Math.floor(player.currentScore)}</span>}
         </div>
       </>}

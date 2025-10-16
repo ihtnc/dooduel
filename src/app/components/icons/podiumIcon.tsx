@@ -1,11 +1,11 @@
 import Icon from "./";
 import type { IconProps } from "./types";
 
-export default function TrophyIcon({
+export default function PodiumIcon({
   alt,
   className
 }: IconProps) {
   return (
-    <Icon src="/icons/trophy.png" alt={alt} className={className} />
+    <Icon src="/icons/podium.png" alt={alt} className={className} />
   );
 };
