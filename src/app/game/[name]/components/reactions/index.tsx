@@ -89,49 +89,49 @@ export default function Reactions({
               reactionType="star"
               collapsible={collapsible}
               onClick={handleReaction}
-              selectedReaction={reaction}
+              selected={reaction === "star"}
             />
             <Reaction
               reactionType="love"
               collapsible={collapsible}
               onClick={handleReaction}
-              selectedReaction={reaction}
+              selected={reaction === "love"}
             />
             <Reaction
               reactionType="like"
               collapsible={collapsible}
               onClick={handleReaction}
-              selectedReaction={reaction}
+              selected={reaction === "like"}
             />
             <Reaction
               reactionType="happy"
               collapsible={collapsible}
               onClick={handleReaction}
-              selectedReaction={reaction}
+              selected={reaction === "happy"}
             />
             <Reaction
               reactionType="amused"
               collapsible={collapsible}
               onClick={handleReaction}
-              selectedReaction={reaction}
+              selected={reaction === "amused"}
             />
             <Reaction
               reactionType="surprised"
               collapsible={collapsible}
               onClick={handleReaction}
-              selectedReaction={reaction}
+              selected={reaction === "surprised"}
             />
             <Reaction
               reactionType="confused"
               collapsible={collapsible}
               onClick={handleReaction}
-              selectedReaction={reaction}
+              selected={reaction === "confused"}
             />
             <Reaction
               reactionType="disappointed"
               collapsible={collapsible}
               onClick={handleReaction}
-              selectedReaction={reaction}
+              selected={reaction === "disappointed"}
             />
         </div>
       </div>

@@ -17,7 +17,7 @@ export default function LightbulbButton({
       disabled={disabled}
       type={type}
       className={className}
-      imageClassName="-mt-2 scale-75 group-hover:scale-95"
+      imageClassName="-mt-2 -ml-4 scale-75 group-hover:scale-95"
       childrenClassName="-ml-3"
     >
       {children}

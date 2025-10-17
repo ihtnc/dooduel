@@ -251,7 +251,7 @@ export const getGameCompletedSubText = (totalScore: number): string => {
   const score = Math.floor(totalScore);
   const options = [
     `Your final score: ${score}`,
-    `You scored a total of ${score} points'!`,
+    `You scored a total of ${score} points!`,
     `${score} points earned!`,
     `${score} points! Nice!`,
     `Final tally: ${score}`,

@@ -12,11 +12,6 @@ const reactionMap: Record<string, { src: string, alt: string, className?: string
     "disappointed": { src: "/icons/disappointed.png", alt: "Disappointed" }
   };
 
-const getBaseReactionClass = (selected: boolean, collapsible: boolean, normalScale: number = 90, enlargedScale: number = 120) => cn(
-  `scale-${normalScale}`,
-  `group-hover:scale-${enlargedScale}`,
-  selected && !collapsible ? `scale-${enlargedScale} border-b-[color:var(--primary)] border-b-4 rounded-sm` : ""
-);
 export const getReactionSrc = (reaction: string = "") => reactionMap[reaction]?.src || "/icons/add-emoji.png";
 export const getReactionAlt = (reaction: string = "") => reactionMap[reaction]?.alt || "Add Reaction";
 export const getReactionClass = (reaction: string = "") => cn(reactionMap[reaction]?.className?.split(" ") || []);
@@ -24,23 +19,27 @@ export const getReactionClass = (reaction: string = "") => cn(reactionMap[reacti
 export default function Reaction ({
   reactionType,
   collapsible = false,
-  selectedReaction = "",
+  selected = false,
   className = "",
   onClick
 }: {
   reactionType: string,
   collapsible?: boolean,
-  selectedReaction?: string | null,
+  selected?: boolean,
   className?: string,
   onClick?: (reactionType: string) => void
 }) {
   return <div className={cn("cursor-pointer", "group",
+    selected && !collapsible ? "pb-1 border-[color:var(--primary)] border-b-4" : "",
     className
   )}>
     <Icon
       src={getReactionSrc(reactionType)}
       alt={getReactionAlt(reactionType)}
-      className={cn(getBaseReactionClass(selectedReaction === reactionType, collapsible, 70, 100))}
+      className={cn(
+        collapsible ? "scale-70 group-hover:scale-100" : "scale-90 group-hover:scale-120",
+        selected && !collapsible ? "scale-120 " : ""
+      )}
       onClick={() => onClick?.(reactionType)}
     />
   </div>;
