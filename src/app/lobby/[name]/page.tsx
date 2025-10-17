@@ -82,6 +82,8 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
     return () => { client.removeChannel(channel); }
   }, [game, players, user?.playerName]);
 
+  const hasNotEnoughPlayers = players.filter((p) => p.active).length < 2;
+
   return (
     <div className="flex flex-col align-self-start items-center place-items-start mt-24 gap-4">
       {pending &&
@@ -94,7 +96,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
         <form action={action} className="flex flex-col gap-4">
           <input type="hidden" name="creator" value={user?.playerName} />
           <input type="hidden" name="code" value={game?.code} />
-          <BrushButton className="w-50" disabled={startPending || !user} type="submit" imageAlt="Start game">
+          <BrushButton className="w-50" disabled={startPending || !user || hasNotEnoughPlayers} type="submit" imageAlt="Start game">
             {startPending ? "Starting..." : "Start"}
           </BrushButton>
           {update && <div className="text-red-600">{update.error}</div>}

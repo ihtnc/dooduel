@@ -27,10 +27,11 @@ BEGIN
     RAISE EXCEPTION 'game not found';
   END IF;
 
-  -- ensure there are at least 2 players
+  -- ensure there are at least 2 active players
   SELECT COUNT(*) INTO player_count
   FROM player
-  WHERE game_id = started_game.id;
+  WHERE game_id = started_game.id
+  AND active = true;
 
   IF player_count < 2 THEN
     RAISE EXCEPTION 'not enough players';
