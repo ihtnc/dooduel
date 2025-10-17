@@ -78,8 +78,8 @@ BEGIN
   answer_accuracy := similarity(answer, current_word.value);
 
   -- log the attempt
-  INSERT INTO game_answer_attempts(game_rounds_id, player_id, accuracy)
-  VALUES (current_word.game_rounds_id, selected_player.player_id, answer_accuracy);
+  INSERT INTO player_attempts(game_rounds_id, player_id, word, accuracy)
+  VALUES (current_word.game_rounds_id, selected_player.player_id, answer, answer_accuracy);
 
   -- insert or update turn details
   INSERT INTO player_turn(game_rounds_id, player_id, has_answered)
@@ -101,10 +101,10 @@ BEGIN
   speed_score_value := calculate_guesser_speed_score(current_word.started_drawing_at, current_word.difficulty);
 
   -- get all attempt accuracies for efficiency calculation
-  SELECT ARRAY_AGG(ga.accuracy) AS attempts
-  FROM game_answer_attempts ga
-  WHERE ga.game_rounds_id = current_word.game_rounds_id
-    AND ga.player_id = selected_player.player_id
+  SELECT ARRAY_AGG(pa.accuracy) AS attempts
+  FROM player_attempts pa
+  WHERE pa.game_rounds_id = current_word.game_rounds_id
+    AND pa.player_id = selected_player.player_id
   INTO attempt_details;
 
   -- max efficiency score = 440
