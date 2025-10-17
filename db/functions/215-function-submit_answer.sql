@@ -9,9 +9,9 @@ DECLARE
   current_log record;
   attempt_details numeric[];
   answer_accuracy numeric;
-  speed_score numeric;
-  accuracy_score numeric;
-  efficiency_score numeric;
+  speed_score_value numeric;
+  accuracy_score_value numeric;
+  efficiency_score_value numeric;
 BEGIN
   -- ensure player is active on the target game and it's not their turn to draw
   SELECT
@@ -62,11 +62,12 @@ BEGIN
     RAISE EXCEPTION 'invalid game state';
   END IF;
 
-  -- ensure player has not submitted an answer for this round yet
+  -- ensure player has not submitted a correct answer for this round yet
   SELECT *
-  FROM game_logs
+  FROM player_turn
   WHERE game_rounds_id = current_word.game_rounds_id
     AND player_id = selected_player.player_id
+    AND has_correct_answer = true
   INTO current_log
   LIMIT 1;
 
@@ -80,6 +81,12 @@ BEGIN
   INSERT INTO game_answer_attempts(game_rounds_id, player_id, accuracy)
   VALUES (current_word.game_rounds_id, selected_player.player_id, answer_accuracy);
 
+  -- insert or update turn details
+  INSERT INTO player_turn(game_rounds_id, player_id, has_answered)
+  VALUES (current_word.game_rounds_id, selected_player.player_id, true)
+  ON CONFLICT (game_rounds_id, player_id)
+  DO UPDATE SET has_answered = EXCLUDED.has_answered;
+
   IF answer_accuracy < current_word.similarity_threshold THEN
     RETURN answer_accuracy / current_word.similarity_threshold;
   END IF;
@@ -89,9 +96,9 @@ BEGIN
   --   added when a reaction is given at the end of the round
 
   -- max accuracy score = 50
-  accuracy_score := calculate_guesser_accuracy_score(answer_accuracy);
+  accuracy_score_value := calculate_guesser_accuracy_score(answer_accuracy);
   -- max speed score = 500
-  speed_score := calculate_guesser_speed_score(current_word.started_drawing_at, current_word.difficulty);
+  speed_score_value := calculate_guesser_speed_score(current_word.started_drawing_at, current_word.difficulty);
 
   -- get all attempt accuracies for efficiency calculation
   SELECT ARRAY_AGG(ga.accuracy) AS attempts
@@ -101,11 +108,16 @@ BEGIN
   INTO attempt_details;
 
   -- max efficiency score = 440
-  efficiency_score := calculate_guesser_efficiency_score(attempt_details, current_word.difficulty);
+  efficiency_score_value := calculate_guesser_efficiency_score(attempt_details, current_word.difficulty);
 
-  -- log the answer
-  INSERT INTO game_logs(game_rounds_id, player_id, answer, speed_score, accuracy_score, efficiency_score)
-  VALUES (current_word.game_rounds_id, selected_player.player_id, answer, speed_score, accuracy_score, efficiency_score);
+  -- update turn with scores and flag as having answered correctly
+  UPDATE player_turn
+  SET speed_score = speed_score_value,
+      accuracy_score = accuracy_score_value,
+      efficiency_score = efficiency_score_value,
+      has_correct_answer = true
+  WHERE game_rounds_id = current_word.game_rounds_id
+    AND player_id = selected_player.player_id;
 
   RETURN 1;
 END;

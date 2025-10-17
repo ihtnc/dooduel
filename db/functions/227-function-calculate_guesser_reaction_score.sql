@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION public.calculate_guesser_reaction_score(
-  has_answered boolean,
+  has_correct_answer boolean,
   has_reacted boolean,
   base_score numeric DEFAULT 10
 )
@@ -20,7 +20,7 @@ BEGIN
   -- this is to encourage players to react even if they don't know the answer
   --   since reactions are used to calculate the painter's score
   --   even though in reality, base reaction score is only 10
-  IF has_answered = TRUE THEN
+  IF has_correct_answer = TRUE THEN
     RETURN base_score;
   ELSE
     RETURN pity_score + base_score;

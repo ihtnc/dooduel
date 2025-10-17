@@ -56,11 +56,11 @@ BEGIN
     p.avatar,
     p.active,
     CASE WHEN p.id = current_game.current_player_id THEN true ELSE false END AS is_painter,
-    CASE WHEN gl.id IS NULL THEN false ELSE true END AS has_answered,
+    COALESCE(t.has_answered, false) AS has_answered,
     CASE WHEN current_game.status = 'completed' THEN p.score ELSE 0 END AS score
   FROM player p
-  LEFT JOIN game_logs gl
-    ON p.id = gl.player_id AND gl.game_rounds_id = current_round_id
+  LEFT JOIN player_turn t
+    ON p.id = t.player_id AND t.game_rounds_id = current_round_id
   WHERE p.game_id = current_game.game_id;
 END;
 $function$;

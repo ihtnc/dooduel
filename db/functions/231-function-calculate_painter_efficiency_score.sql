@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION public.calculate_painter_efficiency_score(
-  answer_times timestamp without time zone[],
+  correct_answer_times timestamp without time zone[],
   difficulty integer,
   base_score integer DEFAULT 200
 )
@@ -14,7 +14,7 @@ DECLARE
 BEGIN
   -- calculate score based on how close the answers were made to each other
 
-  IF (answer_times IS NULL OR array_length(answer_times, 1) = 0) THEN
+  IF (correct_answer_times IS NULL OR COALESCE(array_length(correct_answer_times, 1), 0) = 0) THEN
     RETURN 0;
   END IF;
 
@@ -26,7 +26,7 @@ BEGIN
   END;
 
   SELECT (1 - stddev_pop(EXTRACT(EPOCH FROM accuracy)))
-  FROM unnest(answer_times) AS accuracy
+  FROM unnest(correct_answer_times) AS accuracy
   INTO efficiency_value;
 
   efficiency_score := base_score * efficiency_value * score_modifier;

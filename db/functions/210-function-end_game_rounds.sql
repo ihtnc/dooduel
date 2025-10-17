@@ -66,24 +66,18 @@ BEGIN
   INSERT INTO tmp_player_scores(id, total_score)
   SELECT
     p.id,
-    COALESCE(l.speed_score, 0)
-      + COALESCE(l.accuracy_score, 0)
-      + COALESCE(l.efficiency_score, 0)
-      + public.calculate_guesser_reaction_score(
-          CASE WHEN l.id IS NOT NULL THEN TRUE ELSE FALSE END,
-          CASE WHEN gr.id IS NOT NULL THEN TRUE ELSE FALSE END
-        )
+    COALESCE(t.speed_score, 0)
+      + COALESCE(t.accuracy_score, 0)
+      + COALESCE(t.efficiency_score, 0)
+      + COALESCE(t.reaction_score, 0)
     as total_score
   FROM player p
   JOIN game g
     ON p.game_id = g.id
     AND g.id = game_record.game_id
-  LEFT JOIN game_logs l
-    ON p.id = l.player_id
-    AND l.game_rounds_id = current_game_rounds_id
-  LEFT JOIN game_reactions gr
-    ON p.id = gr.player_id
-    AND gr.game_rounds_id = current_game_rounds_id;
+  LEFT JOIN player_turn t
+    ON p.id = t.player_id
+    AND t.game_rounds_id = current_game_rounds_id;
 
   -- add painter score
   UPDATE tmp_player_scores

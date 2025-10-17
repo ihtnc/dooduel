@@ -20,7 +20,7 @@ BEGIN
   -- calculate score based on how many players provided reactions
 
   -- if no reactions were provided, score 0 points
-  IF reactions IS NULL OR array_length(reactions, 1) = 0 THEN
+  IF reactions IS NULL OR COALESCE(array_length(reactions, 1), 0) = 0 THEN
     RETURN 0;
   END IF;
 

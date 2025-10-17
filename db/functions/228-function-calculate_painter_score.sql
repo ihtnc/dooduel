@@ -31,16 +31,19 @@ BEGIN
     g.id as game_id,
     g.difficulty,
     gr.created_at as round_start,
-    COUNT(l.id)::integer as answer_count
+    COALESCE(COUNT(pt.has_correct_answer)::integer, 0) as correct_answer_count
   FROM game g
   JOIN game_rounds gr ON g.id = gr.game_id
-  JOIN game_logs l ON gr.id = l.game_rounds_id
+  LEFT JOIN player_turn pt
+    ON gr.id = pt.game_rounds_id
+      AND gr.painter_id <> pt.player_id
+      AND pt.has_correct_answer = true
   WHERE gr.id = round_id
   GROUP BY g.id, g.difficulty, gr.created_at
   INTO round_details;
 
   -- get relevant player details
-  SELECT COUNT(d.player_id)::integer
+  SELECT COALESCE(COUNT(d.player_id)::integer, 0)
   INTO attempt_count
   FROM (
     SELECT DISTINCT ga.player_id
@@ -60,7 +63,7 @@ BEGIN
 
   -- max accuracy score=400
   accuracy_score := public.calculate_painter_accuracy_score(
-    round_details.answer_count,
+    round_details.correct_answer_count,
     attempt_count,
     round_details.difficulty
   );
@@ -69,8 +72,9 @@ BEGIN
   efficiency_score := public.calculate_painter_efficiency_score(
     ARRAY(
       SELECT created_at
-      FROM game_logs
+      FROM player_turn
       WHERE game_rounds_id = round_id
+        AND has_correct_answer = true
     ),
     round_details.difficulty
   );

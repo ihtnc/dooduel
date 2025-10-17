@@ -6,8 +6,10 @@ AS $function$
 DECLARE
   game_details record;
   latest_round record;
+  has_score boolean;
+  reaction_score numeric;
 BEGIN
-  -- ensure player is active on the target round's game
+  -- ensure player is active and not the painter on the target round's game
   SELECT
     g.id AS game_id,
     gs.current_round,
@@ -20,7 +22,8 @@ BEGIN
   WHERE gr.id = round_id
     AND p.name ILIKE player_name
     AND p.code = player_code
-    AND p.active = true;
+    AND p.active = true
+    AND gr.painter_id <> p.id;
 
   IF NOT FOUND then
     RETURN false;
@@ -41,10 +44,24 @@ BEGIN
     RETURN false;
   END IF;
 
+  SELECT COALESCE(has_correct_answer, false) into has_score
+  FROM player_turn
+  WHERE game_rounds_id = round_id
+    AND player_id = game_details.player_id;
+
   INSERT INTO game_reactions(game_rounds_id, player_id, reaction)
   VALUES (round_id, game_details.player_id, reaction)
   ON CONFLICT (game_rounds_id, player_id)
   DO UPDATE SET reaction = EXCLUDED.reaction;
+
+  -- calculate reaction score
+  reaction_score = public.calculate_guesser_reaction_score(has_score, true);
+
+  -- insert or update player turn with reaction score
+  INSERT INTO player_turn(game_rounds_id, player_id, reaction_score)
+  VALUES (round_id, game_details.player_id, reaction_score)
+  ON CONFLICT (game_rounds_id, player_id)
+  DO UPDATE SET reaction_score = EXCLUDED.reaction_score;
 
   RETURN true;
 END;
