@@ -188,7 +188,7 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
           {!player.isPainter && <ReadOnlyGameCanvas gameId={game.id} roundId={canvasRoundId} />}
         </div>
         <div className="flex w-full items-center justify-center gap-4">
-          {(game.status === GameStatus.Ready || game.status === GameStatus.TurnEnd || game.status === GameStatus.RoundEnd) &&
+          {(game.status !== GameStatus.InProgress && game.status !== GameStatus.Completed) &&
             <span className="h-14.5 font-primary-lg">Doodle fast. Guess faster!</span>
           }
           {game.status === GameStatus.InProgress && player.isPainter &&

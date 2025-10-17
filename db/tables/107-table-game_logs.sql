@@ -7,6 +7,7 @@ CREATE TABLE public.game_logs (
     answer varchar NOT NULL,
     speed_score numeric NOT NULL,
     accuracy_score numeric NOT NULL,
+    efficiency_score numeric NOT NULL,
     created_at timestamp NOT NULL DEFAULT now()
 );
 
