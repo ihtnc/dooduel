@@ -91,7 +91,7 @@ BEGIN
   -- max accuracy score = 50
   accuracy_score := calculate_guesser_accuracy_score(answer_accuracy);
   -- max speed score = 500
-  speed_score := calculate_guesser_speed_score(current_word.started_drawing_at);
+  speed_score := calculate_guesser_speed_score(current_word.started_drawing_at, current_word.difficulty);
 
   -- get all attempt accuracies for efficiency calculation
   SELECT ARRAY_AGG(ga.accuracy) AS attempts

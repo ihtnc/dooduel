@@ -10,7 +10,6 @@ DECLARE
   accuracy_score numeric;
 BEGIN
   -- calculate score based on accuracy of the answer
-
   accuracy_score := (base_score * accuracy);
 
   RETURN accuracy_score;

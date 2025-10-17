@@ -85,6 +85,12 @@ BEGIN
     ON p.id = gr.player_id
     AND gr.game_rounds_id = current_game_rounds_id;
 
+  -- add painter score
+  UPDATE tmp_player_scores
+  SET total_score = total_score
+    + app.calculate_painter_score(current_game_rounds_id)
+  WHERE id = game_record.current_player_id;
+
   -- update player scores for the round
   UPDATE public.player p
   SET score = score + tmp.total_score

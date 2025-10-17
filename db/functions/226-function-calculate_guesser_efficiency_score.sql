@@ -42,9 +42,9 @@ BEGIN
 
   -- calculate difficulty modifier
   difficulty_modifier := (CASE
-    WHEN difficulty = 1 THEN 5
-    WHEN difficulty = 2 THEN 3.5
-    WHEN difficulty = 3 THEN 2
+    WHEN difficulty = 1 THEN 5   -- easy
+    WHEN difficulty = 2 THEN 3.5 -- medium
+    WHEN difficulty = 3 THEN 2   -- hard
     ELSE 1
     END
   );

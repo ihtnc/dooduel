@@ -10,7 +10,7 @@ AS $function$
 DECLARE
   pity_score numeric := 290;
 BEGIN
--- calculate score based on reaction
+  -- calculate score based on reaction
   IF has_reacted <> TRUE THEN
     RETURN 0;
   END IF;
