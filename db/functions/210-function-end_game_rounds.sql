@@ -58,6 +58,9 @@ BEGIN
   ORDER BY created_at DESC
   LIMIT 1;
 
+  -- add painter score
+  execute app.add_painter_score(current_game_rounds_id);
+
   -- get all player scores for the round
   CREATE TEMP TABLE IF NOT EXISTS tmp_player_scores ON COMMIT DROP AS
   SELECT id, score as total_score FROM public.player LIMIT 0;
@@ -78,12 +81,6 @@ BEGIN
   LEFT JOIN player_turn t
     ON p.id = t.player_id
     AND t.game_rounds_id = current_game_rounds_id;
-
-  -- add painter score
-  UPDATE tmp_player_scores
-  SET total_score = total_score
-    + app.calculate_painter_score(current_game_rounds_id)
-  WHERE id = game_record.current_player_id;
 
   -- update player scores for the round
   UPDATE public.player p

@@ -1,5 +1,5 @@
-CREATE OR REPLACE FUNCTION app.calculate_painter_score(round_id integer)
-  RETURNS numeric
+CREATE OR REPLACE FUNCTION app.add_painter_score(round_id integer)
+  RETURNS void
   LANGUAGE plpgsql
   SET search_path = app, public
 AS $function$
@@ -12,6 +12,16 @@ DECLARE
   efficiency_score numeric;
   reaction_score numeric;
 BEGIN
+  -- ensure painter has not been scored yet for this round
+  IF EXISTS (
+    SELECT 1
+    FROM player_turn
+    WHERE game_rounds_id = round_id
+      AND is_painter = true
+  ) THEN
+    RETURN;
+  END IF;
+
   -- get stroke details
   SELECT
     COUNT(id) as stroke_count,
@@ -23,7 +33,7 @@ BEGIN
 
   -- if no strokes were made, score 0 points
   IF NOT FOUND OR COALESCE(stroke_details.stroke_count, 0) = 0 THEN
-    RETURN 0;
+    RETURN;
   END IF;
 
   -- get relevant round details
@@ -31,29 +41,22 @@ BEGIN
     g.id as game_id,
     g.difficulty,
     gr.created_at as round_start,
-    COALESCE(COUNT(pt.has_correct_answer)::integer, 0) as correct_answer_count
+    gr.painter_id,
+    COALESCE(COUNT(pt.has_correct_answer)::integer, 0) as correct_answer_count,
+    COALESCE(COUNT(pt.has_answered)::integer, 0) as total_attempt_count
   FROM game g
   JOIN game_rounds gr ON g.id = gr.game_id
+  JOIN player p ON gr.painter_id = p.id
   LEFT JOIN player_turn pt
     ON gr.id = pt.game_rounds_id
       AND gr.painter_id <> pt.player_id
-      AND pt.has_correct_answer = true
   WHERE gr.id = round_id
-  GROUP BY g.id, g.difficulty, gr.created_at
+  GROUP BY g.id, g.difficulty, gr.created_at, gr.painter_id
   INTO round_details;
-
-  -- get relevant player details
-  SELECT COALESCE(COUNT(d.player_id)::integer, 0)
-  INTO attempt_count
-  FROM (
-    SELECT DISTINCT ga.player_id
-    FROM game_answer_attempts ga
-    WHERE ga.game_rounds_id = round_id
-  ) d;
 
   -- total score = 1000
 
-  -- max speed score=300
+  -- max speed score=200
   speed_score := public.calculate_painter_speed_score(
     round_details.round_start,
     stroke_details.stroke_start,
@@ -61,14 +64,14 @@ BEGIN
     round_details.difficulty
   );
 
-  -- max accuracy score=400
+  -- max accuracy score=300
   accuracy_score := public.calculate_painter_accuracy_score(
     round_details.correct_answer_count,
-    attempt_count,
+    round_details.total_attempt_count,
     round_details.difficulty
   );
 
-  -- max efficiency score=200
+  -- max efficiency score=300
   efficiency_score := public.calculate_painter_efficiency_score(
     ARRAY(
       SELECT created_at
@@ -76,18 +79,22 @@ BEGIN
       WHERE game_rounds_id = round_id
         AND has_correct_answer = true
     ),
+    stroke_details.stroke_start,
+    stroke_details.stroke_end,
     round_details.difficulty
   );
 
-  -- max reaction score=100
+  -- max reaction score=200
   reaction_score := public.calculate_painter_reaction_score(
     ARRAY(
       SELECT reaction
       FROM game_reactions
       WHERE game_rounds_id = round_id
+        AND player_id <> round_details.painter_id
     )
   );
 
-  return speed_score + accuracy_score + efficiency_score + reaction_score;
+  INSERT INTO player_turn(game_rounds_id, player_id, speed_score, accuracy_score, efficiency_score, reaction_score, is_painter)
+  VALUES(round_id, round_details.painter_id, speed_score, accuracy_score, efficiency_score, reaction_score, true);
 END;
 $function$;

@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.calculate_painter_accuracy_score(
   correct_players integer,
   attempted_players integer,
   difficulty integer,
-  base_score integer DEFAULT 400
+  base_score integer DEFAULT 200
 )
 RETURNS numeric
 LANGUAGE plpgsql

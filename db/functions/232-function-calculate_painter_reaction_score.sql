@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION public.calculate_painter_reaction_score(
   reactions character varying[],
-  base_score integer DEFAULT 100
+  base_score integer DEFAULT 200
 )
 RETURNS numeric
 LANGUAGE plpgsql
@@ -10,6 +10,8 @@ DECLARE
   positive_multiplier numeric := 1.25;
   neutral_multiplier numeric := 1;
   negative_multiplier numeric := -0.50;
+  -- since positive_multiplier is greater than 1, adjust the base_score value to keep max score = base_score
+  adjusted_base_score numeric := base_score / (positive_multiplier);
   total_count integer := 0;
   positive_count integer := 0;
   neutral_count integer := 0;
@@ -38,7 +40,7 @@ BEGIN
     (neutral_count * neutral_multiplier / total_count) +
     (negative_count * negative_multiplier / total_count);
 
-  reaction_score := base_score * reaction_value;
+  reaction_score := adjusted_base_score * reaction_value;
 
   RETURN reaction_score;
 END;
