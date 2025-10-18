@@ -82,7 +82,7 @@ export default function Reactions({
             "justify-center", "flex", "gap-2", "h-[58px]", "ml-2",
             "border-[var(--primary)]", "border-4", "rounded-xl",
             "bg-[var(--background)]",
-            collapsible ? "absolute left-0 top-0 z-100 w-130" : "border-transparent items-center"
+            collapsible ? "absolute left-0 top-0 z-50 w-130" : "border-transparent items-center"
           )}>
             {!collapsible && <span className="font-bold pr-2">{reactionText}</span>}
             <Reaction

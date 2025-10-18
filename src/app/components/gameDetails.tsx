@@ -1,3 +1,4 @@
+import { useState } from "react";
 import LockIcon from "@/components/icons/lockIcon";
 import EaselIcon from "@/components/icons/easelIcon";
 import ArtistIcon from "@/components/icons/artistIcon";
@@ -11,6 +12,8 @@ export default function GameDetails({
   game: GameDetails,
   className?: string
 }) {
+  const [showCopyText, setShowCopyText] = useState<boolean>(false);
+
   const getDifficulty = (difficulty: number) => {
     switch (difficulty) {
       case 1: return "Easy";
@@ -20,11 +23,29 @@ export default function GameDetails({
     }
   };
 
+  const handleNameClick = () => {
+    navigator.clipboard.writeText(game.name);
+    setShowCopyText(true);
+
+    setTimeout(() => {
+      setShowCopyText(false);
+    }, 1500);
+  };
+
   return (
     <div className={cn("flex", "flex-col", "items-center", "justify-center", "w-fit", className?.split(" ") || [])}>
       {game && <>
-        <div className="flex items-center h-[50px] w-full">
-          <h1 className="font-primary-xl">{game.name}</h1>
+        <div className="flex items-center h-[50px] w-full relative">
+          <span className={
+            cn("absolute",
+              "font-primary-xl", "text-[color:var(--primary)]", "bg-[color:var(--background)]",
+              "transition-opacity", "duration-300", "ease-in",
+            showCopyText ? "opacity-100 z-50" : "opacity-0 z-10",
+          )}>Copied!</span>
+          <h1 className={cn("font-primary-xl", "cursor-pointer",
+            "transition-opacity", "duration-300", "ease-out",
+            showCopyText ? "opacity-0 z-10 cursor-default pointer-events-none" : "opacity-100 z-50"
+          )} onClick={handleNameClick}>{game.name}</h1>
           {game.hasPassword && <LockIcon alt="Password protected" className="scale-60" />}
         </div>
         <div className="-mt-4 flex items-center w-full gap-4">
