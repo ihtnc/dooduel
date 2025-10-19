@@ -56,10 +56,10 @@ export default function SummaryPage({ params }: { params: Promise<{ name: string
       }
       {game && !pending && <>
         <GameDetails game={game} />
-        <div className="flex flex-row items-center font-subheading gap-2">
+        <h2 className="flex flex-row items-center font-subheading gap-2">
           <PodiumIcon alt="Leaderboard" className="-mt-2 scale-120" />
           Leaderboard
-        </div>
+        </h2>
         <PlayerList players={players}
           sortByScore={true}
           hightlightCurrentPlayer={true}

@@ -32,7 +32,7 @@ export default function CreatePage() {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <h1 className="mb-6 font-subheading">Create a new game</h1>
+      <h2 className="mb-6 font-subheading">Create a new game</h2>
       <form action={action} className="flex flex-col gap-4 items-center">
         <input type="hidden" name="creator" value={user?.playerName} />
         <input type="hidden" name="avatar" value={user?.avatar} />

@@ -22,7 +22,7 @@ export default function PlayerPage() {
   const prev = searchParams.get('prev') || "/";
 
   const navigateBack = () => {
-    router.replace(prev);
+    router.push(prev);
   };
 
   const handleTextHidden = () => {
@@ -31,7 +31,7 @@ export default function PlayerPage() {
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
-      <h1 className="mb-6 font-subheading">Your details</h1>
+      <h2 className="mb-6 font-subheading">Your details</h2>
       <AvatarEditor code={avatar} onChange={setAvatar} />
       <form action={action} className="flex flex-col gap-4 items-center">
         <div className="flex items-center gap-2">

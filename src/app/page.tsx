@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { getUserContext } from "@/components/userContextProvider";
 import BrushButton from "@/components/button/brushButton";
 import JoinButton from "@/components/button/joinButton";
@@ -10,8 +10,10 @@ import LeaveGame from "@/components/leaveGame";
 import Loading from "@/components/loading";
 import { getRecentGame } from "./actions";
 import type { GameDetails } from "@types";
+import InstructionsButton from "./components/button/instructionsButton";
 
 export default function Home() {
+  const router = useRouter();
   const user = getUserContext();
   const [pending, setPending] = useState(true);
   const [game, setGame] = useState<GameDetails | null>(null);
@@ -38,16 +40,11 @@ export default function Home() {
       }
       {!pending && <>
         {user && <h1 className="text-center font-heading">Welcome, {user.playerName}!</h1>}
-        {game && <Link href={`/game/${game.name}`}>
-          <ResumeButton className="w-50">Resume</ResumeButton>
-        </Link>}
+        {game && <ResumeButton className="w-50" onClick={() => router.push(`/game/${game?.name}`)}>Resume</ResumeButton>}
         {game && <LeaveGame game={game} />}
-        {!game && <Link href="/create">
-          <BrushButton className="w-50">Create</BrushButton>
-        </Link>}
-        {!game && <Link href="/join">
-          <JoinButton className="w-50">Join</JoinButton>
-        </Link>}
+        {!game && <BrushButton className="w-50" onClick={() => router.push("/create")}>Create</BrushButton>}
+        {!game && <JoinButton className="w-50" onClick={() => router.push("/join")}>Join</JoinButton>}
+        <InstructionsButton className="w-50" onClick={() => router.push('/how-to-play')}>How to Play</InstructionsButton>
       </>}
     </main>
   );
