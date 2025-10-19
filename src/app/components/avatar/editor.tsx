@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { cn } from "@utilities/index";
 import LeftButton from "@/components/button/leftButton";
@@ -20,20 +20,23 @@ export default function AvatarEditor({
 }) {
   const [parts, setParts] = useState<AvatarParts>();
 
-  useEffect(() => {
-    const parts = parseCode(code);
-    setParts(parts);
-
-  }, [code]);
-
-  const getRandomAvatar = () => {
+  const getRandomAvatar = useCallback(() => {
     const head = getRandomPart("head");
     const eye = getRandomPart("eye");
     const mouth = getRandomPart("mouth");
     const newAvatar = { head, eye, mouth };
     const newCode = getCode(newAvatar);
     onChange?.(newCode!);
-  };
+  }, [onChange]);
+
+  useEffect(() => {
+    const parts = parseCode(code);
+    setParts(parts);
+
+    if (!parts) {
+      getRandomAvatar();
+    }
+  }, [code, getRandomAvatar]);
 
   const changePart = (part: keyof AvatarParts, delta: number) => {
     if (!parts) { return; }

@@ -44,7 +44,6 @@ export default function PlayerPage() {
             onChange={(e) => setName(e.target.value)}
           />
         </div>
-        <input name="avatar" type="hidden" value={avatar} />
         <input type="hidden" name="avatar" value={avatar} />
         <input type="hidden" name="current_player_name" value={user?.playerName} />
         <input type="hidden" name="current_player_code" value={user?.code} />
@@ -60,7 +59,7 @@ export default function PlayerPage() {
             {pending ? "Saving..." : "Save"}
           </ProfileCheckButton>
         </TextOverlay>
-        {searchParams.has("prev") &&
+        {user && searchParams.has("prev") &&
           <ArrowLeftButton className="w-50" onClick={navigateBack} imageAlt="Go back">
             Back
           </ArrowLeftButton>

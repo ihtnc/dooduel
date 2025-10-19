@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@utilities/session";
 import { getClient } from "@utilities/supabase/server";
 
-const protectedRoutes = ["/create", "/game", "/lobby", "join"];
+const protectedRoutes = ["/create", "/join"];
 
 export default async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
@@ -14,7 +14,9 @@ export default async function middleware(req: NextRequest) {
   const session = await getSession();
 
   if (isProtectedRoute && !session?.playerName) {
-    return NextResponse.redirect(new URL("/player", req.nextUrl));
+    const url = new URL("/player", req.nextUrl);
+    url.searchParams.set("prev", req.nextUrl.pathname);
+    return NextResponse.redirect(url);
   }
 
   return NextResponse.next();

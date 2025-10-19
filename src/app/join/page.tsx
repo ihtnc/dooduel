@@ -1,7 +1,6 @@
 "use client";
 
 import { useActionState } from "react";
-import { useRouter } from "next/navigation";
 import { getUserContext } from "@/components/userContextProvider";
 import TextBox from "@/components/textBox";
 import TextOverlay from "@/components/textOverlay";
@@ -12,18 +11,12 @@ import { joinGame } from "./actions";
 import { cn } from "@utilities/index";
 
 export default function JoinPage() {
-  const router = useRouter();
   const [state, action, pending] = useActionState(joinGame, undefined);
   const user = getUserContext();
 
   const handleTextHidden = () => {
     if (state) { state.error = ""; }
   };
-
-  if (!user) {
-    router.replace("/player?prev=/join");
-    return;
-  }
 
   return (
     <div className="flex flex-col items-center justify-center">

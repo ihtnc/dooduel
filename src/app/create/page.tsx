@@ -1,7 +1,6 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { useRouter } from "next/navigation";
 import { getUserContext } from "@/components/userContextProvider";
 import Slider from "@/components/slider";
 import TextBox from "@/components/textBox";
@@ -16,7 +15,6 @@ import { GAME_ROUNDS_DEFAULT, GAME_ROUNDS_MAX, GAME_ROUNDS_MIN, GAME_DIFFICULTY_
 import { cn } from "@utilities/index";
 
 export default function CreatePage() {
-  const router = useRouter();
   const user = getUserContext();
   const [rounds, setRounds] = useState(GAME_ROUNDS_DEFAULT);
   const [state, action, pending] = useActionState(createGame, undefined);
@@ -24,11 +22,6 @@ export default function CreatePage() {
   const handleTextHidden = () => {
     if (state) { state.error = ""; }
   };
-
-  if (!user) {
-    router.replace("/player?prev=/create");
-    return;
-  }
 
   return (
     <div className="flex flex-col items-center justify-center">
