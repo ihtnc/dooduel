@@ -56,7 +56,7 @@ BEGIN
     p.avatar,
     p.active,
     CASE WHEN p.id = current_game.current_player_id THEN true ELSE false END AS is_painter,
-    COALESCE(t.has_answered, false) AS has_answered,
+    COALESCE(t.has_correct_answer, false) AS has_answered,
     CASE WHEN current_game.status = 'completed' THEN p.score ELSE 0 END AS score
   FROM player p
   LEFT JOIN player_turn t

@@ -49,10 +49,19 @@ export async function submitAnswer(prevState: FormState, formData: FormData) {
 
   const roundId = Number(submitAnswerData.round_id);
   if (Number.isNaN(roundId) || roundId <= 0) {
-    state.error = "invalid game state!";
+    state.error = "invalid round details";
   }
 
-  if (Object.keys(state).length > 0) { return state; }
+  if (Object.keys(state).length > 0) {
+    throw new Error("invalid game state", { cause: state });
+  }
+
+  const answer = submitAnswerData.answer;
+  if (!answer) { state.error = "Answer is required"; }
+
+  if (Object.keys(state).length > 0) {
+    return state;
+  }
 
   const client = await getClient();
   const args = {

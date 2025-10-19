@@ -23,7 +23,7 @@ BEGIN
 END;
 $function$;
 
-create trigger player_turn_inserts
+create trigger player_turn_changes
 after insert or update
 on public.player_turn
 for each row
