@@ -67,7 +67,7 @@ export default function AvatarEditor({
         <RightButton className="border-0 p-4 hover:border-4" onClick={() => changePart("mouth", 1)} imageAlt="Change mouth" />
       </div>
       <div className="col-start-2 mx-auto">
-        <DiceButton className="border-0 p-4 hover:border-4 hover:-m-1" onClick={getRandomAvatar} imageAlt="Randomise avatar" />
+        <DiceButton className="border-0 p-3 hover:border-4 hover:-m-1" onClick={getRandomAvatar} imageAlt="Randomise avatar" />
       </div>
     </div>
   );

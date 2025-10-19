@@ -44,18 +44,15 @@ export default function PlayerPage() {
             onChange={(e) => setName(e.target.value)}
           />
         </div>
-        <input
-          name="avatar"
-          type="hidden"
-          value={avatar}
-        />
-        <input type="hidden" name="prev" value={prev} />
+        <input name="avatar" type="hidden" value={avatar} />
+        <input type="hidden" name="avatar" value={avatar} />
+        <input type="hidden" name="current_player_name" value={user?.playerName} />
+        <input type="hidden" name="current_player_code" value={user?.code} />
+         <input type="hidden" name="prev" value={prev} />
         <TextOverlay
           className="min-w-50 w-fit h-[50px]"
           text={state?.error}
-          textClassName={cn("font-error", "truncate", "first-letter:capitalize",
-            "max-w-2xs", "w-2xs"
-          )}
+          textClassName={cn("font-error", "truncate")}
           showText={state?.error ? true : false}
           onTextHidden={handleTextHidden}
         >

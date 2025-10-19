@@ -7,7 +7,7 @@ BEGIN
   /*
     game:{id} event payloads
     new_player:    { id: number, name: string, avatar: string }
-    update_player: { id: number, active: bool, avatar: string, current_score: number }
+    update_player: { id: number, name: string, avatar: string, active: bool, current_score: number }
     player_answer: { id: number }
     round_start:   { painter_id: number }
     game_ready:    { id: number }

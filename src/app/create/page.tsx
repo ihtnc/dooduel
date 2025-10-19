@@ -74,8 +74,7 @@ export default function CreatePage() {
         <TextOverlay
           className="min-w-50 w-fit h-[50px]"
           text={state?.error}
-          textClassName={cn("font-error", "truncate", "first-letter:capitalize",
-            "max-w-2xs", "w-2xs"
+          textClassName={cn("font-error", "truncate"
           )}
           showText={state?.error ? true : false}
           onTextHidden={handleTextHidden}

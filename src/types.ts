@@ -42,6 +42,7 @@ export interface NewPlayerPayload extends PlayerPayload {
 };
 
 export interface PlayerUpdatePayload extends PlayerPayload {
+  name: string,
   active: boolean,
   avatar: string,
   current_score: number,

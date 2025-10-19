@@ -75,6 +75,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       const player = players.find((p) => p.id === payload.id);
       if (!player) { return; }
 
+      player.name = payload.name;
       player.active = payload.active;
       player.currentScore = payload.current_score;
       player.avatar = payload.avatar;

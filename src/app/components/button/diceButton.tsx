@@ -17,7 +17,7 @@ export default function DiceButton({
       disabled={disabled}
       type={type}
       className={className}
-      imageClassName="-my-1 scale-120 group-hover:scale-140"
+      imageClassName="-my-1 -ml-1 scale-120 group-hover:scale-140"
       childrenClassName="-ml-2"
     >
       {children}

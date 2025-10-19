@@ -66,6 +66,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       const player = players.find((p) => p.id === payload.id);
       if (!player) { return; }
 
+      player.name = payload.name;
       player.active = payload.active;
       player.currentScore = payload.current_score;
       player.avatar = payload.avatar;
@@ -105,9 +106,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
           <TextOverlay
             className="min-w-50 w-fit h-[50px]"
             text={update?.error}
-            textClassName={cn("font-error", "truncate", "first-letter:capitalize",
-              "max-w-2xs", "w-2xs"
-            )}
+            textClassName={cn("font-error", "truncate")}
             showText={update?.error ? true : false}
             onTextHidden={handleTextHidden}
           >

@@ -38,7 +38,7 @@ export default function TextOverlay({
       <span className={
         cn("absolute",
           "top-1/2", "left-1/2", "transform", "-translate-x-1/2", "-translate-y-1/2",
-          "text-center",
+          "text-center", "first-letter:capitalize",
           "transition-opacity", "duration-300", "ease-in",
           showCopyText ? "opacity-100 z-50" : "opacity-0 z-10",
           textClassName?.split(" ") || []

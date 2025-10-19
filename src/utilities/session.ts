@@ -49,6 +49,8 @@ export async function createSession(playerName: string, avatar: string) {
     sameSite: "lax",
     path: "/",
   });
+
+  return code;
 };
 
 export async function deleteSession() {
