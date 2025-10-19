@@ -17,12 +17,12 @@ export async function save(
 
   const playerName = playerData.player_name as string;
   if (!playerName) {
-    errors.player_name = "name is required.";
+    errors.error = "name is required.";
   }
 
   const avatar = playerData.avatar as string;
   if (!avatar) {
-    errors.avatar = "avatar is required.";
+    errors.error = "avatar is required.";
   }
 
   if (Object.keys(errors).length > 0) { return errors; }

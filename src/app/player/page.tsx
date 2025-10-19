@@ -4,10 +4,12 @@ import {  useActionState, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { getUserContext } from "@/components/userContextProvider";
 import TextBox from "@/components/textBox";
+import TextOverlay from "@/components/textOverlay";
 import ProfileCheckButton from "@/components/button/profileCheckButton";
 import AvatarEditor from "@/components/avatar/editor";
 import NameIcon from "@/components/icons/nameIcon";
 import { save } from "./actions";
+import { cn } from "@utilities/index";
 
 export default function PlayerPage() {
   const user = getUserContext();
@@ -16,6 +18,10 @@ export default function PlayerPage() {
   const [state, action, pending] = useActionState(save, {});
   const searchParams = useSearchParams();
   const prev = searchParams.get('prev') || "/";
+
+  const handleTextHidden = () => {
+    if (state) { state.error = ""; }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
@@ -30,7 +36,6 @@ export default function PlayerPage() {
             placeholder="Player name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            required
           />
         </div>
         <input
@@ -39,10 +44,19 @@ export default function PlayerPage() {
           value={avatar}
         />
         <input type="hidden" name="prev" value={prev} />
-        <ProfileCheckButton className="w-50" disabled={pending} type="submit" imageAlt="Save profile">
-          {pending ? "Saving..." : "Save"}
-        </ProfileCheckButton>
-        {state && <div className="text-red-600">{state.error}</div>}
+        <TextOverlay
+          className="min-w-50 w-fit h-[50px]"
+          text={state?.error}
+          textClassName={cn("font-error", "truncate", "first-letter:capitalize",
+            "max-w-2xs", "w-2xs"
+          )}
+          showText={state?.error ? true : false}
+          onTextHidden={handleTextHidden}
+        >
+          <ProfileCheckButton className="w-50" disabled={pending} type="submit" imageAlt="Save profile">
+            {pending ? "Saving..." : "Save"}
+          </ProfileCheckButton>
+        </TextOverlay>
       </form>
     </div>
   );

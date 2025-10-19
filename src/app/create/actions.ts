@@ -27,7 +27,9 @@ export async function createGame(prevState: FormState, formData: FormData) {
   const creator = createData.creator;
   if (!creator) { errors.creator = "creator is required"; }
 
-  if (Object.keys(errors).length > 0) { return errors; }
+  if (Object.keys(errors).length > 0) {
+    throw new Error("Invalid details", { cause: errors });
+  }
 
   const client = await getClient();
 

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import TextOverlay from "@/components/textOverlay";
 import LockIcon from "@/components/icons/lockIcon";
 import EaselIcon from "@/components/icons/easelIcon";
 import ArtistIcon from "@/components/icons/artistIcon";
@@ -26,29 +27,26 @@ export default function GameDetails({
   const handleNameClick = () => {
     navigator.clipboard.writeText(game.name);
     setShowCopyText(true);
+  };
 
-    setTimeout(() => {
-      setShowCopyText(false);
-    }, 1500);
+  const handleTextHidden = () => {
+    setShowCopyText(false);
   };
 
   return (
     <div className={cn("flex", "flex-col", "items-center", "justify-center", "w-fit", className?.split(" ") || [])}>
       {game && <>
-        <div className="flex items-center h-[50px] w-full relative">
-          <span className={
-            cn("absolute",
-              "font-primary-xl", "text-[color:var(--primary)]", "bg-[color:var(--background)]",
-              "transition-opacity", "duration-300", "ease-in",
-            showCopyText ? "opacity-100 z-50" : "opacity-0 z-10",
-          )}>Copied!</span>
-          <h1 className={cn("font-primary-xl", "cursor-pointer",
-            "transition-opacity", "duration-300", "ease-out",
-            showCopyText ? "opacity-0 z-10 cursor-default pointer-events-none" : "opacity-100 z-50"
-          )} onClick={handleNameClick}>{game.name}</h1>
+        <TextOverlay
+          text="Copied!"
+          showText={showCopyText}
+          className="flex h-[50px] max-w-2xs w-2xs"
+          textClassName={cn("font-primary-xl", "text-[color:var(--primary)]", "bg-[color:var(--background)]")}
+          onTextHidden={handleTextHidden}
+        >
+          <h1 className={cn("font-primary-xl", "cursor-pointer", "truncate")} onClick={handleNameClick}>{game.name}</h1>
           {game.hasPassword && <LockIcon alt="Password protected" className="scale-60" />}
-        </div>
-        <div className="-mt-4 flex items-center w-full gap-4">
+        </TextOverlay>
+        <div className="-mt-4 flex items-center max-w-xs w-2xs gap-4 justify-center">
           <div className="flex -ml-4 items-center">
             <EaselIcon alt="Number of rounds" className="scale-60 -mr-2" /><strong>: {game.rounds}</strong>
           </div>

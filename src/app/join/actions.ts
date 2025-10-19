@@ -9,14 +9,18 @@ export async function joinGame(prevState: FormState, formData: FormData) {
   const errors: FormState = {};
   const joinData = parseFormData(formData);
 
+  const password = joinData.password;
+  const name = joinData.name;
+  if (!name) { errors.error = "Game name is required"; }
+
+  if (Object.keys(errors).length > 0) { return errors; }
+
   const playerName = joinData.player_name;
   if (!playerName) { errors.player_name = "player_name is required"; }
 
-  const password = joinData.password;
-  const name = joinData.name;
-  if (!name) { errors.name = "name is required"; }
-
-  if (Object.keys(errors).length > 0) { return errors; }
+  if (Object.keys(errors).length > 0) {
+    throw new Error("Missing player details", { cause: errors });
+  }
 
   const player_name = joinData.player_name;
   const avatar = joinData.avatar;

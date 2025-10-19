@@ -43,9 +43,14 @@
   @apply font-[family-name:var(--font-primary)] text-5xl text-[var(--primary)];
 }
 
+.font-error {
+  @apply font-[family-name:var(--font-primary)] text-4xl text-[var(--error)];
+}
+
 @theme {
   --primary: #715A5A;
   --secondary: #44444E;
+  --error: var(--color-red-600);
 }
 
 @theme inline {

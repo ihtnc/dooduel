@@ -8,9 +8,11 @@ import GameDetails from "@/components/gameDetails";
 import PlayerList from "@/components/playerList";
 import { getPlayers } from "@/components/playerList/actions";
 import Loading from "@/components/loading";
+import TextOverlay from "@/components/textOverlay";
 import client from "@utilities/supabase/browser";
 import { getCreatedGame, startGame, updateAvatar } from "./actions";
 import type { CreatedGameDetails, NewPlayerPayload, PlayerDetails, PlayerUpdatePayload } from "@types";
+import { cn } from "@utilities/index";
 
 export default function GamePage({ params }: { params: Promise<{ name: string }> }) {
   const router = useRouter();
@@ -84,6 +86,10 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
 
   const hasNotEnoughPlayers = players.filter((p) => p.active).length < 2;
 
+  const handleTextHidden = () => {
+    if (update) { update.error = ""; }
+  };
+
   return (
     <div className="flex flex-col align-self-start items-center place-items-start mt-24 gap-4">
       {pending &&
@@ -96,10 +102,19 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
         <form action={action} className="flex flex-col gap-4">
           <input type="hidden" name="creator" value={user?.playerName} />
           <input type="hidden" name="code" value={game?.code} />
-          <BrushButton className="w-50" disabled={startPending || !user || hasNotEnoughPlayers} type="submit" imageAlt="Start game">
-            {startPending ? "Starting..." : "Start"}
-          </BrushButton>
-          {update && <div className="text-red-600">{update.error}</div>}
+          <TextOverlay
+            className="min-w-50 w-fit h-[50px]"
+            text={update?.error}
+            textClassName={cn("font-error", "truncate", "first-letter:capitalize",
+              "max-w-2xs", "w-2xs"
+            )}
+            showText={update?.error ? true : false}
+            onTextHidden={handleTextHidden}
+          >
+            <BrushButton className="w-50" disabled={startPending || !user || hasNotEnoughPlayers} type="submit" imageAlt="Start game">
+              {startPending ? "Starting..." : "Start"}
+            </BrushButton>
+          </TextOverlay>
         </form>
         <PlayerList players={players} title="Players" />
       </>}

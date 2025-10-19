@@ -37,7 +37,9 @@ export async function startGame(prevState: FormState, formData: FormData) {
   const creator = startData.creator;
   if (!creator) { errors.creator = "creator is required"; }
 
-  if (Object.keys(errors).length > 0) { return; }
+  if (Object.keys(errors).length > 0) {
+    throw new Error("Missing player details", { cause: errors });
+  }
 
   const client = await getClient();
 
