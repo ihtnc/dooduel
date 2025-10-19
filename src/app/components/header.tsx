@@ -13,6 +13,8 @@ const Header = () => {
   const user = getUserContext();
   const pathName = usePathname();
 
+  const playerLink = pathName === "/" ? "/player" : `/player?prev=${pathName}`;
+
   return (
     <header className="top-0 flex items-center p-4 gap-5 justify-between -mb-24">
       <Link href="/">
@@ -22,7 +24,7 @@ const Header = () => {
         <BrushesIcon alt="Dooduel logo" />
         <h1 className="font-primary-lg">Dooduel</h1>
       </div>
-      <Link href={`/player?prev=${pathName}`} className={cn("m-1", "rounded-xl",
+      <Link href={playerLink} className={cn("m-1", "rounded-xl",
         "hover:border-[color:var(--secondary)]", "hover:bg-[color:var(--primary)]", "hover:border-4", "hover:m-0",
         "dark:hover:bg-[color:var(--secondary)]",
 

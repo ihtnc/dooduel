@@ -1,23 +1,29 @@
 "use client";
 
 import {  useActionState, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { getUserContext } from "@/components/userContextProvider";
 import TextBox from "@/components/textBox";
 import TextOverlay from "@/components/textOverlay";
 import ProfileCheckButton from "@/components/button/profileCheckButton";
+import ArrowLeftButton from "@/components/button/arrowLeftButton";
 import AvatarEditor from "@/components/avatar/editor";
 import NameIcon from "@/components/icons/nameIcon";
 import { save } from "./actions";
 import { cn } from "@utilities/index";
 
 export default function PlayerPage() {
+  const router = useRouter();
   const user = getUserContext();
   const [name, setName] = useState(user?.playerName || "");
   const [avatar, setAvatar] = useState(user?.avatar || "");
   const [state, action, pending] = useActionState(save, {});
   const searchParams = useSearchParams();
   const prev = searchParams.get('prev') || "/";
+
+  const navigateBack = () => {
+    router.replace(prev);
+  };
 
   const handleTextHidden = () => {
     if (state) { state.error = ""; }
@@ -57,6 +63,11 @@ export default function PlayerPage() {
             {pending ? "Saving..." : "Save"}
           </ProfileCheckButton>
         </TextOverlay>
+        {searchParams.has("prev") &&
+          <ArrowLeftButton className="w-50" onClick={navigateBack} imageAlt="Go back">
+            Back
+          </ArrowLeftButton>
+        }
       </form>
     </div>
   );
