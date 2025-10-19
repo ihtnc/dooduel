@@ -1,6 +1,13 @@
-# dooduel
+# dooduel Supabase scripts
 
-Doodle fast. Guess faster!
+This repository is for the Dooduel application. It contains two main components: the frontend built with Next.js and the backend powered by Supabase.
 
-Draw, guess, and race against the clock! Take turns sketching secret words while friends try to guess them fast. The quicker the guess, the higher the score. Speed, creativity, and clever guesses decide the winner!
+## Directory structure
 
+The [src](src) directory contains the source code for the frontend component while the [db](db) directory contains database scripts and configurations for the Supabase backend.
+
+View the `README.md` files for more details about the [frontend](src/README.md) and [backend](db/README.md) components.
+
+## Disclaimer
+
+This project was intended for educational and personal use only.
