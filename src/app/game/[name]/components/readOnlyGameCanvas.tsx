@@ -35,7 +35,7 @@ export default function ReadOnlyGameCanvas({
       currentData.current.push({ brush, segment });
     };
 
-    const channel = client.channel(`game:${gameId}:round:${roundId}`)
+    const channel = client.channel(`game:${gameId}:round:${roundId}`, { config: { private: true } })
       .on("broadcast", { event: "update_canvas" }, (msg) => {
         handleUpdateCanvas(msg.payload as unknown as CanvasUpdatePayload);
       }).subscribe();

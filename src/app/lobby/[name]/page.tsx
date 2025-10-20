@@ -73,7 +73,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       setPlayers([...players]);
     };
 
-    const channel = client.channel(`game:${game?.id}`, {  config: {  } })
+    const channel = client.channel(`game:${game?.id}`, { config: { private: true } })
       .on("broadcast", { event: "new_player" }, (msg) => {
         handleNewPlayer(msg.payload as unknown as NewPlayerPayload);
       })

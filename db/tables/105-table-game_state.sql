@@ -12,3 +12,4 @@ CREATE TABLE public.game_state (
 ALTER TABLE public.game_state ENABLE ROW LEVEL SECURITY;
 
 CREATE UNIQUE INDEX game_state_key ON public.game_state USING btree (game_id);
+CREATE INDEX idx_game_state_current_player_id ON public.game_state USING btree (current_player_id);

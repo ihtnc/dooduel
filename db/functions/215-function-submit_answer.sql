@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION public.submit_answer(round_id integer, player_name character varying, player_code character varying, answer character varying)
   RETURNS numeric
   LANGUAGE plpgsql
-  SET search_path = public
+  SET search_path = public, extensions
 AS $function$
 DECLARE
   selected_player record;

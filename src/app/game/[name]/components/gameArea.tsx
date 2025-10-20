@@ -151,6 +151,10 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
 
   const canvasRoundId = (!pending && game.status === GameStatus.InProgress) ? (roundData as InProgressDataPayload).round_id : undefined;
 
+  if (game.status !== GameStatus.InProgress) {
+    brush.current = DEFAULT_BRUSH;
+  }
+
   return <>
     {pending &&
       <div className="flex items-center justify-center w-full">

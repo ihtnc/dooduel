@@ -13,3 +13,5 @@ CREATE TABLE public.game_canvas (
 );
 
 ALTER TABLE public.game_canvas ENABLE ROW LEVEL SECURITY;
+
+CREATE INDEX idx_game_canvas_game_rounds_id ON public.game_canvas USING btree (game_rounds_id);

@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION app.evaluate_game_states()
   RETURNS void
-  SET search_path = app
+  SET search_path = app, public
 AS $$
 DECLARE
   game_record record;

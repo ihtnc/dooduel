@@ -13,3 +13,5 @@ ALTER TABLE public.game_rounds ENABLE ROW LEVEL SECURITY;
 
 CREATE UNIQUE INDEX unique_game_rounds_painter ON public.game_rounds USING btree (game_id, painter_id, round);
 CREATE UNIQUE INDEX unique_game_rounds_word ON public.game_rounds USING btree (game_id, game_word_id);
+CREATE INDEX idx_game_rounds_game_word_id ON public.game_rounds USING btree (game_word_id);
+CREATE INDEX idx_game_rounds_painter_id ON public.game_rounds USING btree (painter_id);

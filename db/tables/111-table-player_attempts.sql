@@ -10,3 +10,6 @@ CREATE TABLE public.player_attempts (
 );
 
 ALTER TABLE public.player_attempts ENABLE ROW LEVEL SECURITY;
+
+CREATE INDEX idx_player_attempts_game_rounds_id ON public.player_attempts USING btree (game_rounds_id);
+CREATE INDEX idx_player_attempts_player_id ON public.player_attempts USING btree (player_id);

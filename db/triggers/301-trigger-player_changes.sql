@@ -1,6 +1,7 @@
 CREATE OR REPLACE FUNCTION app.handle_player_changes()
   RETURNS trigger
   LANGUAGE plpgsql
+  SET search_path = app
 AS $function$
 BEGIN
   IF TG_OP = 'INSERT' THEN

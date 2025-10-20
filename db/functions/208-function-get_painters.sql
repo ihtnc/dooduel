@@ -1,5 +1,6 @@
 CREATE OR REPLACE FUNCTION app.get_painters(ready_game_id integer)
   RETURNS SETOF public.player
+  SET search_path = public
 AS $$
 DECLARE
   ready_game game_state;

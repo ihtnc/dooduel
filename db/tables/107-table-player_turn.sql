@@ -17,3 +17,4 @@ CREATE TABLE public.player_turn (
 ALTER TABLE public.player_turn ENABLE ROW LEVEL SECURITY;
 
 CREATE UNIQUE INDEX unique_player_turn ON public.player_turn USING btree (game_rounds_id, player_id);
+CREATE INDEX idx_player_turn_player_id ON public.player_turn USING btree (player_id);

@@ -1,6 +1,7 @@
 CREATE OR REPLACE FUNCTION app.handle_outbox_changes()
   RETURNS trigger
   LANGUAGE plpgsql
+  SET search_path = realtime
 AS $function$
 BEGIN
 
