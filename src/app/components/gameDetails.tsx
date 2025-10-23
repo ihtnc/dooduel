@@ -3,6 +3,7 @@ import TextOverlay from "@/components/textOverlay";
 import LockIcon from "@/components/icons/lockIcon";
 import EaselIcon from "@/components/icons/easelIcon";
 import ArtistIcon from "@/components/icons/artistIcon";
+import MultiplayerIcon from "./icons/multiplayerIcon";
 import type { GameDetails } from "@types";
 import { cn } from "@utilities/index";
 
@@ -52,6 +53,9 @@ export default function GameDetails({
           </div>
           <div className="flex -ml-3 items-center">
             <ArtistIcon alt="Difficulty" className="scale-60 -mr-2" /><strong>: {getDifficulty(game.difficulty)}</strong>
+          </div>
+          <div className="flex -ml-4 items-center">
+            <MultiplayerIcon alt="Number of players" className="scale-50 -mr-2" /><strong>: {game.playerCount}</strong>
           </div>
         </div>
       </>}

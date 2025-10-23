@@ -60,6 +60,8 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       });
 
       setPlayers([...players]);
+
+      if (game) { game.playerCount++; }
     };
 
     const handleUpdatePlayer = (payload: PlayerUpdatePayload) => {
@@ -71,6 +73,8 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       player.currentScore = payload.current_score;
       player.avatar = payload.avatar;
       setPlayers([...players]);
+
+      if (game) { game.playerCount = game.playerCount + (player.active ? 1 : -1); }
     };
 
     const channel = client.channel(`game:${game?.id}`, { config: { private: true } })

@@ -15,9 +15,11 @@ BEGIN
     game_state.status,
     CASE WHEN char_length(COALESCE(game.password, '')) > 0 THEN true
     ELSE false
-    END AS has_password
+    END AS has_password,
+    pc.player_count
   FROM game
   JOIN game_state ON game.id = game_state.game_id
+  JOIN (SELECT p.game_id, COUNT(p.id) as player_count from player p WHERE p.active = true GROUP BY p.game_id) pc ON pc.game_id = game.id
   INTO created_game
   WHERE game.name ilike game_name
     AND game.created_by ilike creator

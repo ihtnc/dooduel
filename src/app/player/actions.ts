@@ -76,6 +76,7 @@ async function getRecentGame(playerName: string, playerCode: string): Promise<Ga
     rounds: data.rounds,
     difficulty: data.difficulty,
     hasPassword: data.has_password,
+    playerCount: data.player_count
   };
 
   return game;

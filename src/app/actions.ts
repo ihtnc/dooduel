@@ -20,6 +20,7 @@ export async function getRecentGame(playerName: string, playerCode: string): Pro
     rounds: data.rounds,
     difficulty: data.difficulty,
     hasPassword: data.has_password,
+    playerCount: data.player_count
   };
 
   return game;

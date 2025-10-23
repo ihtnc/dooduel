@@ -32,7 +32,7 @@ export default function CreatePage() {
         <input type="hidden" name="code" value={user?.code} />
         <div className="flex items-center gap-2 w-full">
           <LockIcon alt="Game password" className="-mr-2" />
-          <TextBox name="password" placeholder="Password" maxLength={20} />
+          <TextBox autoFocus name="password" placeholder="Password" maxLength={20} />
         </div>
         <div className="flex items-center gap-2 w-full">
           <EaselIcon alt="Number of rounds" className="-mr-1 -ml-1" />

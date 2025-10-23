@@ -23,6 +23,7 @@ export async function getCurrentGame(name: string, playerName: string, playerCod
     status: data.status,
     currentRound: data.current_round,
     createdBy: data.created_by,
+    playerCount: data.player_count
   };
 
   return game;

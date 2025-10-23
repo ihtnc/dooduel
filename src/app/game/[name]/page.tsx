@@ -69,6 +69,8 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       });
 
       setPlayers([...players]);
+
+      if (game) { game.playerCount++; }
     };
 
     const handleUpdatePlayer = (payload: PlayerUpdatePayload) => {
@@ -80,6 +82,8 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       player.currentScore = payload.current_score;
       player.avatar = payload.avatar;
       setPlayers([...players]);
+
+      if (game) { game.playerCount = game.playerCount + (player.active ? 1 : -1); }
     };
 
     const handlePlayerAnswered = (payload: PlayerPayload) => {
@@ -172,7 +176,7 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       .subscribe();
 
     return () => { client.removeChannel(channel); }
-  }, [game?.id, players, user?.playerName, router]);
+  }, [game, players, user?.playerName, router]);
 
   useEffect(() => {
     const player = players.find((p) => p.name.toLowerCase() === user?.playerName.toLowerCase());

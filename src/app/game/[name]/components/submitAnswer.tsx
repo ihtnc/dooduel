@@ -39,7 +39,7 @@ export default function SubmitAnswer({
       <input type="hidden" name="round_id" value={roundId || ""} />
       <input type="hidden" name="player_name" value={user?.playerName} />
       <input type="hidden" name="player_code" value={user?.code} />
-      <TextBox type="text" name="answer" placeholder="Enter guess..." className="flex w-75" value={answer} onChange={e => setAnswer(e.target.value)} />
+      <TextBox autoFocus type="text" name="answer" placeholder="Enter guess..." className="flex w-75" value={answer} onChange={e => setAnswer(e.target.value)} />
       <TextOverlay
         className="min-w-50 w-fit h-[50px] -mt-2"
         text={state?.error}

@@ -22,7 +22,8 @@ export async function getCreatedGame(name: string, creator: string): Promise<Cre
     status: data.status,
     rounds: data.rounds,
     difficulty: data.difficulty,
-    hasPassword: data.has_password
+    hasPassword: data.has_password,
+    playerCount: data.player_count
   };
   return game;
 };

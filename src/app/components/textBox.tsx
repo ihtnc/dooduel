@@ -9,6 +9,8 @@ export default function TextBox({
     className={cn("border", "rounded", "p-2",
     className
     )}
+    onFocus={(e) => { e.target.select(); }}
+    onClick={(e) => { e.currentTarget.select(); }}
     {...props}
   />;
 };

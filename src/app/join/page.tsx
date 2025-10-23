@@ -27,7 +27,7 @@ export default function JoinPage() {
         <input type="hidden" name="code" value={user?.code} />
         <div className="flex items-center gap-2 w-full">
           <NameIcon alt="Game name" />
-          <TextBox type="text" name="name" placeholder="Game name" />
+          <TextBox autoFocus type="text" name="name" placeholder="Game name" />
         </div>
         <div className="flex items-center gap-2 w-full">
           <LockIcon alt="Game password" />

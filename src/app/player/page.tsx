@@ -37,6 +37,7 @@ export default function PlayerPage() {
         <div className="flex items-center gap-2">
           <NameIcon alt="Player name" />
           <TextBox
+            autoFocus
             name="player_name"
             type="text"
             placeholder="Player name"

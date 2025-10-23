@@ -17,10 +17,12 @@ BEGIN
     END AS has_password,
     game_state.status,
     game_state.current_round,
-    game.created_by
+    game.created_by,
+    pc.player_count
   FROM game
     JOIN game_state ON game.id = game_state.game_id
     JOIN player ON game.id = player.game_id
+    JOIN (SELECT p.game_id, COUNT(p.id) as player_count from player p WHERE p.active = true GROUP BY p.game_id) pc ON pc.game_id = game.id
   WHERE game.name ilike game_name
     AND player.name ilike player_name
     AND player.code = player_code

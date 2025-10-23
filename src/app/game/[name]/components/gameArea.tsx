@@ -71,7 +71,7 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
 
         case GameStatus.InProgress:
           const inProgressPayload = data as InProgressDataPayload;
-          messageTitle = player.isPainter ? "Your turn to draw! The word is:" : "";
+          messageTitle = player.isPainter ? "Your turn to draw! The word is:" : `Round ${inProgressPayload.current_round} of ${game.rounds}`;
           const inProgressMessage = player.isPainter ? inProgressPayload.word : "Let's Dooduel!";
           subText = player.isPainter ? getPainterSubText() : getGuesserSubText();
           displayMessage(inProgressMessage, { subText, messageTitle });

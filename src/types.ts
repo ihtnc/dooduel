@@ -12,7 +12,8 @@ export type GameDetails = {
   status: GameStatus,
   rounds: number,
   difficulty: number,
-  hasPassword: boolean
+  hasPassword: boolean,
+  playerCount: number,
 };
 
 export interface CurrentGameDetails extends GameDetails {
