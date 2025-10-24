@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION public.calculate_painter_reaction_score(
-  reactions character varying[],
+  reactions reaction[],
   base_score integer DEFAULT 200
 )
 RETURNS numeric
@@ -29,9 +29,9 @@ BEGIN
   -- count reaction types
   SELECT
     COUNT(*) as total_count,
-    COUNT(*) FILTER (WHERE r ILIKE 'star' OR r ILIKE 'love' OR r ILIKE 'like') as positive_count,
-    COUNT(*) FILTER (WHERE r ILIKE 'happy' OR r ILIKE 'amused' OR r ILIKE 'surprised') as neutral_count,
-    COUNT(*) FILTER (WHERE r ILIKE 'confused' OR r ILIKE 'disappointed') as negative_count
+    COUNT(*) FILTER (WHERE r = 'star' OR r = 'love' OR r = 'like') as positive_count,
+    COUNT(*) FILTER (WHERE r = 'happy' OR r = 'amused' OR r = 'surprised') as neutral_count,
+    COUNT(*) FILTER (WHERE r = 'confused' OR r = 'disappointed') as negative_count
   INTO total_count, positive_count, neutral_count, negative_count
   FROM unnest(reactions) AS r;
 

@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION public.add_game_reaction(round_id integer, player_name character varying, player_code character varying, reaction character varying)
+CREATE OR REPLACE FUNCTION public.add_game_reaction(round_id integer, player_name character varying, player_code character varying, reaction reaction)
   RETURNS boolean
   LANGUAGE plpgsql
   SET search_path = public

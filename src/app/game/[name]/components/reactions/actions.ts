@@ -1,8 +1,9 @@
 "use server";
 
 import { getClient } from "@utilities/supabase/server";
+import type { GameReaction } from "@types";
 
-export async function addGameReaction(roundId: number, playerName: string, playerCode: string, reaction: string): Promise<boolean> {
+export async function addGameReaction(roundId: number, playerName: string, playerCode: string, reaction: GameReaction): Promise<boolean> {
   const client = await getClient();
   const args = {
     round_id: roundId,
@@ -17,7 +18,7 @@ export async function addGameReaction(roundId: number, playerName: string, playe
   return data || false;
 };
 
-export async function getGameReaction(roundId: number, playerName: string, playerCode: string): Promise<string | null> {
+export async function getGameReaction(roundId: number, playerName: string, playerCode: string): Promise<GameReaction | null> {
   const client = await getClient();
   const args = {
     round_id: roundId,

@@ -7,6 +7,7 @@ import Reaction, { getReactionAlt, getReactionClass, getReactionSrc } from "./re
 import { addGameReaction, getGameReaction } from "./actions";
 import { cn } from "@utilities/index";
 import { getReactionText } from "./utilities";
+import { GameReaction } from "@types";
 
 export default function Reactions({
   roundId,
@@ -23,7 +24,7 @@ export default function Reactions({
 }) {
   const user = getUserContext();
 
-  const [reaction, setReaction] = useState<string | null>(null);
+  const [reaction, setReaction] = useState<GameReaction | null>(null);
   const [reactionText, setReactionText] = useState<string>("");
   const [collapsed, setCollapsed] = useState<boolean>(true);
 
@@ -40,11 +41,11 @@ export default function Reactions({
     getReaction();
   }, [roundId, user]);
 
-  const handleReaction = async (reactionType: string) => {
-    if (!user || !roundId) { return; }
+  const handleReaction = async (reactionType: GameReaction | null) => {
+    if (!user || !roundId || !reactionType) { return; }
 
     async function addReaction() {
-      await addGameReaction(roundId!, user?.playerName || '', user?.code || '', reactionType);
+      await addGameReaction(roundId!, user?.playerName || '', user?.code || '', reactionType!);
     };
 
     addReaction();
@@ -64,11 +65,11 @@ export default function Reactions({
           collapsed ? "" : "border-[color:var(--primary)]"
         )}>
           <Icon
-            src={getReactionSrc(reaction || "")}
-            alt={getReactionAlt(reaction || "")}
+            src={getReactionSrc(reaction)}
+            alt={getReactionAlt(reaction )}
             className={cn("cursor-pointer",
               "scale-80", "group-hover:scale-100",
-              getReactionClass(reaction || ""),
+              getReactionClass(reaction),
               collapsed ? "" : "scale-100",
               reaction  === null ? "scale-90 group-hover:scale-110" : ""
             )}
@@ -86,52 +87,52 @@ export default function Reactions({
           )}>
             {!collapsible && <span className="font-bold pr-2">{reactionText}</span>}
             <Reaction
-              reactionType="star"
+              reactionType={GameReaction.Star}
               collapsible={collapsible}
               onClick={handleReaction}
-              selected={reaction === "star"}
+              selected={reaction === GameReaction.Star}
             />
             <Reaction
-              reactionType="love"
+              reactionType={GameReaction.Love}
               collapsible={collapsible}
               onClick={handleReaction}
-              selected={reaction === "love"}
+              selected={reaction === GameReaction.Love}
             />
             <Reaction
-              reactionType="like"
+              reactionType={GameReaction.Like}
               collapsible={collapsible}
               onClick={handleReaction}
-              selected={reaction === "like"}
+              selected={reaction === GameReaction.Like}
             />
             <Reaction
-              reactionType="happy"
+              reactionType={GameReaction.Happy}
               collapsible={collapsible}
               onClick={handleReaction}
-              selected={reaction === "happy"}
+              selected={reaction === GameReaction.Happy}
             />
             <Reaction
-              reactionType="amused"
+              reactionType={GameReaction.Amused}
               collapsible={collapsible}
               onClick={handleReaction}
-              selected={reaction === "amused"}
+              selected={reaction === GameReaction.Amused}
             />
             <Reaction
-              reactionType="surprised"
+              reactionType={GameReaction.Surprised}
               collapsible={collapsible}
               onClick={handleReaction}
-              selected={reaction === "surprised"}
+              selected={reaction === GameReaction.Surprised}
             />
             <Reaction
-              reactionType="confused"
+              reactionType={GameReaction.Confused}
               collapsible={collapsible}
               onClick={handleReaction}
-              selected={reaction === "confused"}
+              selected={reaction === GameReaction.Confused}
             />
             <Reaction
-              reactionType="disappointed"
+              reactionType={GameReaction.Disappointed}
               collapsible={collapsible}
               onClick={handleReaction}
-              selected={reaction === "disappointed"}
+              selected={reaction === GameReaction.Disappointed}
             />
         </div>
       </div>

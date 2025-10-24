@@ -1,11 +1,11 @@
 CREATE OR REPLACE FUNCTION public.get_game_reaction(round_id integer, player_name character varying, player_code character varying)
-  RETURNS character varying
+  RETURNS reaction
   LANGUAGE plpgsql
   SET search_path = public
 AS $function$
 DECLARE
   game_details record;
-  reaction character varying;
+  reaction reaction;
 BEGIN
   -- ensure player is active on the target round's game
   SELECT

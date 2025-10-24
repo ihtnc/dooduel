@@ -122,3 +122,14 @@ export type CanvasUpdatePayload = {
   to_x: number,
   to_y: number
 };
+
+export enum GameReaction {
+  Star = 'star',
+  Love = 'love',
+  Like = 'like',
+  Happy = 'happy',
+  Amused = 'amused',
+  Surprised = 'surprised',
+  Confused = 'confused',
+  Disappointed = 'disappointed'
+};
