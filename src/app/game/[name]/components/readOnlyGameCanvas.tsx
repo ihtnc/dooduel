@@ -4,10 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { type AnimatedCanvasRenderFunction, type AnimatedCanvasTransformFunction, type InitialiseDataHandler, use2dAnimatedCanvas } from "@ihtnc/use-animated-canvas";
 import { getUserContext } from "@/components/userContextProvider";
 import client from "@utilities/supabase/browser";
-import { getGameCanvas } from "./actions";
-import { renderSegment } from "./utilities";
+import { renderSegment } from "@/components/doodle/utilities";
+import { getGameCanvas } from "@/components/doodle/actions";
 import type { CanvasUpdatePayload } from "@types";
-import type { Layer, CanvasData, Brush, Segment } from "./types";
+import type { Segment, Brush, Layer } from "@/components/doodle/types";
+import type { CanvasData } from "./types";
 
 export default function ReadOnlyGameCanvas({
   gameId,
@@ -139,7 +140,7 @@ export default function ReadOnlyGameCanvas({
   });
 
   return (<>
-    <div className="canvas-container size-166 flex flex-col items-center justify-center">
+    <div className="size-166">
       <Canvas
         className="border w-full h-full"
       />

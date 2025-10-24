@@ -37,6 +37,11 @@ export type PlayerDetails = {
   currentScore: number
 };
 
+export type WinnerDetails = {
+  name: string,
+  score: number
+};
+
 export interface NewPlayerPayload extends PlayerPayload {
   name: string,
   avatar: string,

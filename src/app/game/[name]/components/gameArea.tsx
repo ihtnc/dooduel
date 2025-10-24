@@ -11,11 +11,11 @@ import TopBar from "./topBar";
 import GameCanvas from "./gameCanvas";
 import ReadOnlyGameCanvas from "./readOnlyGameCanvas";
 import BrushOptions, { DEFAULT_BRUSH } from "./brushOptions";
+import Reactions from "./reactions";
 import { getGameRoundData } from "./actions";
+import type { Brush } from "@/components/doodle/types";
 import { getCloseMessage, getCorrectMessage, getWrongMessage, getGameCompletedSubText, getGuesserSubText, getInitialSubText, getPainterSubText, getNewTurnSubText, getNewRoundSubText, getReadySubText } from "./utilities";
 import { GameStatus, type InitialRoundDataPayload, type ReadyRoundDataPayload, type RoundDataPayload, type CurrentGameDetails, type PlayerDetails, type RoundEndDataPayload, type GameCompletedDataPayload, type InProgressDataPayload, type TurnEndDataPayload } from "@types";
-import type { Brush } from "./types";
-import Reactions from "./reactions";
 
 export default function GameArea({ game, player }: { game: CurrentGameDetails, player: PlayerDetails }) {
   const user = getUserContext();

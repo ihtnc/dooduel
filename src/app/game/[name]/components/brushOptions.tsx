@@ -4,7 +4,7 @@ import PaintCanIcon from "@/components/icons/paintCanIcon";
 import SmallDotIcon from "@/components/icons/smallDotIcon";
 import Slider from "@/components/slider";
 import { cn } from "@utilities/index";
-import { Brush } from "./types";
+import { Brush } from "@/components/doodle/types";
 
 export const DEFAULT_BRUSH: Brush = {
   size: 1,

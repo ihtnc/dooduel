@@ -3,9 +3,11 @@
 import { type PointerEventHandler, useEffect, useRef, useState } from "react";
 import { type AnimatedCanvasRenderFunction, type AnimatedCanvasTransformFunction, type InitialiseDataHandler, use2dAnimatedCanvas } from "@ihtnc/use-animated-canvas";
 import { getUserContext } from "@/components/userContextProvider";
-import { drawCanvas, getGameCanvas } from "./actions";
-import { renderSegment } from "./utilities";
-import type { Segment, Brush, Layer, Coordinate, CanvasData } from "./types";
+import { renderSegment } from "@/components/doodle/utilities";
+import { getGameCanvas } from "@/components/doodle/actions";
+import { drawCanvas } from "./actions";
+import type { Segment, Brush, Layer, Coordinate } from "@/components/doodle/types";
+import type { CanvasData } from "./types";
 
 export default function GameCanvas({
   roundId,
@@ -217,7 +219,7 @@ export default function GameCanvas({
   };
 
   return (<>
-    <div className="canvas-container size-166 flex flex-col items-center justify-center">
+    <div className="size-166">
       <Canvas
         className="border w-full h-full cursor-crosshair"
         onPointerDown={handlePointerDown}
