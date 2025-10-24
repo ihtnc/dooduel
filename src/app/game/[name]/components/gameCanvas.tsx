@@ -8,6 +8,7 @@ import { getGameCanvas } from "@/components/doodle/actions";
 import { drawCanvas } from "./actions";
 import type { Segment, Brush, Layer, Coordinate } from "@/components/doodle/types";
 import type { CanvasData } from "./types";
+import { addRandomOffset } from "./utilities";
 
 export default function GameCanvas({
   roundId,
@@ -123,9 +124,11 @@ export default function GameCanvas({
     }
 
     const { to } = data.data!.current ?? { to: undefined };
+    // add slight offset on first point to ensure a dot is drawn
+    const firstPoint = addRandomOffset(currentCoordinate);
     data.data!.current = {
       to: { ...currentCoordinate },
-      from: to || { ...currentCoordinate },
+      from: to || firstPoint,
     };
     data.data!.brush = { ...brush };
 

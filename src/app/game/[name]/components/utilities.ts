@@ -1,3 +1,5 @@
+import type { Coordinate } from "@/components/doodle/types";
+
 export const getCorrectMessage = (): string => {
   const options = [
     "Nice!",
@@ -263,3 +265,22 @@ export const getGameCompletedSubText = (totalScore: number): string => {
   const idx = Math.floor(Math.random() * options.length);
   return options[idx];
 };
+
+export const addRandomOffset = (point: Coordinate): Coordinate => {
+  // slightly randomise offsets to make it more natural
+  let xOffset = 0;
+  if (Math.random() * 3 <= 1) { xOffset = Math.random() * 2 <= 1 ? 1 : -1; }
+  let yOffset = 0;
+  if (Math.random() * 3 <= 1) { yOffset = Math.random() * 2 <= 1 ? 1 : -1; }
+
+  if (xOffset === 0 && yOffset === 0 && Math.random() * 2 <= 1) {
+    xOffset = Math.random() * 2 <= 1 ? 1 : -1;
+  } else if (xOffset === 0 && yOffset === 0) {
+    yOffset = Math.random() * 2 <= 1 ? 1 : -1;
+  }
+
+  xOffset *= 0.1;
+  yOffset *= 0.1;
+
+  return { x: point.x + xOffset, y: point.y + yOffset };
+}
