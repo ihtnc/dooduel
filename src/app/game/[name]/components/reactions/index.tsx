@@ -55,14 +55,14 @@ export default function Reactions({
 
   return <>
     <div className={cn("flex", "items-center",
-      collapsible ? "" : "h-[58px] justify-center",
+      { "h-[58px] justify-center": !collapsible },
       className?.split(" ") ?? [],
       (collapsible ? collapsibleClassName?.split(" ") : uncollapsibleClassName?.split(" ")) ?? []
     )}>
       {collapsible &&
         <span className={cn("flex", "rounded-xl", "border-4", "border-transparent", "group",
           "hover:border-4", "hover:border-[color:var(--secondary)]", "hover:bg-[color:var(--primary)]",
-          collapsed ? "" : "border-[color:var(--primary)]"
+          { "border-[color:var(--primary)]": !collapsed }
         )}>
           <Icon
             src={getReactionSrc(reaction)}
@@ -70,8 +70,8 @@ export default function Reactions({
             className={cn("cursor-pointer",
               "scale-80", "group-hover:scale-100",
               getReactionClass(reaction),
-              collapsed ? "" : "scale-100",
-              reaction  === null ? "scale-90 group-hover:scale-110" : ""
+              { "scale-100": !collapsed },
+              { "scale-90 group-hover:scale-110": reaction === null }
             )}
             onClick={() => setCollapsed(!collapsed)}
           />
@@ -83,7 +83,8 @@ export default function Reactions({
             "justify-center", "flex", "gap-2", "h-[58px]", "ml-2",
             "border-[var(--primary)]", "border-4", "rounded-xl",
             "bg-[var(--background)]",
-            collapsible ? "absolute left-0 top-0 z-100 w-130" : "border-transparent items-center"
+            { "absolute left-0 top-0 z-100 w-130": collapsible },
+            { "border-transparent items-center": !collapsible }
           )}>
             {!collapsible && <span className="font-bold pr-2">{reactionText}</span>}
             <Reaction

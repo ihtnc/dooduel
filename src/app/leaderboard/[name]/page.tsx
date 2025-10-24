@@ -11,7 +11,8 @@ import PlayerList from "@/components/playerList";
 import { getPlayers } from "@/components/playerList/actions";
 import PodiumIcon from "@/components/icons/podiumIcon";
 import TrophyButton from "@/components/button/trophyButton";
-import { getCurrentGame } from "./actions";
+import PortraitButton from "@/components/button/portraitButton";
+import { getCurrentGame } from "@/actions";
 import { GameStatus, type PlayerDetails, type CurrentGameDetails } from "@types";
 
 export default function SummaryPage({ params }: { params: Promise<{ name: string }> }) {
@@ -70,7 +71,10 @@ export default function SummaryPage({ params }: { params: Promise<{ name: string
         <Link href={`/summary/${game.name}`}>
           <TrophyButton className="w-50 mt-8">Summary</TrophyButton>
         </Link>
-        <LeaveGame game={game} />
+        <Link href={`/gallery/${game.name}`}>
+          <PortraitButton imageAlt="Gallery" className="w-50">Gallery</PortraitButton>
+        </Link>
+        <LeaveGame game={game} className="mt-8" />
       </>}
     </div>
   );

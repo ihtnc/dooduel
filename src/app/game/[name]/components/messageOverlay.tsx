@@ -51,7 +51,8 @@ export default function MessageOverlay({
           "items-center", "justify-center", "backdrop-blur-xl", "bg-white/30",
           "transition-opacity",
           `duration-${fadeDurationMs}`,
-          fadeStarted ? "opacity-0" : "opacity-100",
+          { "opacity-0": fadeStarted },
+          { "opacity-100": !fadeStarted },
           "pointer-events-none",
           containerClassName?.split(" ") ?? []
         )}

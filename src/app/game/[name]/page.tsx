@@ -10,7 +10,8 @@ import LeaveGame from "@/components/leaveGame";
 import Loading from "@/components/loading";
 import client from "@utilities/supabase/browser";
 import GameArea from "./components/gameArea";
-import { getCurrentGame, updateAvatar } from "./actions";
+import { getCurrentGame } from "@/actions";
+import { updateAvatar } from "@/components/avatar/actions";
 import { GameStatus, type NewPlayerPayload, type PlayerDetails, type CurrentGameDetails, type PlayerUpdatePayload, type PlayerPayload, type RoundStartPayload } from "@types";
 
 export default function GamePage({ params }: { params: Promise<{ name: string }> }) {

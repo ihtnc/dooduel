@@ -12,10 +12,10 @@ export default function PlayerListItem({
   className?: string
 }) {
   return (
-    <div className={cn("flex", "flex-col", "w-full", {
-      "line-through": !player?.active,
-      "opacity-50": !player?.active
-    })}>
+    <div className={cn("flex", "flex-col", "w-full",
+      { "line-through": !player?.active },
+      { "opacity-50": !player?.active }
+    )}>
       {!player && <div>No player selected</div>}
       {player && <>
         <div className={cn("flex", "h-8", "items-center", "w-full", "gap-2", ...className.split(" "))}>

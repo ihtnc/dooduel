@@ -10,7 +10,8 @@ import { getPlayers } from "@/components/playerList/actions";
 import Loading from "@/components/loading";
 import TextOverlay from "@/components/textOverlay";
 import client from "@utilities/supabase/browser";
-import { getCreatedGame, startGame, updateAvatar } from "./actions";
+import { updateAvatar } from "@/components/avatar/actions";
+import { getCreatedGame, startGame } from "./actions";
 import type { CreatedGameDetails, NewPlayerPayload, PlayerDetails, PlayerUpdatePayload } from "@types";
 import { cn } from "@utilities/index";
 

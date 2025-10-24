@@ -8,9 +8,11 @@ import LeaveGame from "@/components/leaveGame";
 import Loading from "@/components/loading";
 import PodiumButton from "@/components/button/podiumButton";
 import TrophyIcon from "@/components/icons/trophyIcon";
-import { getCurrentGame, getWinner } from "./actions";
-import { GameStatus, type WinnerDetails, type CurrentGameDetails } from "@types";
+import PortraitButton from "@/components/button/portraitButton";
+import { getCurrentGame } from "@/actions";
+import { getWinner } from "./actions";
 import { getWinnerMessage } from "./utilities";
+import { GameStatus, type WinnerDetails, type CurrentGameDetails } from "@types";
 
 export default function SummaryPage({ params }: { params: Promise<{ name: string }> }) {
   const router = useRouter();
@@ -80,7 +82,10 @@ export default function SummaryPage({ params }: { params: Promise<{ name: string
         <Link href={`/leaderboard/${game.name}`}>
           <PodiumButton imageAlt="Leaderboard" className="w-50 mt-8">Leaderboard</PodiumButton>
         </Link>
-        <LeaveGame game={game} />
+        <Link href={`/gallery/${game.name}`}>
+          <PortraitButton imageAlt="Gallery" className="w-50">Gallery</PortraitButton>
+        </Link>
+        <LeaveGame game={game} className="mt-8" />
       </>}
     </div>
   );

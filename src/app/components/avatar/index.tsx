@@ -9,11 +9,13 @@ const MAX_MOUTH = 20;
 export default function Avatar({
   code,
   alt,
-  className
+  className,
+  containerClassName
 }: {
   code?: string;
   alt?: string;
-  className?: string
+  className?: string,
+  containerClassName?: string
 }) {
   const parts = parseCode(code);
   const headSrc = getPartSrc("head", parts?.head);
@@ -21,7 +23,7 @@ export default function Avatar({
   const mouthSrc = getPartSrc("mouth", parts?.mouth);
 
   return (
-    <div className="relative w-[50px] h-[50px] group">
+    <div className={cn("relative w-[50px] h-[50px] group", containerClassName)}>
       <Image src={headSrc} alt={alt || "Head"} width={50} height={50}
         className={cn("absolute", "top-0", "left-0", "z-0", className)}
       />

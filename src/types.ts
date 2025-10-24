@@ -133,3 +133,21 @@ export enum GameReaction {
   Confused = 'confused',
   Disappointed = 'disappointed'
 };
+
+export type GameCanvasShowcaseDetails = {
+  category: string,
+  roundId: number,
+  word: string,
+  painterName: string,
+  painterAvatar: string,
+  painterScore: number,
+  starCount: number,
+  loveCount: number,
+  likeCount: number,
+  happyCount: number,
+  amusedCount: number,
+  surprisedCount: number,
+  confusedCount: number,
+  disappointedCount: number,
+  data: Record<string, string>
+}

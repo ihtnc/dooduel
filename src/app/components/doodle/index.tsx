@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { use2dAnimatedCanvas, type AnimatedCanvasRenderFunction, type AnimatedCanvasTransformFunction, type InitialiseDataHandler } from "@ihtnc/use-animated-canvas";
 import { getUserContext } from "@/components/userContextProvider";
+import Loading from "@/components/loading";
 import { getGameCanvas } from "./actions";
 import { renderSegment } from "./utilities";
 import { cn } from "@utilities/index";
@@ -92,10 +93,17 @@ export default function Doodle({
   };
 
   return (<>
+    {pending &&
+      <div className={cn("flex justify-center items-center",
+        className?.split(" ")
+      )}>
+        <Loading className="self-center scale-150" />
+      </div>
+    }
     {!pending && <div className={cn(
       className?.split(" ")
       )}>
-      <Canvas className="border w-full h-full" onCanvasResize={onCanvasResize} />
+      <Canvas className="w-full h-full" onCanvasResize={onCanvasResize} />
     </div>}
   </>);
 }

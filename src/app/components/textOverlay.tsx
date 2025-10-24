@@ -40,12 +40,15 @@ export default function TextOverlay({
           "top-1/2", "left-1/2", "transform", "-translate-x-1/2", "-translate-y-1/2",
           "text-center", "first-letter:capitalize",
           "transition-opacity", "duration-300", "ease-in",
-          showCopyText ? "opacity-100 z-50" : "opacity-0 z-10",
+          { "opacity-100 z-50": showCopyText },
+          { "opacity-0 z-10": !showCopyText },
           textClassName?.split(" ") || []
         )}>{text}</span>
       <span className={cn("absolute", "flex", "items-center",
         "transition-opacity", "duration-300", "ease-out",
-        showCopyText ? "opacity-0 z-10 cursor-default pointer-events-none" : "opacity-100 z-50")}>
+        { "opacity-0 z-10 cursor-default pointer-events-none": showCopyText },
+        { "opacity-100 z-50": !showCopyText })
+      }>
         {children}
       </span>
     </div>

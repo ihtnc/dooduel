@@ -22,7 +22,7 @@ const Footer = () => {
           className={cn("flex", "flex-row", "items-center", "group",
             "hover:underline", "gap-1", "underline-offset-4",
             "font-bold", "text-[var(--primary)]",
-            isHowToPlay && "pointer-events-none text-inherit"
+            { "pointer-events-none text-inherit": isHowToPlay }
           )}
           tabIndex={isHowToPlay ? -1 : 0}>
           <InstructionsIcon alt="How to play" className="size-6 group-hover:scale-120 -ml-1" />

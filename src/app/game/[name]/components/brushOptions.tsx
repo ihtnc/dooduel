@@ -86,7 +86,8 @@ const ColorButton = ({
     <button
       onClick={() => onClick?.(colorMap[color].value)}
       className={cn("size-8", "cursor-pointer", "rounded-full",
-        "hover:size-10", "hover:-mx-1", selected ? "ring-4 ring-[color:var(--primary)] size-9 -mx-0.5" : "" ,
+        "hover:size-10", "hover:-mx-1",
+        { "ring-4 ring-[color:var(--primary)] size-9 -mx-0.5": selected },
         colorMap[color].class,
       )}
     />
