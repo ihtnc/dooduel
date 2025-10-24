@@ -44,7 +44,7 @@ BEGIN
     RETURN false;
   END IF;
 
-  SELECT COALESCE(has_correct_answer, false) into has_score
+  SELECT CASE WHEN correct_attempt_id IS NOT NULL THEN true ELSE false END INTO has_score
   FROM player_turn
   WHERE game_rounds_id = round_id
     AND player_id = game_details.player_id;

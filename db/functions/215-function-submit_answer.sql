@@ -12,6 +12,7 @@ DECLARE
   speed_score_value numeric;
   accuracy_score_value numeric;
   efficiency_score_value numeric;
+  correct_id integer;
 BEGIN
   -- ensure player is active on the target game and it's not their turn to draw
   SELECT
@@ -67,7 +68,7 @@ BEGIN
   FROM player_turn
   WHERE game_rounds_id = current_word.game_rounds_id
     AND player_id = selected_player.player_id
-    AND has_correct_answer = true
+    AND correct_attempt_id IS NOT NULL
   INTO current_log
   LIMIT 1;
 
@@ -79,7 +80,8 @@ BEGIN
 
   -- log the attempt
   INSERT INTO player_attempts(game_rounds_id, player_id, word, accuracy)
-  VALUES (current_word.game_rounds_id, selected_player.player_id, answer, answer_accuracy);
+  VALUES (current_word.game_rounds_id, selected_player.player_id, answer, answer_accuracy)
+  RETURNING id INTO correct_id;
 
   -- insert or update turn details
   INSERT INTO player_turn(game_rounds_id, player_id, has_answered)
@@ -115,7 +117,7 @@ BEGIN
   SET speed_score = speed_score_value,
       accuracy_score = accuracy_score_value,
       efficiency_score = efficiency_score_value,
-      has_correct_answer = true
+      correct_attempt_id = correct_id
   WHERE game_rounds_id = current_word.game_rounds_id
     AND player_id = selected_player.player_id;
 

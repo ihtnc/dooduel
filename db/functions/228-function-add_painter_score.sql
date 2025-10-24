@@ -42,7 +42,7 @@ BEGIN
     g.difficulty,
     gr.created_at as round_start,
     gr.painter_id,
-    COALESCE(COUNT(pt.has_correct_answer)::integer, 0) as correct_answer_count,
+    COALESCE(COUNT(pt.correct_attempt_id)::integer, 0) as correct_answer_count,
     COALESCE(COUNT(pt.has_answered)::integer, 0) as total_attempt_count
   FROM game g
   JOIN game_rounds gr ON g.id = gr.game_id
@@ -77,7 +77,7 @@ BEGIN
       SELECT created_at
       FROM player_turn
       WHERE game_rounds_id = round_id
-        AND has_correct_answer = true
+        AND correct_attempt_id IS NOT NULL
     ),
     stroke_details.stroke_start,
     stroke_details.stroke_end,

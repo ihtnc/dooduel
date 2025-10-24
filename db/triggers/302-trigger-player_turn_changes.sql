@@ -6,7 +6,7 @@ AS $function$
 DECLARE
   current_game_id integer;
 BEGIN
-  IF NEW.has_correct_answer = true THEN
+  IF NEW.correct_attempt_id IS NOT NULL THEN
     -- when a player answers send notification
     SELECT game_id INTO current_game_id FROM public.game_rounds WHERE game_rounds.id = NEW.game_rounds_id;
 

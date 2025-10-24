@@ -16,10 +16,10 @@ BEGIN
     OR (s.status <> 'completed' AND g.created_at <= now() - interval '6 hours')
 
   LOOP
-    DELETE FROM public.player_attempts WHERE public.player_attempts.game_rounds_id IN (SELECT id FROM public.game_rounds WHERE game_id = game_record.game_id);
     DELETE FROM public.game_reactions WHERE public.game_reactions.game_rounds_id IN (SELECT id FROM public.game_rounds WHERE game_id = game_record.game_id);
     DELETE FROM public.game_canvas WHERE public.game_canvas.game_rounds_id IN (SELECT id FROM public.game_rounds WHERE game_id = game_record.game_id);
     DELETE FROM public.player_turn WHERE public.player_turn.game_rounds_id IN (SELECT id FROM public.game_rounds WHERE game_id = game_record.game_id);
+    DELETE FROM public.player_attempts WHERE public.player_attempts.game_rounds_id IN (SELECT id FROM public.game_rounds WHERE game_id = game_record.game_id);
     DELETE FROM public.game_rounds WHERE public.game_rounds.game_id = game_record.game_id;
     DELETE FROM public.game_state WHERE public.game_state.id = game_record.id;
     DELETE FROM public.game_words WHERE public.game_words.game_id = game_record.game_id;

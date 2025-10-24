@@ -5,7 +5,7 @@ CREATE TABLE public.player_turn (
     game_rounds_id integer NOT NULL REFERENCES public.game_rounds(id),
     player_id integer NOT NULL REFERENCES public.player(id),
     has_answered boolean NOT NULL DEFAULT false,
-    has_correct_answer boolean NULL,
+    correct_attempt_id integer NULL REFERENCES public.player_attempt(id),
     is_painter boolean NOT NULL DEFAULT false,
     speed_score numeric NULL,
     accuracy_score numeric NULL,
@@ -18,3 +18,4 @@ ALTER TABLE public.player_turn ENABLE ROW LEVEL SECURITY;
 
 CREATE UNIQUE INDEX unique_player_turn ON public.player_turn USING btree (game_rounds_id, player_id);
 CREATE INDEX idx_player_turn_player_id ON public.player_turn USING btree (player_id);
+CREATE INDEX idx_player_turn_correct_attempt_id ON public.player_turn USING btree (correct_attempt_id);
