@@ -78,13 +78,17 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       const player = players.find((p) => p.id === payload.id);
       if (!player) { return; }
 
+      const activate = payload.active && !player.active;
+      const deactivate = !payload.active && player.active;
+
       player.name = payload.name;
       player.active = payload.active;
       player.currentScore = payload.current_score;
       player.avatar = payload.avatar;
       setPlayers([...players]);
 
-      if (game) { game.playerCount = game.playerCount + (player.active ? 1 : -1); }
+      if (game && activate) { game.playerCount = game.playerCount + 1; }
+      if (game && deactivate) { game.playerCount = game.playerCount - 1; }
     };
 
     const handlePlayerAnswered = (payload: PlayerPayload) => {
