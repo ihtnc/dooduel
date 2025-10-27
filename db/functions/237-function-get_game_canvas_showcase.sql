@@ -136,20 +136,20 @@ BEGIN
   ORDER BY gs.painter_score DESC
   LIMIT 1;
 
-  -- hardest: min(total_correct), max(total_incorrect), max(first_correct - draw_start)
+  -- hardest: total_incorrect > total_correct, max(total_incorrect), min(total_correct), max(first_correct - draw_start)
   INSERT INTO tmp_showcase(category, round_id, data)
   SELECT 'Hardest' AS category, gs.round_id, jsonb_build_object('Incorrect guesses', gs.total_incorrect) AS data
   FROM tmp_game_stats gs
-  WHERE gs.first_correct IS NOT NULL
-  ORDER BY gs.total_incorrect DESC, gs.total_correct ASC, (gs.first_correct - gs.draw_start) DESC
+  WHERE gs.total_incorrect > gs.total_correct
+  ORDER BY gs.total_incorrect DESC, gs.total_correct ASC, (COALESCE(gs.first_correct, gs.draw_end) - gs.draw_start) DESC
   LIMIT 1;
 
-  -- easiest: max(total_correct), min(total_incorrect), min(first_correct - draw_start)
+  -- easiest: total_correct > total_incorrect, max(total_correct), min(total_incorrect), min(first_correct - draw_start)
   INSERT INTO tmp_showcase(category, round_id, data)
   SELECT 'Easiest' AS category, gs.round_id, jsonb_build_object('Correct guesses', gs.total_correct) AS data
   FROM tmp_game_stats gs
-  WHERE gs.first_correct IS NOT NULL
-  ORDER BY gs.total_correct DESC, gs.total_incorrect ASC, (gs.first_correct - gs.draw_start) ASC
+  WHERE gs.total_correct > gs.total_incorrect
+  ORDER BY gs.total_correct DESC, gs.total_incorrect ASC, (COALESCE(gs.first_correct, gs.draw_end) - gs.draw_start) ASC
   LIMIT 1;
 
   -- shortest: min(draw_end - draw_start)
@@ -168,14 +168,14 @@ BEGIN
 
   -- fastest: min(draw_end - round_start)
   INSERT INTO tmp_showcase(category, round_id, data)
-  SELECT 'Fastest' AS category, gs.round_id, jsonb_build_object('Duration', TRUNC(EXTRACT(EPOCH FROM (gs.draw_end - gs.round_start)))) AS data
+  SELECT 'Fastest' AS category, gs.round_id, jsonb_build_object('Duration (s)', TRUNC(EXTRACT(EPOCH FROM (gs.draw_end - gs.round_start)))) AS data
   FROM tmp_game_stats gs
   ORDER BY (gs.draw_end - gs.round_start) ASC
   LIMIT 1;
 
   -- minimalist: brush_color_count = 1, brush_size_count = 1, min(stroke_count)
   INSERT INTO tmp_showcase(category, round_id, data)
-  SELECT 'Minimalist' AS category, gs.round_id, jsonb_build_object() AS data
+  SELECT 'Minimalist' AS category, gs.round_id, jsonb_build_object('Segments', gs.stroke_count) AS data
   FROM tmp_game_stats gs
   WHERE gs.brush_color_count = 1
     AND gs.brush_size_count = 1
@@ -184,7 +184,7 @@ BEGIN
 
   -- colorful: brush_color_count > 1, max(brush_color_count), max(stroke_count)
   INSERT INTO tmp_showcase(category, round_id, data)
-  SELECT 'Colorful' AS category, gs.round_id, jsonb_build_object() AS data
+  SELECT 'Colorful' AS category, gs.round_id, jsonb_build_object('Segments', gs.stroke_count) AS data
   FROM tmp_game_stats gs
   WHERE gs.brush_color_count > 1
   ORDER BY gs.brush_color_count DESC, gs.stroke_count DESC
@@ -192,16 +192,17 @@ BEGIN
 
   -- most-strokes: max(stroke_count)
   INSERT INTO tmp_showcase(category, round_id, data)
-  SELECT 'Most Strokes' AS category, gs.round_id, jsonb_build_object() AS data
+  SELECT 'Most Strokes' AS category, gs.round_id, jsonb_build_object('Segments', gs.stroke_count) AS data
   FROM tmp_game_stats gs
   ORDER BY gs.stroke_count DESC
   LIMIT 1;
 
-  -- popular: reaction_count > 0, max(reaction_count)
+  -- popular: reaction_count > 3, max(reaction_count)
+  -- reaction_count > 3 to avoid picking rounds with only a few reactions
   INSERT INTO tmp_showcase(category, round_id, data)
   SELECT 'Popular' AS category, gs.round_id, jsonb_build_object() AS data
   FROM tmp_game_stats gs
-  WHERE gs.reaction_count > 0
+  WHERE gs.reaction_count > 3
   ORDER BY gs.reaction_count DESC
   LIMIT 1;
 

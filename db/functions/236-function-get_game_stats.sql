@@ -53,6 +53,28 @@ BEGIN
     RETURN;
   END IF;
 
+  -- get game canvas stats
+  CREATE TEMP TABLE IF NOT EXISTS tmp_game_canvas_stats ON COMMIT DROP AS
+  SELECT
+    game_rounds_id,
+    MIN(created_at) AS draw_start,
+    MAX(created_at) AS draw_end,
+    COUNT(game_rounds_id) AS stroke_count
+  FROM public.game_canvas
+  GROUP BY game_rounds_id
+  LIMIT 0;
+
+  INSERT INTO tmp_game_canvas_stats(game_rounds_id, draw_start, draw_end, stroke_count)
+  SELECT
+    game_canvas.game_rounds_id,
+    MIN(game_canvas.created_at) AS draw_start,
+    MAX(game_canvas.created_at) AS draw_end,
+    COUNT(game_canvas.id) as stroke_count
+  FROM game_canvas
+  JOIN tmp_round_details rd
+    ON game_canvas.game_rounds_id = rd.round_id
+  GROUP BY game_canvas.game_rounds_id;
+
   -- get player attempt stats
   CREATE TEMP TABLE IF NOT EXISTS tmp_player_attempt_stats ON COMMIT DROP AS
   SELECT
@@ -75,31 +97,12 @@ BEGIN
   FROM player_attempts pa
   JOIN tmp_round_details rd
     ON pa.game_rounds_id = rd.round_id
+  JOIN tmp_game_canvas_stats gc
+    ON pa.game_rounds_id = gc.game_rounds_id
   LEFT JOIN player_turn pt
     ON pa.id = pt.correct_attempt_id AND pt.is_painter = FALSE
+  WHERE pa.created_at > gc.draw_start
   GROUP BY pa.game_rounds_id;
-
-  -- get game canvas stats
-  CREATE TEMP TABLE IF NOT EXISTS tmp_game_canvas_stats ON COMMIT DROP AS
-  SELECT
-    game_rounds_id,
-    MIN(created_at) AS draw_start,
-    MAX(created_at) AS draw_end,
-    COUNT(game_rounds_id) AS stroke_count
-  FROM public.game_canvas
-  GROUP BY game_rounds_id
-  LIMIT 0;
-
-  INSERT INTO tmp_game_canvas_stats(game_rounds_id, draw_start, draw_end, stroke_count)
-  SELECT
-    game_canvas.game_rounds_id,
-    MIN(game_canvas.created_at) AS draw_start,
-    MAX(game_canvas.created_at) AS draw_end,
-    COUNT(game_canvas.id) as stroke_count
-  FROM game_canvas
-  JOIN tmp_round_details rd
-    ON game_canvas.game_rounds_id = rd.round_id
-  GROUP BY game_canvas.game_rounds_id;
 
   -- get brush size stats
   CREATE TEMP TABLE IF NOT EXISTS tmp_brush_size_stats ON COMMIT DROP AS
