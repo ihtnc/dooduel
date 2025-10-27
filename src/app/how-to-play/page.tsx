@@ -18,7 +18,7 @@ export default function HowToPlayPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-162 gap-4 mt-8 text-[var(--secondary)]">
+    <div className="flex flex-col items-center justify-center w-162 gap-4 mt-20 text-[var(--secondary)]">
       <h2 className="mb-4 font-subheading flex items-center gap-2">
         <InstructionsIcon alt="How to play" className="inline-block scale-120" />
         How to play
@@ -41,37 +41,33 @@ export default function HowToPlayPage() {
         <TargetIcon alt="Objectives" className="inline-block" />
         For <Highlight className="font-primary-lg">doodlers</Highlight>:
       </p>
-      <p className="leading-7 -mt-4 mb-4">
-        <ul className="list-disc list-inside">
-          <li>Draw as quick as you can</li>
-          <li>Get as many players as possible to correctly guess the word</li>
-          <li>Erasures are not allowed</li>
-          <li>
-            Scoring criteria:&nbsp;
-            <Highlight>speed</Highlight>,&nbsp;
-            <Highlight>accuracy</Highlight>,&nbsp;
-            <Highlight>efficiency</Highlight>,&nbsp;
-            and&nbsp;<Highlight>reactions</Highlight>&nbsp;received
-          </li>
-        </ul>
-      </p>
+      <ul className="leading-7 -mt-4 mb-4 list-disc list-inside">
+        <li>Draw as quick as you can</li>
+        <li>Get as many players as possible to correctly guess the word</li>
+        <li>Erasures are not allowed</li>
+        <li>
+          Scoring criteria:&nbsp;
+          <Highlight>speed</Highlight>,&nbsp;
+          <Highlight>accuracy</Highlight>,&nbsp;
+          <Highlight>efficiency</Highlight>,&nbsp;
+          and&nbsp;<Highlight>reactions</Highlight>&nbsp;received
+        </li>
+      </ul>
       <p className="text-xl font-bold gap-1 flex items-center">
         <TargetIcon alt="Objectives" className="inline-block" />
         For <Highlight className="font-primary-lg">guessers</Highlight>:
       </p>
-      <p className="leading-7 -mt-4 mb-4">
-        <ul className="list-disc list-inside">
-          <li>Guess the word as quickly as you can</li>
-          <li>Make as few guesses as possible</li>
-          <li>
-            Scoring criteria:&nbsp;
-            <Highlight>speed</Highlight>,&nbsp;
-            <Highlight>accuracy</Highlight>,&nbsp;
-            <Highlight>efficiency</Highlight>,&nbsp;
-            and&nbsp;<Highlight>reaction</Highlight>&nbsp;given
-          </li>
-        </ul>
-      </p>
+      <ul className="leading-7 -mt-4 mb-4 list-disc list-inside">
+        <li>Guess the word as quickly as you can</li>
+        <li>Make as few guesses as possible</li>
+        <li>
+          Scoring criteria:&nbsp;
+          <Highlight>speed</Highlight>,&nbsp;
+          <Highlight>accuracy</Highlight>,&nbsp;
+          <Highlight>efficiency</Highlight>,&nbsp;
+          and&nbsp;<Highlight>reaction</Highlight>&nbsp;given
+        </li>
+      </ul>
       {searchParams.has("prev") &&
         <ArrowLeftButton className="w-50 mt-8" onClick={navigateBack} imageAlt="Go back">
           Back
