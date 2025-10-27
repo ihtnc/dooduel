@@ -6,11 +6,13 @@ import type { Layer } from "./types";
 export default function Doodle({
   canvas,
   className,
-  originalCanvasSizePx = 662
+  originalCanvasSizePx = 662,
+  backgroundColor = "#D3DAD9"
 } : {
   canvas: Array<Layer>;
   className?: string;
   originalCanvasSizePx?: number;
+  backgroundColor?: string;
 }) {
   let forceRedraw = true;
 
@@ -41,7 +43,10 @@ export default function Doodle({
     context.setTransform(1, 0, 0, 1, 0, 0);
     context.scale(scale, scale);
     context.beginPath();
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    context.clearRect(0, 0, originalCanvasSizePx, originalCanvasSizePx);
+
+    context.fillStyle = backgroundColor;
+    context.fillRect(0, 0, originalCanvasSizePx, originalCanvasSizePx);
 
     if (data.data!.layers.length === 0) { return; }
 

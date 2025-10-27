@@ -19,10 +19,10 @@ export default function ShowcaseItem({
   return <div className={
     cn("flex", "flex-col", "items-center", "justify-center",
         "w-48", "max-w-48",
+        "hover:scale-110",
         { "w-60": expand },
         { "max-w-60": expand },
-        { "hover:scale-110": !expand },
-        { "cursor-pointer": onClick && !expand },
+        { "cursor-pointer": !expand || onClick },
         className
     )}
     onClick={onClick}
@@ -48,7 +48,12 @@ export default function ShowcaseItem({
       )}>
         ({item.painterScore} points)
       </span>
-      <Doodle canvas={item.canvasData} className="size-50 border-0" />
+      <Doodle canvas={item.canvasData}
+        className={cn("border-0",
+          { "size-50": expand },
+          { "size-40": !expand },
+          { "mb-1": !expand }
+        )} />
       <span className={cn("flex", "gap-2", "h-16",
         "flex-wrap", "justify-center",
         { "hidden": !expand || Object.keys(item.data).length === 0 }

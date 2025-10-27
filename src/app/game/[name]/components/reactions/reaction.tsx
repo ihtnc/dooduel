@@ -24,7 +24,7 @@ export default function Reaction ({
   onClick?: (reactionType: GameReaction | null) => void
 }) {
   return <div className={cn("cursor-pointer", "group",
-    { "pb-1 border-[color:var(--primary)] border-b-4": selected && !collapsible },
+    { "pb-1 border-[color:var(--primary)] border-b-4 rounded-sm": selected && !collapsible },
     className
   )}>
     <Icon

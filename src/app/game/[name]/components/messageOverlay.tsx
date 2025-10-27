@@ -54,9 +54,9 @@ export default function MessageOverlay({
           { "opacity-0": fadeStarted },
           { "opacity-100": !fadeStarted },
           "pointer-events-none",
+          "z-100",
           containerClassName?.split(" ") ?? []
         )}
-        style={{ zIndex: 1000 }}
       >
         <div className={cn("p-4", "rounded",
           childrenClassName?.split(" ") ?? []
