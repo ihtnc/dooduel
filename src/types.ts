@@ -66,14 +66,16 @@ export type GamePayload = {
   id: number
 };
 
-export enum GameStatus {
-  Initial = 'initial',
-  Ready = 'ready',
-  InProgress = 'inprogress',
-  TurnEnd = 'turnend',
-  RoundEnd = 'roundend',
-  Completed = 'completed'
-};
+export const GameStatus = {
+  Initial: 'initial',
+  Ready: 'ready',
+  InProgress: 'inprogress',
+  TurnEnd: 'turnend',
+  RoundEnd: 'roundend',
+  Completed: 'completed'
+} as const;
+
+export type GameStatus = typeof GameStatus[keyof typeof GameStatus];
 
 export type RoundDataPayload = InitialRoundDataPayload | ReadyRoundDataPayload | InProgressDataPayload | RoundEndDataPayload | GameCompletedDataPayload;
 
@@ -114,7 +116,10 @@ export interface GameCompletedDataPayload extends BaseRoundDataPayload {
   word: string,
 };
 
-export type CanvasUpdatePayload = {
+export type CanvasUpdatePayload = CanvasSegmentRecord;
+
+export type CanvasSegmentRecord = {
+  id: number,
   brush_size: number,
   brush_color: string,
   from_x: number,
@@ -123,31 +128,15 @@ export type CanvasUpdatePayload = {
   to_y: number
 };
 
-export enum GameReaction {
-  Star = 'star',
-  Love = 'love',
-  Like = 'like',
-  Happy = 'happy',
-  Amused = 'amused',
-  Surprised = 'surprised',
-  Confused = 'confused',
-  Disappointed = 'disappointed'
-};
+export const GameReaction = {
+  Star: 'star',
+  Love: 'love',
+  Like: 'like',
+  Happy: 'happy',
+  Amused: 'amused',
+  Surprised: 'surprised',
+  Confused: 'confused',
+  Disappointed: 'disappointed'
+} as const;
 
-export type GameCanvasShowcaseDetails = {
-  category: string,
-  roundId: number,
-  word: string,
-  painterName: string,
-  painterAvatar: string,
-  painterScore: number,
-  starCount: number,
-  loveCount: number,
-  likeCount: number,
-  happyCount: number,
-  amusedCount: number,
-  surprisedCount: number,
-  confusedCount: number,
-  disappointedCount: number,
-  data: Record<string, string>
-}
+export type GameReaction = typeof GameReaction[keyof typeof GameReaction];

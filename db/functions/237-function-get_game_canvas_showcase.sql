@@ -18,7 +18,8 @@ CREATE OR REPLACE FUNCTION public.get_game_canvas_showcase(
     surprised_count bigint,
     confused_count bigint,
     disappointed_count bigint,
-    data jsonb
+    data jsonb,
+    canvas_data jsonb
   )
   LANGUAGE plpgsql
   SET search_path = app, public
@@ -137,15 +138,15 @@ BEGIN
 
   -- hardest: min(total_correct), max(total_incorrect), max(first_correct - draw_start)
   INSERT INTO tmp_showcase(category, round_id, data)
-  SELECT 'Hardest' AS category, gs.round_id, jsonb_build_object('Correct', gs.total_correct) AS data
+  SELECT 'Hardest' AS category, gs.round_id, jsonb_build_object('Incorrect guesses', gs.total_incorrect) AS data
   FROM tmp_game_stats gs
   WHERE gs.first_correct IS NOT NULL
-  ORDER BY gs.total_correct ASC, gs.total_incorrect DESC, (gs.first_correct - gs.draw_start) DESC
+  ORDER BY gs.total_incorrect DESC, gs.total_correct ASC, (gs.first_correct - gs.draw_start) DESC
   LIMIT 1;
 
   -- easiest: max(total_correct), min(total_incorrect), min(first_correct - draw_start)
   INSERT INTO tmp_showcase(category, round_id, data)
-  SELECT 'Easiest' AS category, gs.round_id, jsonb_build_object('Correct', gs.total_correct) AS data
+  SELECT 'Easiest' AS category, gs.round_id, jsonb_build_object('Correct guesses', gs.total_correct) AS data
   FROM tmp_game_stats gs
   WHERE gs.first_correct IS NOT NULL
   ORDER BY gs.total_correct DESC, gs.total_incorrect ASC, (gs.first_correct - gs.draw_start) ASC
@@ -153,14 +154,14 @@ BEGIN
 
   -- shortest: min(draw_end - draw_start)
   INSERT INTO tmp_showcase(category, round_id, data)
-  SELECT 'Shortest' AS category, gs.round_id, jsonb_build_object('Duration', TRUNC(EXTRACT(EPOCH FROM (gs.draw_end - gs.draw_start)))) AS data
+  SELECT 'Shortest' AS category, gs.round_id, jsonb_build_object('Duration (s)', TRUNC(EXTRACT(EPOCH FROM (gs.draw_end - gs.draw_start)))) AS data
   FROM tmp_game_stats gs
   ORDER BY (gs.draw_end - gs.draw_start) ASC
   LIMIT 1;
 
   -- longest: max(draw_end - draw_start)
   INSERT INTO tmp_showcase(category, round_id, data)
-  SELECT 'Longest' AS category, gs.round_id, jsonb_build_object('Duration', TRUNC(EXTRACT(EPOCH FROM (gs.draw_end - gs.draw_start)))) AS data
+  SELECT 'Longest' AS category, gs.round_id, jsonb_build_object('Duration (s)', TRUNC(EXTRACT(EPOCH FROM (gs.draw_end - gs.draw_start)))) AS data
   FROM tmp_game_stats gs
   ORDER BY (gs.draw_end - gs.draw_start) DESC
   LIMIT 1;
@@ -285,6 +286,26 @@ BEGIN
   ORDER BY gs.disappointed_count DESC
   LIMIT 1;
 
+  -- get canvas data
+  CREATE TEMP TABLE IF NOT EXISTS tmp_canvas ON COMMIT DROP AS
+  SELECT game_rounds_id AS round_id, jsonb_build_object() AS canvas_data FROM public.game_canvas LIMIT 0;
+
+  INSERT INTO tmp_canvas(round_id, canvas_data)
+  SELECT
+    gs.round_id,
+    json_agg(json_build_object(
+      'id', gc.id,
+      'brush_size', gc.brush_size,
+      'brush_color', gc.brush_color,
+      'from_x', gc.from_x,
+      'from_y', gc.from_y,
+      'to_x', gc.to_x,
+      'to_y', gc.to_y
+    )) as canvas_data
+  FROM tmp_game_stats gs
+  JOIN public.game_canvas gc on gs.round_id = gc.game_rounds_id
+  GROUP BY gs.round_id;
+
   RETURN QUERY
   SELECT
     tmp.category,
@@ -301,7 +322,8 @@ BEGIN
     gs.surprised_count,
     gs.confused_count,
     gs.disappointed_count,
-    tmp.data
+    tmp.data,
+    tc.canvas_data
   FROM tmp_showcase tmp
   JOIN tmp_game_stats gs
     ON tmp.round_id = gs.round_id
@@ -310,6 +332,8 @@ BEGIN
   JOIN game_words gw
     ON gr.game_word_id = gw.id
   JOIN player p
-    ON gr.painter_id = p.id;
+    ON gr.painter_id = p.id
+  JOIN tmp_canvas tc
+    ON tmp.round_id = tc.round_id;
 END;
 $function$;

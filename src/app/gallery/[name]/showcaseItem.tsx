@@ -1,8 +1,9 @@
 import Avatar from "@/components/avatar";
 import Doodle from "@/components/doodle";
 import Icon from "@/components/icons";
-import { GameReaction, type GameCanvasShowcaseDetails } from "@types";
 import { cn, getGameReactionAlt, getGameReactionSrc } from "@utilities/index";
+import { GameReaction } from "@types";
+import type { GameCanvasShowcaseDetails } from "./types";
 
 export default function ShowcaseItem({
   item,
@@ -47,19 +48,29 @@ export default function ShowcaseItem({
       )}>
         ({item.painterScore} points)
       </span>
-      <Doodle roundId={item.roundId} className="size-50 border-0" />
+      <Doodle canvas={item.canvasData} className="size-50 border-0" />
+      <span className={cn("flex", "gap-2", "h-16",
+        "flex-wrap", "justify-center",
+        { "hidden": !expand || Object.keys(item.data).length === 0 }
+      )}>
+        {Object.entries(item.data).map(([key, value]) => (
+          <span key={key} className="flex items-center">
+            [{key}:&nbsp;{value}]
+          </span>
+        ))}
+      </span>
       <span className={cn("flex", "gap-1", "h-16",
         "flex-wrap", "justify-center",
-        { "hidden": !expand }
+        { "hidden": !expand || Object.keys(item.data).length > 0 }
       )}>
-        <ReactionCount reaction={GameReaction.Star} count={item.starCount || 0} />
-        <ReactionCount reaction={GameReaction.Love} count={item.loveCount || 0} />
-        <ReactionCount reaction={GameReaction.Like} count={item.likeCount || 0} />
-        <ReactionCount reaction={GameReaction.Happy} count={item.happyCount || 0} />
-        <ReactionCount reaction={GameReaction.Amused} count={item.amusedCount || 0} />
-        <ReactionCount reaction={GameReaction.Surprised} count={item.surprisedCount || 0} />
-        <ReactionCount reaction={GameReaction.Confused} count={item.confusedCount || 0} />
-        <ReactionCount reaction={GameReaction.Disappointed} count={item.disappointedCount || 0} />
+        <ReactionCount reaction={GameReaction.Star} count={item.starCount} />
+        <ReactionCount reaction={GameReaction.Love} count={item.loveCount} />
+        <ReactionCount reaction={GameReaction.Like} count={item.likeCount} />
+        <ReactionCount reaction={GameReaction.Happy} count={item.happyCount} />
+        <ReactionCount reaction={GameReaction.Amused} count={item.amusedCount} />
+        <ReactionCount reaction={GameReaction.Surprised} count={item.surprisedCount} />
+        <ReactionCount reaction={GameReaction.Confused} count={item.confusedCount} />
+        <ReactionCount reaction={GameReaction.Disappointed} count={item.disappointedCount} />
       </span>
     </div>
   </div>;

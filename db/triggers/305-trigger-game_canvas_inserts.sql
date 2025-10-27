@@ -15,6 +15,7 @@ BEGIN
       format('game:%s:round:%s', current_game_id, NEW.game_rounds_id),
       'update_canvas',
       json_build_object(
+        'id', NEW.id,
         'brush_size', NEW.brush_size,
         'brush_color', NEW.brush_color,
         'from_x', NEW.from_x,

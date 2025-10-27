@@ -1,4 +1,4 @@
-import type { GameCanvasShowcaseDetails } from "@types";
+import type { GameCanvasShowcaseDetails } from "./types";
 
 export const chooseShowcaseItems = (items: Array<GameCanvasShowcaseDetails>, maxItems: number = 6): Array<GameCanvasShowcaseDetails> => {
   if (!items || items.length === 0) return [];

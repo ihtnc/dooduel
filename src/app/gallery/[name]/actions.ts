@@ -1,7 +1,8 @@
 "use server";
 
 import { getClient } from "@utilities/supabase/server";
-import type { GameCanvasShowcaseDetails } from "@types";
+import type { GameCanvasShowcaseDetails, GameCanvasShowcaseRecord } from "./types";
+import { convertToLayers } from "@/components/doodle/utilities";
 
 export async function getGameCanvasShowcase(currentGameId: number, playerName: string, playerCode: string): Promise<Array<GameCanvasShowcaseDetails>> {
   const client = await getClient();
@@ -14,24 +15,25 @@ export async function getGameCanvasShowcase(currentGameId: number, playerName: s
   const { data, error } = await client.rpc("get_game_canvas_showcase", args);
   if (error) { return []; }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const result = data.map((item: any) => {
+  const canvasData = data as unknown as Array<GameCanvasShowcaseRecord>;
+  const result = canvasData.map((item: GameCanvasShowcaseRecord) => {
     const mappedItem: GameCanvasShowcaseDetails = {
       category: item.category,
       roundId: item.round_id,
       word: item.word,
       painterName: item.painter_name,
       painterAvatar: item.painter_avatar,
-      painterScore: item.painter_score,
-      starCount: item.star_count,
-      loveCount: item.love_count,
-      likeCount: item.like_count,
-      happyCount: item.happy_count,
-      amusedCount: item.amused_count,
-      surprisedCount: item.surprised_count,
-      confusedCount: item.confused_count,
-      disappointedCount: item.disappointed_count,
-      data: item.data
+      painterScore: item.painter_score || 0,
+      starCount: item.star_count || 0,
+      loveCount: item.love_count || 0,
+      likeCount: item.like_count || 0,
+      happyCount: item.happy_count || 0,
+      amusedCount: item.amused_count || 0,
+      surprisedCount: item.surprised_count || 0,
+      confusedCount: item.confused_count || 0,
+      disappointedCount: item.disappointed_count || 0,
+      data: item.data || {},
+      canvasData: convertToLayers(item.canvas_data || []),
     };
 
     return mappedItem;

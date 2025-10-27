@@ -11,11 +11,12 @@ import PodiumButton from "@/components/button/podiumButton";
 import PortraitIcon from "@/components/icons/portraitIcon";
 import LeftButton from "@/components/button/leftButton";
 import RightButton from "@/components/button/rightButton";
+import ShowcaseItem from "./showcaseItem";
 import { getCurrentGame } from "@/actions";
 import { getGameCanvasShowcase } from "./actions";
-import { GameStatus, type GameCanvasShowcaseDetails, type CurrentGameDetails } from "@types";
 import { chooseShowcaseItems } from "./utilities";
-import ShowcaseItem from "./showcaseItem";
+import { GameStatus, type CurrentGameDetails } from "@types";
+import type { GameCanvasShowcaseDetails } from './types';
 
 export default function GalleryPage({ params }: { params: Promise<{ name: string }> }) {
   const router = useRouter();

@@ -18,7 +18,7 @@ BEGIN
     purge_game:    { id: number }
 
     game:{id}:round:{id} event payloads
-    update_canvas: { brush_size: number, brush_color: string, from_x: number, from_y: number, to_x: number, to_y: number }
+    update_canvas: { id: number, brush_size: number, brush_color: string, from_x: number, from_y: number, to_x: number, to_y: number }
   */
 
   IF TG_OP = 'INSERT' THEN
