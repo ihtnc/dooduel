@@ -1,4 +1,4 @@
-# dooduel Supabase scripts
+# Dooduel repository
 
 This repository is for the Dooduel application. It contains two main components: the frontend built with Next.js and the backend powered by Supabase.
 

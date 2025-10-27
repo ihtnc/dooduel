@@ -1,4 +1,4 @@
-# dooduel
+# Dooduel Supabase scripts
 
 This directory contains all the scripts and configurations necessary to set up and manage the Supabase backend for the Dooduel application.
 
