@@ -7,12 +7,14 @@ export default function Doodle({
   canvas,
   className,
   originalCanvasSizePx = 662,
-  backgroundColor = "#D3DAD9"
+  renderBackground = () => {},
+  renderForeground = () => {}
 } : {
   canvas: Array<Layer>;
   className?: string;
   originalCanvasSizePx?: number;
-  backgroundColor?: string;
+  renderBackground?: (context: CanvasRenderingContext2D) => void;
+  renderForeground?: (context: CanvasRenderingContext2D) => void;
 }) {
   let forceRedraw = true;
 
@@ -35,6 +37,12 @@ export default function Doodle({
     return data;
   };
 
+  const internalPreRender: AnimatedCanvasRenderFunction<DrawData> = (context, data) => {
+    if (!data.data!.drawCanvas) { return; }
+
+    renderBackground?.(context);
+  };
+
   const render: AnimatedCanvasRenderFunction<DrawData> = (context, data) => {
     if (!data.data!.drawCanvas) { return; }
 
@@ -45,7 +53,6 @@ export default function Doodle({
     context.beginPath();
     context.clearRect(0, 0, originalCanvasSizePx, originalCanvasSizePx);
 
-    context.fillStyle = backgroundColor;
     context.fillRect(0, 0, originalCanvasSizePx, originalCanvasSizePx);
 
     if (data.data!.layers.length === 0) { return; }
@@ -63,10 +70,16 @@ export default function Doodle({
     context.restore();
   };
 
+  const internalPostRender: AnimatedCanvasRenderFunction<DrawData> = (context, data) => {
+    if (!data.data!.drawCanvas) { return; }
+
+    renderForeground?.(context);
+  };
+
   const { Canvas } = use2dAnimatedCanvas<DrawData>({
     initialiseData,
     preRenderTransform,
-    render,
+    render: [internalPreRender, render, internalPostRender],
     options: { clearEveryFrame: false, protectData: false }
   });
 

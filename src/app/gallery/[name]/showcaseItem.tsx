@@ -2,6 +2,7 @@ import Avatar from "@/components/avatar";
 import Doodle from "@/components/doodle";
 import Icon from "@/components/icons";
 import { cn, getGameReactionAlt, getGameReactionSrc } from "@utilities/index";
+import { handleRenderBackground } from "./utilities";
 import { GameReaction } from "@types";
 import type { GameCanvasShowcaseDetails } from "./types";
 
@@ -53,7 +54,9 @@ export default function ShowcaseItem({
           { "size-50": expand },
           { "size-40": !expand },
           { "mb-1": !expand }
-        )} />
+        )}
+        renderBackground={handleRenderBackground}
+      />
       <span className={cn("flex", "gap-2", "h-16",
         "flex-wrap", "justify-center",
         { "hidden": !expand || Object.keys(item.data).length === 0 }

@@ -47,3 +47,7 @@ const shuffleArray = <T>(array: Array<T>): Array<T> => {
   }
   return array;
 };
+
+export const handleRenderBackground = (context: CanvasRenderingContext2D) => {
+  context.fillStyle = "rgb(211, 218, 217)"; // var(--background)
+};

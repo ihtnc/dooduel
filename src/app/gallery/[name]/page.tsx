@@ -129,7 +129,7 @@ export default function GalleryPage({ params }: { params: Promise<{ name: string
                 "w-170", "h-170"
               )}
             >
-              <Fullview className="absolute top-0 left-0" item={showcase[fullviewIndex]} />
+              <Fullview item={showcase[fullviewIndex]} />
             </div>
           </div>
         }
