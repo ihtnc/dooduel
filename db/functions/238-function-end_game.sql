@@ -18,6 +18,41 @@ BEGIN
     RETURN FALSE;
   END IF;
 
+  -- add reaction scores for painters
+  UPDATE player_turn pt
+  SET reaction_score = reactions.reaction_score
+  FROM (
+    SELECT gr.game_id, gr.id as game_rounds_id, gr.painter_id, calculate_painter_reaction_score(array_agg(r.reaction)) AS reaction_score
+    FROM game g
+    JOIN game_rounds gr ON g.id = gr.game_id
+    JOIN game_reactions r ON gr.id = r.game_rounds_id AND gr.painter_id <> r.player_id
+    GROUP BY gr.game_id, gr.id, gr.painter_id
+  ) reactions
+  WHERE pt.game_rounds_id = reactions.game_rounds_id
+    AND pt.player_id = reactions.painter_id
+    AND reactions.game_id = game_record.game_id;
+
+  -- get all player reaction scores for the round
+  CREATE TEMP TABLE IF NOT EXISTS tmp_player_scores ON COMMIT DROP AS
+  SELECT id, score as total_score FROM public.player LIMIT 0;
+
+  -- add scores from reactions
+  INSERT INTO tmp_player_scores(id, total_score)
+  SELECT
+    p.id,
+    SUM(COALESCE(t.reaction_score, 0)) AS total_score
+  FROM player p
+  LEFT JOIN player_turn t
+    ON p.id = t.player_id
+  WHERE p.game_id = game_record.game_id
+  GROUP BY p.id;
+
+  -- update player scores for the round
+  UPDATE public.player p
+  SET score = score + tmp.total_score
+  FROM tmp_player_scores tmp
+  WHERE p.id = tmp.id;
+
   -- update game state
   UPDATE game_state
   SET

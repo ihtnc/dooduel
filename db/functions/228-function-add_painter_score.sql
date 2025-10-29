@@ -10,7 +10,6 @@ DECLARE
   speed_score numeric;
   accuracy_score numeric;
   efficiency_score numeric;
-  reaction_score numeric;
 BEGIN
   -- ensure painter has not been scored yet for this round
   IF EXISTS (
@@ -85,16 +84,9 @@ BEGIN
   );
 
   -- max reaction score=200
-  reaction_score := public.calculate_painter_reaction_score(
-    ARRAY(
-      SELECT reaction
-      FROM game_reactions
-      WHERE game_rounds_id = round_id
-        AND player_id <> round_details.painter_id
-    )
-  );
+  -- reactions are scored in end_game function
 
-  INSERT INTO player_turn(game_rounds_id, player_id, speed_score, accuracy_score, efficiency_score, reaction_score, is_painter)
-  VALUES(round_id, round_details.painter_id, speed_score, accuracy_score, efficiency_score, reaction_score, true);
+  INSERT INTO player_turn(game_rounds_id, player_id, speed_score, accuracy_score, efficiency_score, is_painter)
+  VALUES(round_id, round_details.painter_id, speed_score, accuracy_score, efficiency_score, true);
 END;
 $function$;

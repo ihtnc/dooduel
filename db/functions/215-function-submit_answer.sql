@@ -95,7 +95,7 @@ BEGIN
 
   -- total score = 1000
   -- max reaction score = 10
-  --   added when a reaction is given at the end of the round
+  -- reaction score is added in end_game function
 
   -- max accuracy score = 50
   accuracy_score_value := calculate_guesser_accuracy_score(answer_accuracy);

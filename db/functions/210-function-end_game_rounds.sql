@@ -59,20 +59,21 @@ BEGIN
   LIMIT 1;
 
   -- add painter score
+  -- reaction score for painters are calculated in end_game function
   execute app.add_painter_score(current_game_rounds_id);
 
   -- get all player scores for the round
   CREATE TEMP TABLE IF NOT EXISTS tmp_player_scores ON COMMIT DROP AS
   SELECT id, score as total_score FROM public.player LIMIT 0;
 
-  -- add scores from answers and reactions
+  -- add scores from answers
+  -- reactions will be added in end_game function
   INSERT INTO tmp_player_scores(id, total_score)
   SELECT
     p.id,
     COALESCE(t.speed_score, 0)
       + COALESCE(t.accuracy_score, 0)
       + COALESCE(t.efficiency_score, 0)
-      + COALESCE(t.reaction_score, 0)
     as total_score
   FROM player p
   JOIN game g
