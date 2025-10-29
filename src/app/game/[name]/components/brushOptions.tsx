@@ -8,7 +8,7 @@ import { Brush } from "@/components/doodle/types";
 
 export const DEFAULT_BRUSH: Brush = {
   size: 1,
-  color: "#000000"
+  color: "#37353E"
 };
 
 export default function BrushOptions({
