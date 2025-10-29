@@ -1,19 +1,13 @@
-import Image from "next/image";
 import { getPartSrc, parseCode } from "@/components/avatar";
 import { GameCanvasShowcaseDetails } from "./types";
 import Doodle from "@/components/doodle";
 import { handleRenderBackground } from "./utilities";
-import { useRef } from "react";
 
 export default function Fullview({
   item
 }: {
   item: GameCanvasShowcaseDetails
 }) {
-  const avatarHeadRef = useRef<HTMLImageElement>(null);
-  const avatarEyeRef = useRef<HTMLImageElement>(null);
-  const avatarMouthRef = useRef<HTMLImageElement>(null);
-
   const avatar = parseCode(item.painterAvatar);
   const headSrc = getPartSrc("head", avatar?.head);
   const eyeSrc = getPartSrc("eye", avatar?.eye);
@@ -50,10 +44,10 @@ export default function Fullview({
     const imageSize = 32;
     x -= 2;
     y -= imageSize / 2;
-    if (render) {
-      context.drawImage(avatarHeadRef.current!, x, y, imageSize, imageSize);
-      context.drawImage(avatarEyeRef.current!, x, y, imageSize, imageSize);
-      context.drawImage(avatarMouthRef.current!, x, y, imageSize, imageSize);
+    if (render && headLoaded && eyeLoaded && mouthLoaded) {
+      context.drawImage(head, x, y, imageSize, imageSize);
+      context.drawImage(eye, x, y, imageSize, imageSize);
+      context.drawImage(mouth, x, y, imageSize, imageSize);
     }
     x += imageSize + gap - 2;
     y = padding + (titleHeight / 2);
@@ -95,17 +89,45 @@ export default function Fullview({
     context.restore();
   };
 
+  let data = item.canvasData;
+  let headLoaded = false;
+  let eyeLoaded = false;
+  let mouthLoaded = false;
+
+  const head = new Image();
+  head.src = headSrc;
+  head.onload = () => {
+    headLoaded = true;
+    rerenderIfReady();
+  };
+
+  const eye = new Image();
+  eye.src = eyeSrc;
+  eye.onload = () => {
+    eyeLoaded = true;
+    rerenderIfReady();
+  };
+
+  const mouth = new Image();
+  mouth.src = mouthSrc;
+  mouth.onload = () => {
+    mouthLoaded = true;
+    rerenderIfReady();
+  };
+
+  const rerenderIfReady = () => {
+    if (!headLoaded || !eyeLoaded || !mouthLoaded) { return; }
+    data = [...item.canvasData];
+  };
+
   return (
     <>
       <Doodle
         className="flex size-166"
-        canvas={item.canvasData}
+        canvas={data}
         renderBackground={handleRenderBackground}
         renderForeground={handlerRenderForeground}
       />
-      <Image ref={avatarHeadRef} src={headSrc} alt="Avatar head" width={32} height={32} className="hidden" />
-      <Image ref={avatarEyeRef} src={eyeSrc} alt="Avatar eyes" width={32} height={32} className="hidden" />
-      <Image ref={avatarMouthRef} src={mouthSrc} alt="Avatar mouth" width={32} height={32} className="hidden" />
     </>
   );
 };

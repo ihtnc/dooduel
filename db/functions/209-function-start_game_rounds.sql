@@ -27,7 +27,11 @@ BEGIN
     RETURN FALSE;
   END IF;
 
+  -- increment round if needed
   game_round := COALESCE(game_record.current_round, 1);
+  IF game_record.status = 'roundend' THEN
+    game_round := game_round + 1;
+  END IF;
 
   -- get next unused word
   SELECT *

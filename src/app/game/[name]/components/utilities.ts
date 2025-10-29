@@ -186,6 +186,24 @@ export const getNewRoundSubText = (player_count: number): string => {
   return options[idx];
 };
 
+export const getEndGameSubText = (): string => {
+  const options = [
+    "Now time to put down those imaginary pencils.",
+    "Take a bow, mighty Doodueler!",
+    "Stay tuned for the result of this madness...",
+    "No more doodles... for now.",
+    "Time to rest those scribble muscles!",
+    "Reflect on the masterpieces you have created or witnessed.",
+    "We hope you enjoyed the ride!",
+    "There are no more rounds after this.",
+    "Coming up next: The game over screen!",
+    "The doodling is now done.",
+  ];
+
+  const idx = Math.floor(Math.random() * options.length);
+  return options[idx];
+};
+
 export const getPainterSubText = (): string => {
   const options = [
     "Ready, set, draw!",

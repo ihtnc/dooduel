@@ -12,7 +12,7 @@ BEGIN
   INTO ready_game;
 
   -- get painters from the current round of the target game
-  -- if game is not ready, then no painters will be found
+  -- if game is not on "ready" status, then no painters will be found
   CREATE TEMP TABLE IF NOT EXISTS tmp_painters ON COMMIT DROP AS
   SELECT game_id, painter_id AS player_id FROM public.game_rounds LIMIT 0;
 
@@ -20,7 +20,7 @@ BEGIN
   SELECT game_id, painter_id
   FROM public.game_rounds
   WHERE game_id = ready_game.game_id
-    AND round = ready_game.current_round;
+    AND (round = ready_game.current_round AND ready_game.status = 'turnend');
 
   -- get players that are not painters
   RETURN QUERY

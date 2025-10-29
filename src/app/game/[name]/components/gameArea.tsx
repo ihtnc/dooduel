@@ -14,8 +14,8 @@ import BrushOptions, { DEFAULT_BRUSH } from "./brushOptions";
 import Reactions from "./reactions";
 import { getGameRoundData } from "./actions";
 import type { Brush } from "@/components/doodle/types";
-import { getCloseMessage, getCorrectMessage, getWrongMessage, getGameCompletedSubText, getGuesserSubText, getInitialSubText, getPainterSubText, getNewTurnSubText, getNewRoundSubText, getReadySubText } from "./utilities";
-import { GameStatus, type InitialRoundDataPayload, type ReadyRoundDataPayload, type RoundDataPayload, type CurrentGameDetails, type PlayerDetails, type RoundEndDataPayload, type GameCompletedDataPayload, type InProgressDataPayload, type TurnEndDataPayload } from "@types";
+import { getCloseMessage, getCorrectMessage, getWrongMessage, getGameCompletedSubText, getGuesserSubText, getInitialSubText, getPainterSubText, getNewTurnSubText, getNewRoundSubText, getReadySubText, getEndGameSubText } from "./utilities";
+import { GameStatus, type InitialRoundDataPayload, type ReadyRoundDataPayload, type RoundDataPayload, type CurrentGameDetails, type PlayerDetails, type RoundEndDataPayload, type GameCompletedDataPayload, type InProgressDataPayload, type TurnEndDataPayload, type GameEndDataPayload } from "@types";
 
 export default function GameArea({ game, player }: { game: CurrentGameDetails, player: PlayerDetails }) {
   const user = getUserContext();
@@ -35,6 +35,7 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
     async function fetchRoundData() {
       const data = await getGameRoundData(game.id, user?.playerName || '', user?.code || '');
       if (!data) {
+        setPending(false);
         displayMessage("Invalid game state!", { disableFade: true, subText: "Not sure how we got here..." });
         return;
       }
@@ -69,6 +70,13 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
           displayMessage(roundendPayload.word, { disableFade: true, subText, messageTitle });
           break;
 
+        case GameStatus.GameEnd:
+          const gameendPayload = data as GameEndDataPayload;
+          messageTitle = `Round ${gameendPayload.current_round} complete! The word was:`;
+          subText = getEndGameSubText();
+          displayMessage(gameendPayload.word, { disableFade: true, subText, messageTitle });
+          break;
+
         case GameStatus.InProgress:
           const inProgressPayload = data as InProgressDataPayload;
           messageTitle = player.isPainter ? "Your turn to draw! The word is:" : `Round ${inProgressPayload.current_round} of ${game.rounds}`;
@@ -79,9 +87,8 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
 
         case GameStatus.Completed:
           const gameCompletedPayload = data as GameCompletedDataPayload;
-          messageTitle = "Game over! The word was:";
           subText = getGameCompletedSubText(gameCompletedPayload.total_score);
-          displayMessage(gameCompletedPayload.word, { disableFade: true, subText, messageTitle });
+          displayMessage("Game over!", { disableFade: true, subText });
           break;
       }
 
@@ -149,7 +156,17 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
     setSubText("");
   }, []);
 
-  const canvasRoundId = (!pending && game.status === GameStatus.InProgress) ? (roundData as InProgressDataPayload).round_id : undefined;
+  let currentRoundId: number | undefined;
+  if (!pending && game.status === GameStatus.InProgress) {
+    const inProgressData = roundData as InProgressDataPayload;
+    currentRoundId = inProgressData.round_id;
+  } else if (!pending && game.status === GameStatus.RoundEnd) {
+    const roundEndData = roundData as RoundEndDataPayload;
+    currentRoundId = roundEndData.current_round;
+  } else if (!pending && game.status === GameStatus.TurnEnd) {
+    const turnEndData = roundData as TurnEndDataPayload;
+    currentRoundId = turnEndData.current_round;
+  }
 
   if (game.status !== GameStatus.InProgress) {
     brush.current = DEFAULT_BRUSH;
@@ -188,8 +205,8 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
               </div>}
             </div>
           </MessageOverlay>
-          {player.isPainter && <GameCanvas roundId={canvasRoundId} getBrush={() => brush.current} />}
-          {!player.isPainter && <ReadOnlyGameCanvas gameId={game.id} roundId={canvasRoundId} />}
+          {player.isPainter && <GameCanvas roundId={currentRoundId} getBrush={() => brush.current} />}
+          {!player.isPainter && <ReadOnlyGameCanvas gameId={game.id} roundId={currentRoundId} />}
         </div>
         <div className="flex w-full items-center justify-center gap-4">
           {(game.status !== GameStatus.InProgress && game.status !== GameStatus.Completed) &&
@@ -199,12 +216,12 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
             <BrushOptions onChange={handleBrushChange} />
           }
           {game.status === GameStatus.InProgress && !player.isPainter &&
-            <Reactions roundId={canvasRoundId} collapsible={!player.hasAnswered}
+            <Reactions roundId={currentRoundId} collapsible={!player.hasAnswered}
               uncollapsibleClassName="w-full"
             />
           }
           {game.status === GameStatus.InProgress && !player.isPainter && !player.hasAnswered &&
-            <SubmitAnswer roundId={canvasRoundId} onSubmit={handleResult} />
+            <SubmitAnswer roundId={currentRoundId} onSubmit={handleResult} />
           }
           {game.status === GameStatus.Completed &&
             <Link href={`/summary/${game.name}`}>

@@ -48,10 +48,11 @@ BEGIN
   payloads
     initial:    { status: string, player_count: number };
     ready:      { status: string, player_count: number };
-    turnend:    { round_id: number, status: string, current_round: number, word: string, painters_left: number };
-    roundend:   { round_id: number, status: string, current_round: number, word: string, player_count: number };
+    turnend:    { round_id: number, status: string, current_round: number, current_painter_id: number, word: string, painters_left: number };
+    roundend:   { round_id: number, status: string, current_round: number, current_painter_id: number, word: string, player_count: number };
+    gameend:    { round_id: number, status: string, current_round: number, current_painter_id: number, word: string };
     inprogress: { round_id: number, status: string, current_round: number, word?: string };
-    completed:  { status: string, word: string, total_score: number };
+    completed:  { status: string, total_score: number };
   */
 
   IF game_details.status = 'initial' THEN
@@ -75,6 +76,7 @@ BEGIN
       'round_id', latest_round.game_rounds_id,
       'status', game_details.status,
       'current_round', game_details.current_round,
+      'current_painter_id', latest_round.painter_id,
       'word', latest_round.word,
       'painters_left', COUNT(id)
     ) INTO game_round_data
@@ -84,11 +86,21 @@ BEGIN
     SELECT jsonb_build_object(
       'round_id', latest_round.game_rounds_id,
       'status', game_details.status,
-      'current_round', game_details.current_round - 1,
+      'current_round', game_details.current_round,
+      'current_painter_id', latest_round.painter_id,
       'word', latest_round.word,
       'player_count', COUNT(id)
     ) INTO game_round_data
     FROM app.get_painters(game_details.game_id);
+
+  ELSIF game_details.status = 'gameend' THEN
+    SELECT jsonb_build_object(
+      'round_id', latest_round.game_rounds_id,
+      'status', game_details.status,
+      'current_round', game_details.current_round,
+      'current_painter_id', latest_round.painter_id,
+      'word', latest_round.word
+    ) INTO game_round_data;
 
   ELSIF game_details.status = 'inprogress' THEN
     IF latest_round.painter_id = game_details.player_id AND latest_round.round = game_details.current_round THEN
@@ -111,7 +123,6 @@ BEGIN
   ELSIF game_details.status = 'completed' THEN
     SELECT jsonb_build_object(
       'status', game_details.status,
-      'word', latest_round.word,
       'total_score', score
     ) INTO game_round_data
     FROM player

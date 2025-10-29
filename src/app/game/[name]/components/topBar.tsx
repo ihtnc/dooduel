@@ -25,7 +25,7 @@ export default function TopBar({ game, player, roundData }: { game: CurrentGameD
   };
 
   let show = ShowInfo.Default;
-  if (game.status === GameStatus.Initial || game.status === GameStatus.Ready || game.status === GameStatus.TurnEnd || game.status === GameStatus.RoundEnd) {
+  if (game.status === GameStatus.Initial || game.status === GameStatus.Ready || game.status === GameStatus.TurnEnd || game.status === GameStatus.RoundEnd || game.status === GameStatus.GameEnd) {
     show = ShowInfo.Tip;
   } else if (game.status === GameStatus.InProgress && player.isPainter && wordToPaint) {
     show = ShowInfo.ForPainter;

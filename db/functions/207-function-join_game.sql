@@ -34,7 +34,7 @@ BEGIN
   JOIN game_state ON game.id = game_state.game_id
   WHERE game.name ilike game_name
     AND game.password = game_password
-    AND game_state.status <> 'completed'
+    AND game_state.status NOT IN ('gameend', 'completed')
   INTO selected_game
   LIMIT 1;
 

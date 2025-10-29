@@ -41,13 +41,13 @@ BEGIN
 
   ELSIF game_record.current_round < game_round THEN
     -- move to next round if not the last round
-    game_round := COALESCE(game_record.current_round, 1) + 1;
+    game_round := COALESCE(game_record.current_round, 1);
     game_status := 'roundend';
 
   ELSE
-    -- all rounds completed, set to null
-    game_round := NULL;
-    game_status := 'completed';
+    -- all rounds completed, set to gameend
+    game_round := COALESCE(game_record.current_round, 1);
+    game_status := 'gameend';
   END IF;
 
   -- get current game round id

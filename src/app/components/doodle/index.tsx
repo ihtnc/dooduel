@@ -76,10 +76,16 @@ export default function Doodle({
     renderForeground?.(context);
   };
 
+  const postRenderTransform: AnimatedCanvasTransformFunction<DrawData> = (data) => {
+    data.data!.drawCanvas = false;
+    return data;
+  };
+
   const { Canvas } = use2dAnimatedCanvas<DrawData>({
     initialiseData,
     preRenderTransform,
     render: [internalPreRender, render, internalPostRender],
+    postRenderTransform,
     options: { clearEveryFrame: false, protectData: false }
   });
 

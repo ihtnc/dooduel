@@ -64,7 +64,7 @@ export default function SummaryPage({ params }: { params: Promise<{ name: string
   };
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4">
+    <div className="flex flex-col items-center justify-center mt-24 gap-4">
       {pending &&
         <div className="flex h-full">
           <Loading className="-mt-16 self-center scale-150" />

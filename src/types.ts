@@ -72,12 +72,13 @@ export const GameStatus = {
   InProgress: 'inprogress',
   TurnEnd: 'turnend',
   RoundEnd: 'roundend',
+  GameEnd: 'gameend',
   Completed: 'completed'
 } as const;
 
 export type GameStatus = typeof GameStatus[keyof typeof GameStatus];
 
-export type RoundDataPayload = InitialRoundDataPayload | ReadyRoundDataPayload | InProgressDataPayload | RoundEndDataPayload | GameCompletedDataPayload;
+export type RoundDataPayload = InitialRoundDataPayload | ReadyRoundDataPayload | InProgressDataPayload | RoundEndDataPayload | GameEndDataPayload | GameCompletedDataPayload;
 
 type BaseRoundDataPayload = {
   status: GameStatus
@@ -100,6 +101,7 @@ export interface InProgressDataPayload extends BaseRoundDataPayload {
 export interface TurnEndDataPayload extends BaseRoundDataPayload {
   round_id: number,
   current_round: number,
+  current_painter_id: number,
   word: string,
   painters_left: number
 };
@@ -107,13 +109,20 @@ export interface TurnEndDataPayload extends BaseRoundDataPayload {
 export interface RoundEndDataPayload extends BaseRoundDataPayload {
   round_id: number,
   current_round: number,
+  current_painter_id: number,
   word: string,
   player_count: number
 };
 
+export interface GameEndDataPayload extends BaseRoundDataPayload {
+  round_id: number,
+  current_round: number,
+  current_painter_id: number,
+  word: string
+};
+
 export interface GameCompletedDataPayload extends BaseRoundDataPayload {
   total_score: number
-  word: string,
 };
 
 export type CanvasUpdatePayload = CanvasSegmentRecord;

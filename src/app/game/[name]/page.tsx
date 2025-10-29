@@ -137,6 +137,15 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       setPlayers([...players]);
     };
 
+    const handleGameEnd = () => {
+      for (const player of players) {
+        player.isPainter = false;
+      }
+
+      setGame((g) => g ? { ...g, status: GameStatus.GameEnd } : g);
+      setPlayers([...players]);
+    };
+
     const handleGameOver = () => {
       for (const player of players) {
         player.isPainter = false;
@@ -171,6 +180,9 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
       })
       .on("broadcast", { event: "round_end" }, () => {
         handleRoundEnd();
+      })
+      .on("broadcast", { event: "game_end" }, () => {
+        handleGameEnd();
       })
       .on("broadcast", { event: "game_over" }, () => {
         handleGameOver();
