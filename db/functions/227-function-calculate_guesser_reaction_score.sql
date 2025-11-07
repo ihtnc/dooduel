@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION public.calculate_guesser_reaction_score(
 )
 RETURNS numeric
 LANGUAGE plpgsql
-SET search_path = public
+SET search_path = ''
 AS $function$
 DECLARE
   pity_score numeric := 290;
@@ -27,3 +27,5 @@ BEGIN
   END IF;
 END;
 $function$;
+
+GRANT EXECUTE ON FUNCTION public.calculate_guesser_reaction_score(boolean, boolean, numeric) TO anon, authenticated;

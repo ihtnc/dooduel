@@ -1,9 +1,9 @@
 CREATE OR REPLACE FUNCTION app.get_painters(ready_game_id integer)
   RETURNS SETOF public.player
-  SET search_path = public
+  SET search_path = ''
 AS $$
 DECLARE
-  ready_game game_state;
+  ready_game public.game_state;
 BEGIN
   -- get all games that are on "ready" status (ready/turnend/roundend)
   SELECT * FROM public.game_state
@@ -20,7 +20,8 @@ BEGIN
   SELECT game_id, painter_id
   FROM public.game_rounds
   WHERE game_id = ready_game.game_id
-    AND (round = ready_game.current_round AND ready_game.status = 'turnend');
+    AND round = ready_game.current_round
+    AND ready_game.status IN ('turnend');
 
   -- get players that are not painters
   RETURN QUERY
@@ -31,4 +32,4 @@ BEGIN
     AND p.active = true
     AND pt.game_id IS NULL;
 END;
-$$ LANGUAGE plpgsql
+$$ LANGUAGE plpgsql;

@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION public.update_player_avatar(current_game_id integer, player_name character varying, player_code character varying, new_avatar character varying)
   RETURNS boolean
   LANGUAGE plpgsql
-  SET search_path = public
+  SET search_path = ''
 AS $function$
 DECLARE
   selected_game_id integer;
@@ -10,7 +10,7 @@ BEGIN
   -- ensure player is active on the target game
   SELECT
     game_id INTO selected_game_id
-  FROM player
+  FROM public.player
   WHERE game_id = current_game_id
     AND name ILIKE player_name
     AND code = player_code
@@ -21,7 +21,7 @@ BEGIN
     RAISE EXCEPTION 'game/player not found';
   END IF;
 
-  UPDATE player
+  UPDATE public.player
   SET avatar = new_avatar
   WHERE game_id = selected_game_id
     AND name ILIKE player_name

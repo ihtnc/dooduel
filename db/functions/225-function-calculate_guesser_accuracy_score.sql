@@ -4,7 +4,7 @@ CREATE OR REPLACE FUNCTION public.calculate_guesser_accuracy_score(
 )
 RETURNS numeric
 LANGUAGE plpgsql
-SET search_path = public
+SET search_path = ''
 AS $function$
 DECLARE
   accuracy_score numeric;
@@ -15,3 +15,5 @@ BEGIN
   RETURN accuracy_score;
 END;
 $function$;
+
+GRANT EXECUTE ON FUNCTION public.calculate_guesser_accuracy_score(numeric, numeric) TO anon, authenticated;

@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION app.handle_game_deletes()
   RETURNS trigger
   LANGUAGE plpgsql
-  SET search_path = app
+  SET search_path = ''
 AS $function$
 BEGIN
   IF TG_OP = 'DELETE' THEN

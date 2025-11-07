@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION public.get_game_winner(
 )
   RETURNS record
   LANGUAGE plpgsql
-  SET search_path = public
+  SET search_path = ''
 AS $function$
 DECLARE
   result record;
@@ -13,9 +13,9 @@ BEGIN
   -- ensure player is active on the target game
   IF NOT EXISTS (
     SELECT 1
-    FROM player
-    JOIN game ON player.game_id = game.id
-    JOIN game_state ON game.id = game_state.game_id
+    FROM public.player
+    JOIN public.game ON player.game_id = game.id
+    JOIN public.game_state ON game.id = game_state.game_id
     WHERE player.game_id = current_game_id
       AND game_state.status = 'completed'
       AND player.name ILIKE current_player_name
@@ -26,7 +26,7 @@ BEGIN
   END IF;
 
   SELECT name, score
-  FROM player
+  FROM public.player
   WHERE game_id = current_game_id
   ORDER BY score DESC
   INTO result
@@ -35,3 +35,5 @@ BEGIN
   RETURN result;
 END;
 $function$;
+
+GRANT EXECUTE ON FUNCTION public.get_game_winner(integer, character varying, character varying) TO anon, authenticated;

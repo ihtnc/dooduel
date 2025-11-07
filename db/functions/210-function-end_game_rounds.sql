@@ -1,11 +1,11 @@
 CREATE OR REPLACE FUNCTION app.end_game_rounds(game_state_id integer)
   RETURNS boolean
-  SET search_path = app, public
+  SET search_path = ''
 AS $$
   DECLARE game_record record;
   DECLARE available_players integer;
   DECLARE game_round integer;
-  DECLARE game_status status;
+  DECLARE game_status public.status;
   DECLARE current_game_rounds_id integer;
 BEGIN
   -- ensure target game is on inprogress status
@@ -36,17 +36,14 @@ BEGIN
 
   IF available_players > 0 THEN
     -- keep current round since there are still players
-    game_round := COALESCE(game_record.current_round, 1);
     game_status := 'turnend';
 
   ELSIF game_record.current_round < game_round THEN
     -- move to next round if not the last round
-    game_round := COALESCE(game_record.current_round, 1);
     game_status := 'roundend';
 
   ELSE
     -- all rounds completed, set to gameend
-    game_round := COALESCE(game_record.current_round, 1);
     game_status := 'gameend';
   END IF;
 
@@ -75,11 +72,11 @@ BEGIN
       + COALESCE(t.accuracy_score, 0)
       + COALESCE(t.efficiency_score, 0)
     as total_score
-  FROM player p
-  JOIN game g
+  FROM public.player p
+  JOIN public.game g
     ON p.game_id = g.id
     AND g.id = game_record.game_id
-  LEFT JOIN player_turn t
+  LEFT JOIN public.player_turn t
     ON p.id = t.player_id
     AND t.game_rounds_id = current_game_rounds_id;
 
@@ -90,10 +87,9 @@ BEGIN
   WHERE p.id = tmp.id;
 
   -- update game state
-  UPDATE game_state
+  UPDATE public.game_state
   SET
-    current_player_id = NULL,
-    current_round = game_round,
+    current_round = COALESCE(game_record.current_round, 1),
     status = game_status,
     updated_at = now()
   WHERE id = game_record.id;

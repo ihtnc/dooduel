@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION public.get_recent_game(player_name character varying, player_code character varying)
   RETURNS record
   LANGUAGE plpgsql
-  SET search_path = public
+  SET search_path = ''
 AS $function$
 DECLARE
   game_details record;
@@ -17,11 +17,11 @@ BEGIN
     ELSE false
     END AS has_password,
     pc.player_count
-  FROM game
-  JOIN game_state ON game.id = game_state.game_id
-  JOIN player ON game_state.game_id = player.game_id
+  FROM public.game
+  JOIN public.game_state ON game.id = game_state.game_id
+  JOIN public.player ON game_state.game_id = player.game_id
     AND game.id = player.game_id
-  JOIN (SELECT p.game_id, COUNT(p.id) as player_count from player p WHERE p.active = true GROUP BY p.game_id) pc ON pc.game_id = game.id
+  JOIN (SELECT p.game_id, COUNT(p.id) as player_count from public.player p WHERE p.active = true GROUP BY p.game_id) pc ON pc.game_id = game.id
   WHERE player.name ilike player_name
     AND player.code = player_code
     AND player.active = true
@@ -36,3 +36,5 @@ BEGIN
   RETURN game_details;
 END;
 $function$;
+
+GRANT EXECUTE ON FUNCTION public.get_recent_game(character varying, character varying) TO anon, authenticated;

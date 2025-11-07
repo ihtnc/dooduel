@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION public.calculate_guesser_speed_score(
 )
 RETURNS numeric
 LANGUAGE plpgsql
-SET search_path = public
+SET search_path = ''
 AS $function$
 DECLARE
   score_modifier numeric;
@@ -38,3 +38,5 @@ BEGIN
   RETURN speed_score;
 END;
 $function$;
+
+GRANT EXECUTE ON FUNCTION public.calculate_guesser_speed_score(timestamp without time zone, integer, timestamp without time zone, numeric) TO anon, authenticated;

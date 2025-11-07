@@ -1,10 +1,10 @@
 CREATE OR REPLACE FUNCTION public.calculate_painter_reaction_score(
-  reactions reaction[],
+  reactions public.reaction[],
   base_score integer DEFAULT 200
 )
 RETURNS numeric
 LANGUAGE plpgsql
-SET search_path = public
+SET search_path = ''
 AS $function$
 DECLARE
   positive_multiplier numeric := 1.25;
@@ -45,3 +45,5 @@ BEGIN
   RETURN reaction_score;
 END;
 $function$;
+
+GRANT EXECUTE ON FUNCTION public.calculate_painter_reaction_score(public.reaction[], integer) TO anon, authenticated;

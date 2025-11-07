@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION public.calculate_painter_speed_score(
 )
 RETURNS numeric
 LANGUAGE plpgsql
-SET search_path = public
+SET search_path = ''
 AS $function$
 DECLARE
   base_startup_score numeric := base_score * 0.5;
@@ -54,3 +54,5 @@ BEGIN
   RETURN startup_score + duration_score;
 END;
 $function$;
+
+GRANT EXECUTE ON FUNCTION public.calculate_painter_speed_score(timestamp without time zone, timestamp without time zone, timestamp without time zone, integer, integer) TO anon, authenticated;

@@ -1,18 +1,18 @@
 CREATE OR REPLACE FUNCTION public.leave_game(game_name character varying, player_name character varying, player_code character varying)
   RETURNS boolean
   LANGUAGE plpgsql
-  SET search_path = public
+  SET search_path = ''
 AS $function$
 DECLARE
   player_id integer;
-  updated_player player;
+  updated_player public.player;
 BEGIN
   -- ensure player is active on the target game
   SELECT
     p.id INTO player_id
-  FROM game g
-  JOIN game_state s ON g.id = s.game_id
-  JOIN player p ON g.id = p.game_id
+  FROM public.game g
+  JOIN public.game_state s ON g.id = s.game_id
+  JOIN public.player p ON g.id = p.game_id
   WHERE g.name ilike game_name
     AND p.name ilike player_name
     AND p.code = player_code
@@ -23,7 +23,7 @@ BEGIN
     RAISE EXCEPTION 'game/player not found';
   END IF;
 
-  UPDATE player SET active = false WHERE id = player_id
+  UPDATE public.player SET active = false WHERE id = player_id
   RETURNING * INTO updated_player;
 
   IF NOT FOUND then
@@ -33,3 +33,5 @@ BEGIN
   RETURN true;
 END;
 $function$;
+
+GRANT EXECUTE ON FUNCTION public.leave_game(character varying, character varying, character varying) TO anon, authenticated;

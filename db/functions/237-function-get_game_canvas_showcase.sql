@@ -22,16 +22,16 @@ CREATE OR REPLACE FUNCTION public.get_game_canvas_showcase(
     canvas_data jsonb
   )
   LANGUAGE plpgsql
-  SET search_path = app, public
+  SET search_path = ''
 AS $function$
 BEGIN
   -- ensure player is active on the target game
   IF NOT EXISTS (
     SELECT 1
-    FROM game g
-    JOIN game_state gs
+    FROM public.game g
+    JOIN public.game_state gs
       ON g.id = gs.game_id
-    JOIN player p
+    JOIN public.player p
       ON g.id = p.game_id
     WHERE g.id = current_game_id
       AND gs.status = 'completed'
@@ -328,13 +328,15 @@ BEGIN
   FROM tmp_showcase tmp
   JOIN tmp_game_stats gs
     ON tmp.round_id = gs.round_id
-  JOIN game_rounds gr
+  JOIN public.game_rounds gr
     ON tmp.round_id = gr.id
-  JOIN game_words gw
+  JOIN public.game_words gw
     ON gr.game_word_id = gw.id
-  JOIN player p
+  JOIN public.player p
     ON gr.painter_id = p.id
   JOIN tmp_canvas tc
     ON tmp.round_id = tc.round_id;
 END;
 $function$;
+
+GRANT EXECUTE ON FUNCTION public.get_game_canvas_showcase(integer, character varying, character varying) TO anon, authenticated;

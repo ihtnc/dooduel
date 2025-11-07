@@ -11,10 +11,15 @@ CREATE TABLE app.outbox (
 
 ALTER TABLE app.outbox ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Allow anon to select" ON app.outbox
+CREATE POLICY "Allow realtime subscription access to outbox" ON app.outbox
 FOR SELECT
+TO anon, authenticated
 USING (true);
 
-CREATE POLICY "Allow anon to insert" ON app.outbox
+CREATE POLICY "Allow triggers to insert outbox messages" ON app.outbox
 FOR INSERT
+TO anon, authenticated
 WITH CHECK (true);
+
+GRANT SELECT ON TABLE app.outbox TO anon, authenticated;
+GRANT INSERT ON TABLE app.outbox TO anon, authenticated;

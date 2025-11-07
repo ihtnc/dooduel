@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION app.handle_player_turn_changes()
   RETURNS trigger
   LANGUAGE plpgsql
-  SET search_path = app, public
+  SET search_path = ''
 AS $function$
 DECLARE
   current_game_id integer;

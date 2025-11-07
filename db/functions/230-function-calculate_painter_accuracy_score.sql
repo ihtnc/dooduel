@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION public.calculate_painter_accuracy_score(
 )
 RETURNS numeric
 LANGUAGE plpgsql
-SET search_path = public
+SET search_path = ''
 AS $function$
 DECLARE
   effort_score numeric := 100;
@@ -31,3 +31,5 @@ BEGIN
   RETURN (accuracy_score  * score_modifier) + (effort_score * score_modifier);
 END;
 $function$;
+
+GRANT EXECUTE ON FUNCTION public.calculate_painter_accuracy_score(integer, integer, integer, integer) TO anon, authenticated;

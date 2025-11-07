@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION public.get_game_round_data(current_game_id integer, player_name character varying, player_code character varying)
   RETURNS jsonb
   LANGUAGE plpgsql
-  SET search_path = public
+  SET search_path = ''
 AS $function$
 DECLARE
   game_details record;
@@ -16,9 +16,9 @@ BEGIN
     gs.current_round,
     p.id AS player_id
   INTO game_details
-  FROM game g
-  JOIN player p ON g.id = p.game_id
-  JOIN game_state gs ON g.id = gs.game_id
+  FROM public.game g
+  JOIN public.player p ON g.id = p.game_id
+  JOIN public.game_state gs ON g.id = gs.game_id
   WHERE g.id = current_game_id
     AND p.name ILIKE player_name
     AND p.code = player_code
@@ -35,10 +35,10 @@ BEGIN
     gr.id AS game_rounds_id,
     gr.round,
     gw.value AS word
-  FROM game g
-  LEFT JOIN game_rounds gr ON g.id = gr.game_id
-  LEFT JOIN player p ON gr.painter_id = p.id
-  LEFT JOIN game_words gw ON gr.game_word_id = gw.id
+  FROM public.game g
+  LEFT JOIN public.game_rounds gr ON g.id = gr.game_id
+  LEFT JOIN public.player p ON gr.painter_id = p.id
+  LEFT JOIN public.game_words gw ON gr.game_word_id = gw.id
   WHERE g.id = game_details.game_id
   ORDER BY gr.created_at DESC
   INTO latest_round
@@ -60,7 +60,7 @@ BEGIN
       'status', game_details.status,
       'player_count', COUNT(id)
     ) INTO game_round_data
-    FROM player
+    FROM public.player
     WHERE game_id = game_details.game_id
       AND active = true;
 
@@ -125,7 +125,7 @@ BEGIN
       'status', game_details.status,
       'total_score', score
     ) INTO game_round_data
-    FROM player
+    FROM public.player
     WHERE id = game_details.player_id;
   END IF;
 
@@ -136,3 +136,5 @@ BEGIN
   RETURN game_round_data;
 END;
 $function$;
+
+GRANT EXECUTE ON FUNCTION public.get_game_round_data(integer, character varying, character varying) TO anon, authenticated;

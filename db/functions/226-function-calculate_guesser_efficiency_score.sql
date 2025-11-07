@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION public.calculate_guesser_efficiency_score(
 )
 RETURNS numeric
 LANGUAGE plpgsql
-SET search_path = public
+SET search_path = ''
 AS $function$
 DECLARE
   base_quality_score numeric := base_score * 0.6;
@@ -68,3 +68,5 @@ BEGIN
   RETURN quality_score + quantity_score;
 END;
 $function$;
+
+GRANT EXECUTE ON FUNCTION public.calculate_guesser_efficiency_score(numeric[], integer, numeric) TO anon, authenticated;

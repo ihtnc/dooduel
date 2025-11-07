@@ -1,11 +1,11 @@
 CREATE OR REPLACE FUNCTION app.start_game_rounds(game_state_id integer)
   RETURNS boolean
-  SET search_path = app, public
+  SET search_path = ''
 AS $$
-  DECLARE game_record game_state;
+  DECLARE game_record public.game_state;
   DECLARE game_round integer;
-  DECLARE next_player player;
-  DECLARE next_word game_words;
+  DECLARE next_player public.player;
+  DECLARE next_word public.game_words;
 BEGIN
   -- ensure target game is on "ready" status (ready/turnend/roundend)
   SELECT * FROM public.game_state
@@ -35,19 +35,19 @@ BEGIN
 
   -- get next unused word
   SELECT *
-  FROM game_words w
-  LEFT JOIN game_rounds r ON w.id = r.game_word_id AND w.game_id = r.game_id
+  FROM public.game_words w
+  LEFT JOIN public.game_rounds r ON w.id = r.game_word_id AND w.game_id = r.game_id
   WHERE w.game_id = game_record.game_id
   AND r.id IS NULL
   ORDER BY random()
   LIMIT 1
   INTO next_word;
 
-  INSERT INTO game_rounds(game_id, painter_id, round, game_word_id)
+  INSERT INTO public.game_rounds(game_id, painter_id, round, game_word_id)
   VALUES(next_player.game_id, next_player.id, game_round, next_word.id);
 
   -- update game state
-  UPDATE game_state
+  UPDATE public.game_state
   SET
     current_player_id = next_player.id,
     current_round = game_round,

@@ -9,7 +9,7 @@ CREATE OR REPLACE FUNCTION public.get_game_canvas(round_id integer, player_name 
     to_y numeric
   )
   LANGUAGE plpgsql
-  SET search_path = public
+  SET search_path = ''
 AS $function$
 DECLARE
   game_details record;
@@ -19,10 +19,10 @@ BEGIN
   SELECT
     g.id
   INTO game_details
-  FROM game_rounds gr
-  JOIN game g ON gr.game_id = g.id
-  JOIN player p ON g.id = p.game_id
-  JOIN game_state gs ON gr.game_id = gs.game_id
+  FROM public.game_rounds gr
+  JOIN public.game g ON gr.game_id = g.id
+  JOIN public.player p ON g.id = p.game_id
+  JOIN public.game_state gs ON gr.game_id = gs.game_id
   WHERE gr.id = round_id
     AND p.name ILIKE player_name
     AND p.code = player_code
@@ -41,8 +41,10 @@ BEGIN
     gc.from_y,
     gc.to_x,
     gc.to_y
-  FROM game_canvas gc
+  FROM public.game_canvas gc
   WHERE gc.game_rounds_id = round_id
   ORDER BY gc.created_at ASC;
 END;
 $function$;
+
+GRANT EXECUTE ON FUNCTION public.get_game_canvas(integer, character varying, character varying) TO anon, authenticated;

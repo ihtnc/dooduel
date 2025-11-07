@@ -1,8 +1,8 @@
 CREATE OR REPLACE FUNCTION public.allocate_words(game_code character varying, creator character varying)
   RETURNS void
-  SET search_path = public
+  SET search_path = ''
 AS $$
-DECLARE selected_game game;
+DECLARE selected_game public.game;
 BEGIN
   -- ensure target game is on initial status and is created by the player
   SELECT g.*
@@ -25,4 +25,6 @@ BEGIN
   WHERE w.difficulty = selected_game.difficulty
   ORDER BY random();
 END;
-$$ LANGUAGE plpgsql
+$$ LANGUAGE plpgsql;
+
+GRANT EXECUTE ON FUNCTION public.allocate_words(character varying, character varying) TO anon, authenticated;

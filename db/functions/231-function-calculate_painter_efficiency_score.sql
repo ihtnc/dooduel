@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION public.calculate_painter_efficiency_score(
 )
 RETURNS numeric
 LANGUAGE plpgsql
-SET search_path = public
+SET search_path = ''
 AS $function$
 DECLARE
   stroke_duration numeric;
@@ -54,3 +54,5 @@ BEGIN
   RETURN efficiency_score;
 END;
 $function$;
+
+GRANT EXECUTE ON FUNCTION public.calculate_painter_efficiency_score(timestamp without time zone[], timestamp without time zone, timestamp without time zone, integer, integer) TO anon, authenticated;

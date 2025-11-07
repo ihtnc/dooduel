@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION app.add_painter_score(round_id integer)
   RETURNS void
   LANGUAGE plpgsql
-  SET search_path = app, public
+  SET search_path = ''
 AS $function$
 DECLARE
   stroke_details record;
@@ -14,7 +14,7 @@ BEGIN
   -- ensure painter has not been scored yet for this round
   IF EXISTS (
     SELECT 1
-    FROM player_turn
+    FROM public.player_turn
     WHERE game_rounds_id = round_id
       AND is_painter = true
   ) THEN
@@ -27,7 +27,7 @@ BEGIN
     MIN(created_at) as stroke_start,
     MAX(created_at) as stroke_end
   INTO stroke_details
-  FROM game_canvas
+  FROM public.game_canvas
   WHERE game_rounds_id = round_id;
 
   -- if no strokes were made, score 0 points
@@ -43,10 +43,10 @@ BEGIN
     gr.painter_id,
     COALESCE(COUNT(pt.correct_attempt_id)::integer, 0) as correct_answer_count,
     COALESCE(COUNT(pt.has_answered)::integer, 0) as total_attempt_count
-  FROM game g
-  JOIN game_rounds gr ON g.id = gr.game_id
-  JOIN player p ON gr.painter_id = p.id
-  LEFT JOIN player_turn pt
+  FROM public.game g
+  JOIN public.game_rounds gr ON g.id = gr.game_id
+  JOIN public.player p ON gr.painter_id = p.id
+  LEFT JOIN public.player_turn pt
     ON gr.id = pt.game_rounds_id
       AND gr.painter_id <> pt.player_id
   WHERE gr.id = round_id
@@ -74,7 +74,7 @@ BEGIN
   efficiency_score := public.calculate_painter_efficiency_score(
     ARRAY(
       SELECT created_at
-      FROM player_turn
+      FROM public.player_turn
       WHERE game_rounds_id = round_id
         AND correct_attempt_id IS NOT NULL
     ),
@@ -86,7 +86,9 @@ BEGIN
   -- max reaction score=200
   -- reactions are scored in end_game function
 
-  INSERT INTO player_turn(game_rounds_id, player_id, speed_score, accuracy_score, efficiency_score, is_painter)
+  INSERT INTO public.player_turn(game_rounds_id, player_id, speed_score, accuracy_score, efficiency_score, is_painter)
   VALUES(round_id, round_details.painter_id, speed_score, accuracy_score, efficiency_score, true);
 END;
 $function$;
+
+GRANT EXECUTE ON FUNCTION app.add_painter_score(integer) TO anon, authenticated;

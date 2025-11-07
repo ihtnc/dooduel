@@ -26,7 +26,7 @@ CREATE OR REPLACE FUNCTION app.get_game_stats(completed_game_id integer)
     reaction_count bigint
   )
   LANGUAGE plpgsql
-  SET search_path = app, public
+  SET search_path = ''
 AS $function$
 BEGIN
   -- ensure target game is completed
@@ -39,12 +39,12 @@ BEGIN
     gr.id AS round_id,
     gr.created_at as round_start,
     (pt.speed_score + pt.accuracy_score + pt.efficiency_score + pt.reaction_score) AS painter_score
-  FROM game g
-  JOIN game_state gs
+  FROM public.game g
+  JOIN public.game_state gs
     ON g.id = gs.game_id
-  JOIN game_rounds gr
+  JOIN public.game_rounds gr
     ON g.id = gr.game_id
-  JOIN player_turn pt
+  JOIN public.player_turn pt
     ON gr.id = pt.game_rounds_id AND gr.painter_id = pt.player_id
   WHERE g.id = completed_game_id
     AND gs.status = 'completed';
@@ -70,7 +70,7 @@ BEGIN
     MIN(game_canvas.created_at) AS draw_start,
     MAX(game_canvas.created_at) AS draw_end,
     COUNT(game_canvas.id) as stroke_count
-  FROM game_canvas
+  FROM public.game_canvas
   JOIN tmp_round_details rd
     ON game_canvas.game_rounds_id = rd.round_id
   GROUP BY game_canvas.game_rounds_id;
@@ -94,12 +94,12 @@ BEGIN
     SUM(CASE WHEN pt.id IS NULL THEN 1 ELSE 0 END) AS total_incorrect,
     COUNT(pa.game_rounds_id) AS total_attempts,
     MIN(pt.created_at) AS first_correct
-  FROM player_attempts pa
+  FROM public.player_attempts pa
   JOIN tmp_round_details rd
     ON pa.game_rounds_id = rd.round_id
   JOIN tmp_game_canvas_stats gc
     ON pa.game_rounds_id = gc.game_rounds_id
-  LEFT JOIN player_turn pt
+  LEFT JOIN public.player_turn pt
     ON pa.id = pt.correct_attempt_id AND pt.is_painter = FALSE
   WHERE pa.created_at > gc.draw_start
   GROUP BY pa.game_rounds_id;
@@ -119,7 +119,7 @@ BEGIN
     COUNT(temp.brush_size) as brush_size_count
   FROM (
     SELECT DISTINCT game_canvas.game_rounds_id, game_canvas.brush_size
-    FROM game_canvas
+    FROM public.game_canvas
     JOIN tmp_round_details rd
       ON game_canvas.game_rounds_id = rd.round_id
   ) AS temp
@@ -140,7 +140,7 @@ BEGIN
     COUNT(temp.brush_color) as brush_color_count
   FROM (
     SELECT DISTINCT game_rounds_id, brush_color
-    FROM game_canvas
+    FROM public.game_canvas
     JOIN tmp_round_details rd
       ON game_canvas.game_rounds_id = rd.round_id
   ) AS temp
@@ -195,8 +195,8 @@ BEGIN
     SUM(CASE WHEN r.reaction = 'happy' OR r.reaction = 'amused' OR r.reaction = 'surprised' THEN 1 ELSE 0 END) AS neutral_reaction_count,
     SUM(CASE WHEN r.reaction = 'confused' OR r.reaction = 'disappointed' THEN 1 ELSE 0 END) AS negative_reaction_count,
     COUNT(r.game_rounds_id) AS reaction_count
-  FROM game_reactions r
-  JOIN game_rounds gr
+  FROM public.game_reactions r
+  JOIN public.game_rounds gr
     ON r.game_rounds_id = gr.id
   JOIN tmp_round_details rd
     ON r.game_rounds_id = rd.round_id

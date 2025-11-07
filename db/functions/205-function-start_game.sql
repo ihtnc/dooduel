@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION public.start_game(game_code character varying, creator character varying)
   RETURNS record
   LANGUAGE plpgsql
-  SET search_path = public
+  SET search_path = ''
 AS $function$
 DECLARE
   started_game record;
@@ -16,8 +16,8 @@ BEGIN
     CASE WHEN char_length(COALESCE(game.password, '')) > 0 THEN true
     ELSE false
     END AS has_password
-  FROM game
-  JOIN game_state ON game.id = game_state.game_id
+  FROM public.game
+  JOIN public.game_state ON game.id = game_state.game_id
   WHERE code = game_code
     AND created_by ilike creator
     AND game_state.status = 'initial'
@@ -29,7 +29,7 @@ BEGIN
 
   -- ensure there are at least 2 active players
   SELECT COUNT(*) INTO player_count
-  FROM player
+  FROM public.player
   WHERE game_id = started_game.id
   AND active = true;
 
@@ -37,10 +37,12 @@ BEGIN
     RAISE EXCEPTION 'not enough players';
   END IF;
 
-  UPDATE game_state
+  UPDATE public.game_state
   SET status = 'ready'
   WHERE game_state.game_id = started_game.id;
 
   RETURN started_game;
 END;
 $function$;
+
+GRANT EXECUTE ON FUNCTION public.start_game(character varying, character varying) TO anon, authenticated;

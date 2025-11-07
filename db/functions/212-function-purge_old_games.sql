@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION app.purge_old_games()
   RETURNS void
-  SET search_path = app
+  SET search_path = ''
 AS $$
 DECLARE
   game_record record;

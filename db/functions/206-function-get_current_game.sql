@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION public.get_current_game(game_name character varying, player_name character varying, player_code character varying)
   RETURNS record
   LANGUAGE plpgsql
-  SET search_path = public
+  SET search_path = ''
 AS $function$
 DECLARE
   selected_game record;
@@ -19,10 +19,10 @@ BEGIN
     game_state.current_round,
     game.created_by,
     pc.player_count
-  FROM game
-    JOIN game_state ON game.id = game_state.game_id
-    JOIN player ON game.id = player.game_id
-    JOIN (SELECT p.game_id, COUNT(p.id) as player_count from player p WHERE p.active = true GROUP BY p.game_id) pc ON pc.game_id = game.id
+  FROM public.game
+    JOIN public.game_state ON game.id = game_state.game_id
+    JOIN public.player ON game.id = player.game_id
+    JOIN (SELECT p.game_id, COUNT(p.id) as player_count from public.player p WHERE p.active = true GROUP BY p.game_id) pc ON pc.game_id = game.id
   WHERE game.name ilike game_name
     AND player.name ilike player_name
     AND player.code = player_code
@@ -37,3 +37,5 @@ BEGIN
   RETURN selected_game;
 END;
 $function$;
+
+GRANT EXECUTE ON FUNCTION public.get_current_game(character varying, character varying, character varying) TO anon, authenticated;

@@ -1,17 +1,17 @@
 CREATE OR REPLACE FUNCTION public.join_game(game_name character varying, game_password character varying, player_name character varying, player_avatar character varying, player_code character varying)
   RETURNS record
   LANGUAGE plpgsql
-  SET search_path = public
+  SET search_path = ''
 AS $function$
 DECLARE
   active_game_id integer;
   selected_game record;
-  selected_player player;
+  selected_player public.player;
 BEGIN
   -- ensure player is not in any other game
   SELECT game.id INTO active_game_id
-  FROM player
-  JOIN game ON player.game_id = game.id
+  FROM public.player
+  JOIN public.game ON player.game_id = game.id
   WHERE player.name ILIKE player_name
     AND player.code = player_code
     AND player.active = true
@@ -30,8 +30,8 @@ BEGIN
     CASE WHEN char_length(COALESCE(game.password, '')) > 0 THEN true
     ELSE false
     END AS has_password
-  FROM game
-  JOIN game_state ON game.id = game_state.game_id
+  FROM public.game
+  JOIN public.game_state ON game.id = game_state.game_id
   WHERE game.name ilike game_name
     AND game.password = game_password
     AND game_state.status NOT IN ('gameend', 'completed')
@@ -43,7 +43,7 @@ BEGIN
   END IF;
 
   SELECT *
-  FROM player
+  FROM public.player
   WHERE player.game_id = selected_game.id
     AND player.name ilike player_name
   INTO selected_player
@@ -55,7 +55,7 @@ BEGIN
 
   -- if player exists but is inactive, just reactivate
   ELSIF FOUND AND selected_player.code = player_code THEN
-    UPDATE player
+    UPDATE public.player
     SET active = true,
       avatar = player_avatar
     WHERE id = selected_player.id;
@@ -63,9 +63,11 @@ BEGIN
     RETURN selected_game;
   END IF;
 
-  INSERT INTO player(game_id, name, avatar, code)
+  INSERT INTO public.player(game_id, name, avatar, code)
   VALUES (selected_game.id, player_name, player_avatar, player_code);
 
   RETURN selected_game;
 END;
 $function$;
+
+GRANT EXECUTE ON FUNCTION public.join_game(character varying, character varying, character varying, character varying, character varying) TO anon, authenticated;
