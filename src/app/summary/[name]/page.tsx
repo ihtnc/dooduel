@@ -11,6 +11,7 @@ import TrophyIcon from "@/components/icons/trophyIcon";
 import PortraitButton from "@/components/button/portraitButton";
 import { getCurrentGame } from "@/actions";
 import { getWinner } from "./actions";
+import client from "@utilities/supabase/browser";
 import { getWinnerMessage } from "./utilities";
 import { GameStatus, type WinnerDetails, type CurrentGameDetails } from "@types";
 
@@ -51,6 +52,20 @@ export default function SummaryPage({ params }: { params: Promise<{ name: string
     setWinnerText(message);
     fetchGame();
   }, [router, params, user]);
+
+  useEffect(() => {
+    const handlePurgeGame = () => {
+      router.replace("/");
+    };
+
+    const channel = client.channel(`game:${game?.id}`, { config: { private: true } })
+      .on("broadcast", { event: "purge_game" }, () => {
+        handlePurgeGame();
+      })
+      .subscribe();
+
+    return () => { client.removeChannel(channel); }
+  }, [game?.id, router]);
 
   const getWinnerDisplayName = (): string => {
     const name = winner?.name || "";

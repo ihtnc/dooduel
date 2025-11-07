@@ -15,6 +15,7 @@ import Fullview from "./fullview";
 import ShowcaseItem from "./showcaseItem";
 import { getCurrentGame } from "@/actions";
 import { getGameCanvasShowcase } from "./actions";
+import client from "@utilities/supabase/browser";
 import { cn } from "@utilities/index";
 import { chooseShowcaseItems } from "./utilities";
 import { GameStatus, type CurrentGameDetails } from "@types";
@@ -104,6 +105,20 @@ export default function GalleryPage({ params }: { params: Promise<{ name: string
 
     fetchGame();
   }, [router, params, user]);
+
+  useEffect(() => {
+    const handlePurgeGame = () => {
+      router.replace("/");
+    };
+
+    const channel = client.channel(`game:${game?.id}`, { config: { private: true } })
+      .on("broadcast", { event: "purge_game" }, () => {
+        handlePurgeGame();
+      })
+      .subscribe();
+
+    return () => { client.removeChannel(channel); }
+  }, [game?.id, router]);
 
   const leftIndex = currentIndex !== -1 && showcase.length > 1 ? (currentIndex - 1 + showcase.length) % showcase.length : -1;
   const rightIndex = currentIndex !== -1 && showcase.length > 1 ? (currentIndex + 1) % showcase.length : -1;

@@ -120,30 +120,15 @@ export default function GamePage({ params }: { params: Promise<{ name: string }>
     };
 
     const handleTurnEnd = () => {
-      for (const player of players) {
-        player.isPainter = false;
-      }
-
       setGame((g) => g ? { ...g, status: GameStatus.TurnEnd } : g);
-      setPlayers([...players]);
     };
 
     const handleRoundEnd = () => {
-      for (const player of players) {
-        player.isPainter = false;
-      }
-
       setGame((g) => g ? { ...g, status: GameStatus.RoundEnd } : g);
-      setPlayers([...players]);
     };
 
     const handleGameEnd = () => {
-      for (const player of players) {
-        player.isPainter = false;
-      }
-
       setGame((g) => g ? { ...g, status: GameStatus.GameEnd } : g);
-      setPlayers([...players]);
     };
 
     const handleGameOver = () => {

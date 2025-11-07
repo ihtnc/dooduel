@@ -13,6 +13,7 @@ import PodiumIcon from "@/components/icons/podiumIcon";
 import TrophyButton from "@/components/button/trophyButton";
 import PortraitButton from "@/components/button/portraitButton";
 import { getCurrentGame } from "@/actions";
+import client from "@utilities/supabase/browser";
 import { GameStatus, type PlayerDetails, type CurrentGameDetails } from "@types";
 
 export default function SummaryPage({ params }: { params: Promise<{ name: string }> }) {
@@ -49,6 +50,20 @@ export default function SummaryPage({ params }: { params: Promise<{ name: string
 
     fetchGame();
   }, [router, params, user]);
+
+  useEffect(() => {
+    const handlePurgeGame = () => {
+      router.replace("/");
+    };
+
+    const channel = client.channel(`game:${game?.id}`, { config: { private: true } })
+      .on("broadcast", { event: "purge_game" }, () => {
+        handlePurgeGame();
+      })
+      .subscribe();
+
+    return () => { client.removeChannel(channel); }
+  }, [game?.id, router]);
 
   return (
     <div className="flex flex-col align-self-start items-center mt-24 gap-4">

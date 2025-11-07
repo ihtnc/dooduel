@@ -194,7 +194,7 @@ export const getEndGameSubText = (): string => {
     "No more doodles... for now.",
     "Time to rest those scribble muscles!",
     "Reflect on the masterpieces you have created or witnessed.",
-    "We hope you enjoyed the ride!",
+    "Calculating reaction scores... because, why not?",
     "There are no more rounds after this.",
     "Coming up next: The game over screen!",
     "The doodling is now done.",

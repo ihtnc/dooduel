@@ -160,12 +160,15 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
   if (!pending && game.status === GameStatus.InProgress) {
     const inProgressData = roundData as InProgressDataPayload;
     currentRoundId = inProgressData.round_id;
-  } else if (!pending && game.status === GameStatus.RoundEnd) {
-    const roundEndData = roundData as RoundEndDataPayload;
-    currentRoundId = roundEndData.current_round;
   } else if (!pending && game.status === GameStatus.TurnEnd) {
     const turnEndData = roundData as TurnEndDataPayload;
-    currentRoundId = turnEndData.current_round;
+    currentRoundId = turnEndData.round_id;
+  } else if (!pending && game.status === GameStatus.RoundEnd) {
+    const roundEndData = roundData as RoundEndDataPayload;
+    currentRoundId = roundEndData.round_id;
+  } else if (!pending && game.status === GameStatus.GameEnd) {
+    const gameEndData = roundData as GameEndDataPayload;
+    currentRoundId = gameEndData.round_id;
   }
 
   if (game.status !== GameStatus.InProgress) {
@@ -209,16 +212,24 @@ export default function GameArea({ game, player }: { game: CurrentGameDetails, p
           {!player.isPainter && <ReadOnlyGameCanvas gameId={game.id} roundId={currentRoundId} />}
         </div>
         <div className="flex w-full items-center justify-center gap-4">
-          {(game.status !== GameStatus.InProgress && game.status !== GameStatus.Completed) &&
+          {(game.status === GameStatus.Initial
+            || game.status === GameStatus.Ready
+            || (game.status === GameStatus.TurnEnd && player.isPainter)
+            || (game.status === GameStatus.RoundEnd && player.isPainter)
+            || (game.status === GameStatus.GameEnd && player.isPainter)
+          ) &&
             <span className="h-14.5 font-primary-lg">Doodle fast. Guess faster!</span>
           }
           {game.status === GameStatus.InProgress && player.isPainter &&
             <BrushOptions onChange={handleBrushChange} />
           }
-          {game.status === GameStatus.InProgress && !player.isPainter &&
-            <Reactions roundId={currentRoundId} collapsible={!player.hasAnswered}
-              uncollapsibleClassName="w-full"
-            />
+          {!player.isPainter && (
+            (game.status === GameStatus.InProgress && player.hasAnswered)
+              || game.status === GameStatus.TurnEnd
+              || game.status === GameStatus.RoundEnd
+              || game.status === GameStatus.GameEnd
+          ) &&
+            <Reactions roundId={currentRoundId} uncollapsibleClassName="w-full" />
           }
           {game.status === GameStatus.InProgress && !player.isPainter && !player.hasAnswered &&
             <SubmitAnswer roundId={currentRoundId} onSubmit={handleResult} />
